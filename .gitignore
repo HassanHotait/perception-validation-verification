@@ -1,0 +1,13 @@
+/results/
+/unit_test_figs/
+/average_precision/
+/test_videos/
+#/YOLO_Detection/
+/calibration_optimisation_data/
+/__pycache__
+# results/
+# SMOKE/datasets/
+# unit_test_figs/
+# average_precision/
+# test_videos/
+# YOLO_detection/

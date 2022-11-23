@@ -1,0 +1,11 @@
+data:
+	datetime-streamID
+			yolo-image-stream-folder
+						images
+			smoke-image-stream-folder
+						images
+			yolo_video
+			smoke_video
+			logs
+			    text files
+			

@@ -1,0 +1,10 @@
+/build/
+/smoke.egg-info/
+/dist/
+/datasets/
+/tools/logs/
+
+.idea
+
+
+/3d-bounding-box-estimation-for-autonomous-driving/
