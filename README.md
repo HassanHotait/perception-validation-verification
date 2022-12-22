@@ -52,3 +52,21 @@ Build SMOKE extension
 ```
 python setup.py build develop
 ```
+
+### Download Data and Setup Repository Structure
+
+
+``` 
+perception-validation-verification
+│──calibration_optimisation_data
+│──camera_calibration
+│──Dataset2Kitti    
+│──results   
+│──SMOKE
+│    └──datasets
+│──test_videos
+│──tools   
+└──YOLO_Detection   
+```  
+
+    
