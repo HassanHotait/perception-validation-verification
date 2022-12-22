@@ -30,7 +30,9 @@ TYPE_ID_CONVERSION = {
 class KITTIDataset(Dataset):
     def __init__(self, cfg, root, is_train=True, transforms=None):
         super(KITTIDataset, self).__init__()
-        self.root = root
+        self.root = "/home/hashot51/Projects/perception-validation-verification/SMOKE/datasets/kitti/training"
+        root="/home/hashot51/Projects/perception-validation-verification/SMOKE/datasets/kitti/training"
+        print('Root: ',self.root)
         self.image_dir = os.path.join(root, "image_2")
         self.label_dir = os.path.join(root, "label_2")
         self.calib_dir = os.path.join(root, "calib")

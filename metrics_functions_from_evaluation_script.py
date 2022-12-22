@@ -2,8 +2,9 @@ import cv2
 from matplotlib.pyplot import table
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
-from torch import mode
+#from torch import mode
 import csv
 import pandas as pd
 from evaluation_toolbox import rectanges_overlap,Point,get_IoU,get_key,yolo_get_key
@@ -1205,6 +1206,11 @@ def tabularize_metrics(data_array,gt_total_class_count,filtered_gt_class_count,g
     #dfi.export(classA1_data,os.path.join(path,'Cars Easy.png'),max_rows=-1)
     classA1_data.to_excel(os.path.join(path,'Cars Easy.xlsx'))
 
+    # print("ΣA1_precision[-1]: ",ΣA1_precision[-1])
+    # print("ΣA1_recall[-1]: ",ΣA1_recall[-1])
+
+    # print("ΣA1_recall: \n",ΣA1_recall)
+    # print("len(ΣA1_recall): ",len(ΣA1_recall))
     classA2_array=np.column_stack((TP_A2_list,FP_A2_list,FN_A2_list,A2_frame_precision,A2_frame_recall,ΣTP_A2,ΣFP_A2,ΣFN_A2,ΣA2_precision,ΣA2_recall,A2_mean_precision,A2_mean_recall))
     classA2_data=pd.DataFrame(classA2_array,columns=['TP','FP','FN','Frame Precision','Frame Recall','ΣTP','ΣFP','ΣFN','ΣPrecision','ΣRecall','Mean Precision','Mean Recall'])
     #dfi.export(classA2_data,os.path.join(path,'Cars Moderate.png'),max_rows=-1)
@@ -1219,6 +1225,8 @@ def tabularize_metrics(data_array,gt_total_class_count,filtered_gt_class_count,g
     classA_data=pd.DataFrame(classA_array,columns=['TP','FP','FN','Frame Precision','Frame Recall','ΣTP','ΣFP','ΣFN','ΣPrecision','ΣRecall','Mean Precision','Mean Recall'])
     #dfi.export(classA_data,os.path.join(path,'Cars Moderate.png'),max_rows=-1)
     classA_data.to_excel(os.path.join(path,'Cars Overall.xlsx'))
+
+    
 
     classB1_array=np.column_stack((TP_B1_list,FP_B1_list,FN_B1_list,B1_frame_precision,B1_frame_recall,ΣTP_B1,ΣFP_B1,ΣFN_B1,ΣB1_precision,ΣB1_recall,B1_mean_precision,B1_mean_recall))
     classB1_data=pd.DataFrame(classB1_array,columns=['TP','FP','FN','Frame Precision','Frame Recall','ΣTP','ΣFP','ΣFN','ΣPrecision','ΣRecall','Mean Precision','Mean Recall'])
@@ -1268,7 +1276,7 @@ def tabularize_metrics(data_array,gt_total_class_count,filtered_gt_class_count,g
     # Checks
 
     # All Data in Table + Checks
-    A_array=np.concatenate((classA_array,classA1_array,classA2_array,classA3_array),axis=1)#,classB1_array,classB2_array,classC1_array,classC2_array))
+    A_array=np.concatenate((classA1_array,classA2_array,classA3_array,classA_array),axis=1)#,classB1_array,classB2_array,classC1_array,classC2_array))
     A_array_with_checks=np.column_stack((A_array,gt_class_A_count,filtered_gt_class_A_count,gt_class_A1_count,gt_class_A2_count,gt_class_A3_count,ignored_gt_class_A_count,pred_class_A_count,filtered_pred_class_A_count,pred_class_A1_count,pred_class_A2_count,pred_class_A3_count,ignored_pred_class_A_count,ΣA_gt_count,ΣA_filtered_gt_count,ΣA1_gt_count,ΣA2_gt_count,ΣA3_gt_count,ΣA_pred_count,ΣA1_pred_count,ΣA2_pred_count,ΣA3_pred_count))
     A_data=pd.DataFrame(A_array_with_checks,columns=field_name_cars)
     A_data.to_excel(os.path.join(path,'Cars.xlsx'),sheet_name='metrics')
@@ -1346,7 +1354,7 @@ def tabularize_metrics(data_array,gt_total_class_count,filtered_gt_class_count,g
 
 
     # All Data in Table + Checks
-    B_array=np.concatenate((classB_array,classB1_array,classB2_array,classB3_array),axis=1)#,classB1_array,classB2_array,classC1_array,classC2_array))
+    B_array=np.concatenate((classB1_array,classB2_array,classB3_array,classB_array),axis=1)#,classB1_array,classB2_array,classC1_array,classC2_array))
     B_array_with_checks=np.column_stack((B_array,gt_class_B_count,filtered_gt_class_B_count,gt_class_B1_count,gt_class_B2_count,gt_class_B3_count,ignored_gt_class_B_count,pred_class_B_count,filtered_pred_class_B_count,pred_class_B1_count,pred_class_B2_count,pred_class_B3_count,ignored_pred_class_B_count,ΣB_gt_count,ΣB_filtered_gt_count,ΣB1_gt_count,ΣB2_gt_count,ΣB3_gt_count,ΣB_pred_count,ΣB1_pred_count,ΣB2_pred_count,ΣB3_pred_count))
     B_data=pd.DataFrame(B_array_with_checks,columns=field_name_cyclists)
     B_data.to_excel(os.path.join(path,'Cyclists.xlsx'))
@@ -1355,7 +1363,7 @@ def tabularize_metrics(data_array,gt_total_class_count,filtered_gt_class_count,g
     enhance_excelfile(B_data,path,'Enhanced_Cyclists.xlsx')
 
     # All Data in Table + Checks
-    C_array=np.concatenate((classC_array,classC1_array,classC2_array,classC3_array),axis=1)#,classC1_array,classC2_array,classC1_array,classC2_array))
+    C_array=np.concatenate((classC1_array,classC2_array,classC3_array,classC_array),axis=1)#,classC1_array,classC2_array,classC1_array,classC2_array))
     C_array_with_checks=np.column_stack((C_array,gt_class_C_count,filtered_gt_class_C_count,gt_class_C1_count,gt_class_C2_count,gt_class_C3_count,ignored_gt_class_C_count,pred_class_C_count,filtered_pred_class_C_count,pred_class_C1_count,pred_class_C2_count,pred_class_C3_count,ignored_pred_class_C_count,ΣC_gt_count,ΣC_filtered_gt_count,ΣC1_gt_count,ΣC2_gt_count,ΣC3_gt_count,ΣC_pred_count,ΣC1_pred_count,ΣC2_pred_count,ΣC3_pred_count))
     C_data=pd.DataFrame(C_array_with_checks,columns=field_name_pedestrians)
     C_data.to_excel(os.path.join(path,'Pedestrians.xlsx'))
@@ -1380,6 +1388,7 @@ def tabularize_metrics(data_array,gt_total_class_count,filtered_gt_class_count,g
     cyclist_metrics=[ΣC1_precision[-1],ΣC1_recall[-1],ΣC2_precision[-1],ΣC2_recall[-1],ΣC3_precision[-1],ΣC3_recall[-1],ΣC_precision[-1],ΣC_recall[-1]]
     difficulty_metrics=[Σeasy_precision[-1],Σeasy_recall[-1],Σmoderate_precision[-1],Σmoderate_recall[-1],Σhard_precision[-1],Σhard_recall[-1]]
 
+    #print("Car Metrics: ",car_metrics)
     easy_objects_count=ΣA1_gt_count[-1]+ΣC1_gt_count[-1]
 
     moderate_objects_count=ΣA2_gt_count[-1]+ΣC2_gt_count[-1]
@@ -1401,6 +1410,9 @@ def enhance_excelfile(class_data,path,enhanced_filename):
     #
     workbook = writer.book
     worksheet = writer.sheets['metrics']
+
+    # Adjust the column width.
+    worksheet.set_column('A:BQ', 30)
 
 
     #Set header formating
@@ -1430,18 +1442,18 @@ def enhance_excelfile(class_data,path,enhanced_filename):
     gt_stats_format=workbook.add_format({'bg_color': 'green'})
     pred_stats_format=workbook.add_format({'bg_color': 'red'})
     
-    worksheet.set_column('A1:C1', None, easy_format)
-    worksheet.set_column(12, 14, None, moderate_format)
-    worksheet.set_column(24, 26, None, hard_format)
+    worksheet.set_column('A1:C1', 30, easy_format)
+    worksheet.set_column('M1:O1', 30, moderate_format)
+    worksheet.set_column('Y1:AA1', 30, hard_format)
 
-    worksheet.set_column(36, 41, None, gt_stats_format)
-    worksheet.set_column(42, 47, None, pred_stats_format)
+    worksheet.set_column('AK1:AP1', 30, gt_stats_format)
+    worksheet.set_column('AQ1:AV1', 30, pred_stats_format)
 
 
 
 
     # Adjust the column width.
-    worksheet.set_column('A:BF', 30)
+    worksheet.set_column('A:BQ', 30)
 
 
 
@@ -1914,7 +1926,7 @@ def yolobbox2bbox(x,y,w,h):
 
 
 def convert_prediction_text_format(prediction):
-    class_in_text_format=get_key(prediction[0])
+    class_in_text_format=get_key(int(prediction[0]))
 
     data=[class_in_text_format,
                 0,
@@ -2068,14 +2080,14 @@ def construct_dataframe(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,di
     easy_cars=' {:.2f} - {:.2f} - {:.2f} '.format(cars_easy_AP,car_metrics[0]*100,car_metrics[1]*100)
     moderate_cars=' {:.2f} - {:.2f} - {:.2f} '.format(cars_moderate_AP,car_metrics[2]*100,car_metrics[3]*100)
     hard_cars=' {:.2f} - {:.2f} - {:.2f} '.format(cars_hard_AP,car_metrics[4]*100,car_metrics[5]*100)
-    overall_cars=' {} - {:.2f} - {:.2f} '.format(overall_cars_AP,car_metrics[6]*100,car_metrics[7]*100)
+    overall_cars=' {:.2f} - {:.2f} - {:.2f} '.format(overall_cars_AP,car_metrics[6]*100,car_metrics[7]*100)
     cars=[easy_cars,moderate_cars,hard_cars,overall_cars,n_objects_classes[3]]
 
 
     easy_pedestrians=' {:.2f} - {:.2f} - {:.2f} '.format(pedestrian_easy_AP,pedestrian_metrics[0]*100,pedestrian_metrics[1]*100)
     moderate_pedestrians=' {:.2f} - {:.2f} - {:.2f} '.format(pedestrian_moderate_AP,pedestrian_metrics[2]*100,pedestrian_metrics[3]*100)
     hard_pedestrians=' {:.2f} - {:.2f} - {:.2f} '.format(pedestrian_hard_AP,pedestrian_metrics[4]*100,pedestrian_metrics[5]*100)
-    overall_pedestrians=' {} - {:.2f} - {:.2f} '.format(overall_predestrians_AP,pedestrian_metrics[6]*100,pedestrian_metrics[7]*100)
+    overall_pedestrians=' {:.2f} - {:.2f} - {:.2f} '.format(overall_predestrians_AP,pedestrian_metrics[6]*100,pedestrian_metrics[7]*100)
     pedestrians=[easy_pedestrians,moderate_pedestrians,hard_pedestrians,overall_pedestrians,n_objects_classes[7]]
 
 
@@ -2161,13 +2173,15 @@ def construct_dataframe(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,di
     # dfStyler = df.style.set_properties(**{'text-align': 'center'})
     # dfStyler.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
     # [dict(selector='th', props=[('text-align', 'center')])]
-
+    
     df1 = df.style.set_table_styles([{"selector": "", "props": [("border", "1px solid")]},
         {"selector": "tbody td", "props": [("border", "1px solid")]},
         {"selector": "th", "props": [("border", "1px solid")]},
         {"selector": "th", "props": [("text-align", "center")]},
         ])
+    df1.set_caption('Object Detector Metrics Evaluation [Average Precision - Precision - Recall ]')
     df1.set_properties(**{'text-align': 'center'}).hide_index()
+    #df1.style.set_table_attributes("style='display:inline'").set_caption('Caption table')
 
     # df2=df1.style.set_table_styles(
     #     [{"selector": "", "props": [("border", "1px solid")]},
@@ -2178,4 +2192,255 @@ def construct_dataframe(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,di
    
     print(df)
 
-    return df1
+
+    # AP - Precision - Recall
+
+    metrics_results={
+              'Easy Cars':[cars_easy_AP,car_metrics[0]*100,car_metrics[1]*100],
+              'Moderate Cars':[cars_moderate_AP,car_metrics[2]*100,car_metrics[3]*100],
+              'Hard Cars':[cars_hard_AP,car_metrics[4]*100,car_metrics[5]*100],
+              'Overall Cars':[overall_cars_AP,car_metrics[6]*100,car_metrics[7]*100],
+              'Pedestrians Easy':[pedestrian_easy_AP,pedestrian_metrics[0]*100,pedestrian_metrics[1]*100],
+              'Pedestrians Moderate':[pedestrian_moderate_AP,pedestrian_metrics[2]*100,pedestrian_metrics[3]*100],
+              'Pedestrians Hard':[pedestrian_hard_AP,pedestrian_metrics[4]*100,pedestrian_metrics[5]*100],
+              'Overall Pedestrians':[overall_predestrians_AP,pedestrian_metrics[6]*100,pedestrian_metrics[7]*100],
+              'Overall Easy' : [AP_weighted_average_easy,difficulty_metrics[0]*100,difficulty_metrics[1]*100],
+              'Overall Moderate' : [AP_weighted_average_moderate,difficulty_metrics[2]*100,difficulty_metrics[3]*100],
+              'Overall Hard' : [AP_weighted_average_hard,difficulty_metrics[4]*100,difficulty_metrics[5]*100],
+              'Overall Overall' : [overall_AP,overall_precision*100,overall_recall*100]
+
+            }
+
+    bar_metrics=pd.DataFrame(metrics_results)
+
+    # bar_metrics.plot(kind='bar',title="SMOKE Evaluation Results")
+
+    # plt.xlabel("Difficulties")
+    # plt.ylabel("Percentage %")
+    # plt.xticks(ticks=[0,1,2],labels=['AP','Precision','Recall'])
+
+
+
+    return df1,bar_metrics
+
+
+
+def construct_dataframe_v2(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,difficulty_metrics,n_objects_classes,n_objects_difficulties):
+
+    cars_easy_AP,cars_moderate_AP,cars_hard_AP=cars_AP[0],cars_AP[1],cars_AP[2]
+    pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP=pedestrians_AP[0],pedestrians_AP[1],pedestrians_AP[2]
+
+    # easy_car_metrics=
+    # moderate_car_metrics=
+    # hard_car_metrics=
+
+
+    # easy_cars='AP: {} - Precision: {} - Recall: {}      '.format(cars_easy_AP,car_metrics[0],car_metrics[0])
+    # moderate_cars='AP: {} - Precision: {} - Recall: {}      '.format(cars_easy_AP,car_metrics[2],car_metrics[3])
+    # hard_cars='AP: {} - Precision: {} - Recall: {}      '.format(cars_hard_AP,car_metrics[4],car_metrics[5])
+    # overall_cars='AP: {} - Precision: {} - Recall: {}       '.format(0,0,0)
+    # cars=[easy_cars,moderate_cars,hard_cars,overall_cars]
+
+
+    # easy_pedestrians='AP: {} - Precision: {} - Recall: {}       '.format(pedestrian_easy_AP,pedestrian_metrics[0],pedestrian_metrics[1])
+    # moderate_pedestrians='AP: {} - Precision: {} - Recall: {}       '.format(pedestrian_easy_AP,pedestrian_metrics[2],pedestrian_metrics[3])
+    # hard_pedestrians='AP: {} - Precision: {} - Recall: {}       '.format(pedestrian_hard_AP,pedestrian_metrics[4],pedestrian_metrics[5])
+    # overall_pedestrians='AP: {} - Precision: {} - Recall: {}        '.format(0,0,0)
+    # pedestrians=[easy_pedestrians,moderate_pedestrians,hard_pedestrians,overall_pedestrians]
+
+    # easy_classes='AP: {} - Precision: {} - Recall: {}       '.format(0,0,0)
+    # moderate_classes='AP: {} - Precision: {} - Recall: {}       '.format(0,0,0)
+    # hard_classes='AP: {} - Precision: {} - Recall: {}       '.format(0,0,0)
+    # overall_classes='AP: {} - Precision: {} - Recall: {}        '.format(0,0,0)
+
+    if n_objects_classes[3]!=0:
+
+        ratio_easy_cars_to_total_cars=n_objects_classes[0]/n_objects_classes[3]
+        ratio_moderate_cars_to_total_cars=n_objects_classes[1]/n_objects_classes[3]
+        ratio_hard_cars_to_total_cars=n_objects_classes[2]/n_objects_classes[3]
+        
+
+    else:
+
+        ratio_easy_cars_to_total_cars=0
+        ratio_moderate_cars_to_total_cars=0
+        ratio_hard_cars_to_total_cars=0
+
+
+    if n_objects_classes[7]!=0:
+        ratio_easy_pedestrians_to_total_pedestrians=n_objects_classes[4]/n_objects_classes[7]
+        ratio_moderate_pedestrians_to_total_pedestrians=n_objects_classes[5]/n_objects_classes[7]
+        ratio_hard_pedestrians_to_total_pedestrians=n_objects_classes[6]/n_objects_classes[7]
+    else:
+        ratio_easy_pedestrians_to_total_pedestrians=0
+        ratio_moderate_pedestrians_to_total_pedestrians=0
+        ratio_hard_pedestrians_to_total_pedestrians=0
+
+
+
+    overall_cars_AP=(cars_easy_AP*ratio_easy_cars_to_total_cars) +(cars_moderate_AP*ratio_moderate_cars_to_total_cars)+(cars_hard_AP*ratio_hard_cars_to_total_cars)
+    overall_predestrians_AP=(pedestrian_easy_AP*ratio_easy_pedestrians_to_total_pedestrians)+(pedestrian_moderate_AP*ratio_moderate_pedestrians_to_total_pedestrians)+(pedestrian_hard_AP*ratio_hard_pedestrians_to_total_pedestrians)
+
+    easy_cars=' {:.2f} - {:.2f} - {:.2f} '.format(cars_easy_AP,car_metrics[0]*100,car_metrics[1]*100)
+    moderate_cars=' {:.2f} - {:.2f} - {:.2f} '.format(cars_moderate_AP,car_metrics[2]*100,car_metrics[3]*100)
+    hard_cars=' {:.2f} - {:.2f} - {:.2f} '.format(cars_hard_AP,car_metrics[4]*100,car_metrics[5]*100)
+    overall_cars=' {:.2f} - {:.2f} - {:.2f} '.format(overall_cars_AP,car_metrics[6]*100,car_metrics[7]*100)
+    cars=[easy_cars,moderate_cars,hard_cars,overall_cars,n_objects_classes[3]]
+
+
+    easy_pedestrians=' {:.2f} - {:.2f} - {:.2f} '.format(pedestrian_easy_AP,pedestrian_metrics[0]*100,pedestrian_metrics[1]*100)
+    moderate_pedestrians=' {:.2f} - {:.2f} - {:.2f} '.format(pedestrian_moderate_AP,pedestrian_metrics[2]*100,pedestrian_metrics[3]*100)
+    hard_pedestrians=' {:.2f} - {:.2f} - {:.2f} '.format(pedestrian_hard_AP,pedestrian_metrics[4]*100,pedestrian_metrics[5]*100)
+    overall_pedestrians=' {:.2f} - {:.2f} - {:.2f} '.format(overall_predestrians_AP,pedestrian_metrics[6]*100,pedestrian_metrics[7]*100)
+    pedestrians=[easy_pedestrians,moderate_pedestrians,hard_pedestrians,overall_pedestrians,n_objects_classes[7]]
+
+
+    if n_objects_difficulties[0]!=0:
+
+
+        ratio_easy_cars_to_easy_objects=n_objects_classes[0]/n_objects_difficulties[0]
+        ratio_easy_pedestrians_to_easy_objects=n_objects_classes[4]/n_objects_difficulties[0]
+
+    else:
+        ratio_easy_cars_to_easy_objects=0
+        ratio_easy_pedestrians_to_easy_objects=0
+
+    
+
+    if n_objects_difficulties[1]!=0:
+
+
+        ratio_moderate_cars_to_moderate_objects=n_objects_classes[1]/n_objects_difficulties[1]
+        ratio_moderate_pedestrians_to_moderate_objects=n_objects_classes[5]/n_objects_difficulties[1]
+
+    else:
+        ratio_moderate_cars_to_moderate_objects=0
+        ratio_moderate_pedestrians_to_moderate_objects=0
+
+    
+
+    if n_objects_difficulties[2]!=0:
+
+        ratio_hard_cars_to_hard_objects=n_objects_classes[2]/n_objects_difficulties[2]
+        ratio_hard_pedestrians_to_hard_objects=n_objects_classes[6]/n_objects_difficulties[2]
+
+    else:
+        ratio_hard_cars_to_hard_objects=0
+        ratio_hard_pedestrians_to_hard_objects=0
+
+    AP_weighted_average_easy=(cars_easy_AP*ratio_easy_cars_to_easy_objects) + (pedestrian_easy_AP*ratio_easy_pedestrians_to_easy_objects)
+    AP_weighted_average_moderate=(cars_moderate_AP*ratio_moderate_cars_to_moderate_objects) + (pedestrian_moderate_AP*ratio_moderate_pedestrians_to_moderate_objects)
+    AP_weighted_average_hard=(cars_hard_AP*ratio_hard_cars_to_hard_objects) + (pedestrian_hard_AP*ratio_hard_pedestrians_to_hard_objects)
+
+    easy_classes=' {:.2f} - {:.2f} - {:.2f} '.format(AP_weighted_average_easy,difficulty_metrics[0]*100,difficulty_metrics[1]*100)
+    moderate_classes=' {:.2f} - {:.2f} - {:.2f} '.format(AP_weighted_average_moderate,difficulty_metrics[2]*100,difficulty_metrics[3]*100)
+    hard_classes=' {:.2f} - {:.2f} - {:.2f} '.format(AP_weighted_average_hard,difficulty_metrics[4]*100,difficulty_metrics[5]*100)
+
+
+    ratio_cars_to_total_objects=n_objects_classes[3]/(n_objects_classes[7]+n_objects_classes[3])
+    ratio_pedestrians_to_total_objects=n_objects_classes[7]/(n_objects_classes[7]+n_objects_classes[3])
+    overall_precision=(car_metrics[6]*ratio_cars_to_total_objects)+ (pedestrian_metrics[6]*ratio_pedestrians_to_total_objects)
+    overall_recall=(car_metrics[7]*ratio_cars_to_total_objects)+ (pedestrian_metrics[7]*ratio_pedestrians_to_total_objects)
+    overall_AP=(overall_cars_AP*ratio_cars_to_total_objects)+(overall_predestrians_AP*ratio_pedestrians_to_total_objects)
+
+
+
+
+
+    overall_classes=' {:.2f} - {:.2f} - {:.2f} '.format(overall_AP,overall_precision*100,overall_recall*100)
+    classes=[easy_classes,moderate_classes,hard_classes,overall_classes,(n_objects_classes[7]+n_objects_classes[3])]
+
+    column_headers=['Class/Difficulty','Easy','Moderate','Hard','Overall Difficulties','Class # Objects']
+    row_headers=['Car','Pedestrian','Cars and Pedestrians','Difficulty # Objects']
+
+    # data=np.zeros((3,4))
+
+    ar1=np.array(cars)
+    ar2=np.array(pedestrians)
+    ar3=np.array(classes)
+    ar4=np.array([n_objects_difficulties[0],n_objects_difficulties[1],n_objects_difficulties[2],n_objects_difficulties[3],'Ø'])
+
+    data=np.row_stack((ar1,ar2,ar3,ar4))
+
+    ARRAY=np.column_stack((row_headers,data))
+
+    ARRAY=np.row_stack((column_headers,ARRAY))
+
+    pd.set_option('display.colheader_justify', 'center')
+    pd.set_option('colheader_justify', 'center')
+
+    df=pd.DataFrame(ARRAY)
+
+    df.columns = df.iloc[0]
+    df = df[1:]
+
+    # dfStyler = df.style.set_properties(**{'text-align': 'center'})
+    # dfStyler.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
+    # [dict(selector='th', props=[('text-align', 'center')])]
+    
+    df1 = df.style.set_table_styles([{"selector": "", "props": [("border", "1px solid")]},
+        {"selector": "tbody td", "props": [("border", "1px solid")]},
+        {"selector": "th", "props": [("border", "1px solid")]},
+        {"selector": "th", "props": [("text-align", "center")]},
+        ])
+    df1.set_caption('Object Detector Metrics Evaluation [Average Precision - Precision - Recall ]')
+    df1.set_properties(**{'text-align': 'center'}).hide_index()
+    #df1.style.set_table_attributes("style='display:inline'").set_caption('Caption table')
+
+    # df2=df1.style.set_table_styles(
+    #     [{"selector": "", "props": [("border", "1px solid")]},
+    #       {"selector": "tbody td", "props": [("border", "1px solid")]},
+    #      {"selector": "th", "props": [("border", "1px solid")]}])
+
+
+   
+    print(df)
+
+
+    # AP - Precision - Recall
+
+    # metrics_results={
+    #           'Easy Cars':[cars_easy_AP,car_metrics[0]*100,car_metrics[1]*100],
+    #           'Moderate Cars':[cars_moderate_AP,car_metrics[2]*100,car_metrics[3]*100],
+    #           'Hard Cars':[cars_hard_AP,car_metrics[4]*100,car_metrics[5]*100],
+    #           'Overall Cars':[overall_cars_AP,car_metrics[6]*100,car_metrics[7]*100],
+    #           'Pedestrians Easy':[pedestrian_easy_AP,pedestrian_metrics[0]*100,pedestrian_metrics[1]*100],
+    #           'Pedestrians Moderate':[pedestrian_moderate_AP,pedestrian_metrics[2]*100,pedestrian_metrics[3]*100],
+    #           'Pedestrians Hard':[pedestrian_hard_AP,pedestrian_metrics[4]*100,pedestrian_metrics[5]*100],
+    #           'Overall Pedestrians':[overall_predestrians_AP,pedestrian_metrics[6]*100,pedestrian_metrics[7]*100],
+    #           'Overall Easy' : [AP_weighted_average_easy,difficulty_metrics[0]*100,difficulty_metrics[1]*100],
+    #           'Overall Moderate' : [AP_weighted_average_moderate,difficulty_metrics[2]*100,difficulty_metrics[3]*100],
+    #           'Overall Hard' : [AP_weighted_average_hard,difficulty_metrics[4]*100,difficulty_metrics[5]*100],
+    #           'Overall Overall' : [overall_AP,overall_precision*100,overall_recall*100]
+
+    #         }
+
+    # Easy - Moderate - Hard - Overall
+    metrics_results={
+
+              'Cars AP':[cars_easy_AP,cars_moderate_AP,cars_hard_AP,overall_cars_AP],
+              'Pedestrians AP':[pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP,overall_cars_AP],
+              'All Classes AP' : [AP_weighted_average_easy,AP_weighted_average_moderate,AP_weighted_average_hard,overall_AP],
+
+
+              'Cars Precision':[car_metrics[0]*100,car_metrics[2]*100,car_metrics[4]*100,car_metrics[6]*100],
+              'Pedestrians Precision':[pedestrian_metrics[0]*100,pedestrian_metrics[2]*100,pedestrian_metrics[4]*100,pedestrian_metrics[6]*100],
+              'All Classes Precision' : [difficulty_metrics[0]*100,difficulty_metrics[2]*100,difficulty_metrics[4]*100,overall_precision*100],
+
+              'Cars Recall':[car_metrics[1]*100,car_metrics[3]*100,car_metrics[5]*100,car_metrics[7]*100],
+              'Pedestrians Recall':[pedestrian_metrics[1]*100,pedestrian_metrics[3]*100,pedestrian_metrics[5]*100,pedestrian_metrics[7]*100],
+              'All Classes Recall' : [difficulty_metrics[1]*100,difficulty_metrics[3]*100,difficulty_metrics[5]*100,overall_recall*100],
+
+            }
+
+    bar_metrics=pd.DataFrame(metrics_results)
+
+    # bar_metrics.plot(kind='bar',title="SMOKE Evaluation Results")
+
+    # plt.xlabel("Difficulties")
+    # plt.ylabel("Percentage %")
+    # plt.xticks(ticks=[0,1,2],labels=['AP','Precision','Recall'])
+
+
+
+    return df1,bar_metrics

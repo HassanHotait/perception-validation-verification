@@ -116,7 +116,7 @@ _C.MODEL.SMOKE_HEAD.LOSS_WEIGHT = (1., 10.)
 _C.MODEL.SMOKE_HEAD.DIMENSION_REFERENCE = ((3.88, 1.63, 1.53),
                                            (1.78, 1.70, 0.58),
                                            (0.88, 1.73, 0.67))
-# Reference depth
+# Reference depth (28.01, 16.32)
 _C.MODEL.SMOKE_HEAD.DEPTH_REFERENCE = (28.01, 16.32)
 _C.MODEL.SMOKE_HEAD.USE_NMS = False
 

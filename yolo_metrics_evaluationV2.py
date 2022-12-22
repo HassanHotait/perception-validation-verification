@@ -1,17 +1,19 @@
-
+# Hide GPU 
+import os
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1" 
 from logging import root
-from SMOKE.smoke.config import cfg
-from SMOKE.smoke.engine import default_argument_parser
-from SMOKE.tools.my_functions import setup_network,preprocess
-from SMOKE.smoke.utils.check_point import DetectronCheckpointer
-from SMOKE.tools.box import visualize
+# from SMOKE.smoke.config import cfg
+# from SMOKE.smoke.engine import default_argument_parser
+# from SMOKE.tools.my_functions import setup_network,preprocess
+# from SMOKE.smoke.utils.check_point import DetectronCheckpointer
+# from SMOKE.tools.box import visualize
 import matplotlib.pyplot as plt
 import cv2
 from PIL import Image
-import torch
+#import torch
 import csv
 import numpy as np
-torch.cuda.empty_cache()
+#torch.cuda.empty_cache()
 import os
 from datetime import datetime
 # from toolbox import get_IoU,Point,smoke_get_n_classes,yolo_get_n_classes
@@ -37,11 +39,11 @@ def get_key(val):
 
 
 
-predict_then_evaluate=False
+predict_then_evaluate=True
 only_predict=False
-only_evaluate=True
+only_evaluate=False
 
-folder_path_for_evaluation='Streamkitti_trainingset_Yolo_metrics+2022_11_23_01_19_00'
+folder_path_for_evaluation='Streamkitti_trainingset_Yolo_metrics+2022_11_23_21_59_41'
 
 
 stream_id='kitti_trainingset_Yolo_metrics+'
@@ -50,7 +52,7 @@ session_datetime=datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 foldername='Stream'+str(stream_id)+session_datetime
 print('Foldername: ',foldername)
 
-root_dir='/home/hasan//perception-validation-verification'
+root_dir='/home/hashot51/Projects/perception-validation-verification'
 boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')
 test_images_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/image_2')
 
@@ -115,21 +117,22 @@ tracker,encoder=setup_tracker(model_filename)
     
 
 # Hide GPU 
-# os.environ["CUDA_VISIBLE_DEVICES"] = "-1" 
+#os.environ["CUDA_VISIBLE_DEVICES"] = "-1" 
 
 fileid=0
 
-n=7478
+n=7481
 yolo_metrics_evaluator=metrics_evaluator(n,logs_path)
 #smoke_metrics_evaluator.results_path=logs_path
 print('LOGS Path: ',logs_path)
-fileid=0
+#fileid=0
 # vid = cv2.VideoCapture('test_videos/'+str(1)+'.mp4')
 # total_frames = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
 # fps    = vid.get(cv2.CAP_PROP_FPS)
 # ret,frame=vid.read()
-for i in range(n):
+for fileid in range(n):
 
+    # fileid=i
     ordered_filepath=os.path.join(test_images_path,str(fileid).zfill(6)+'.png')
     frame=cv2.imread(ordered_filepath)
     print('frame: ',fileid)
@@ -161,7 +164,7 @@ for i in range(n):
 
 
 
-    fileid+=1
+    #fileid+=1
 
     # ret,frame=vid.read()
 
@@ -169,7 +172,6 @@ for i in range(n):
 
 
 
-torch.cuda.empty_cache()
 
 precision_evaluation_path='SMOKE/smoke/data/datasets/evaluation/kitti/kitti_eval_40/evaluate_object_3d_offline'
 boxs_groundtruth_path='SMOKE/datasets/kitti/training/label_2'
@@ -195,7 +197,7 @@ if only_evaluate==True or predict_then_evaluate==True:
     cars_AP=[cars_easy_AP,cars_moderate_AP,cars_hard_AP]
     pedestrians_AP=[pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP]
 
-    df=construct_dataframe(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,difficulty_metrics,n_object_classes,n_object_difficulties)
+    df,bar_metrics=construct_dataframe(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,difficulty_metrics,n_object_classes,n_object_difficulties)
 
     dfi.export(df,os.path.join(results_path,'MetricsTable.png'))
 
@@ -203,6 +205,15 @@ if only_evaluate==True or predict_then_evaluate==True:
     metrics_img=cv2.imread(os.path.join(results_path,'MetricsTable.png'))
     cv2.imshow('Metrics',metrics_img)
     cv2.waitKey(0)
+
+    bar_metrics.plot(kind='bar',title="YOLO Evaluation Results",figsize=(20, 8))
+    plt.legend(loc=(-0.16,0.7))
+    plt.xlabel("Metrics")
+    plt.ylabel("Percentage %")
+    plt.xticks(ticks=[0,1,2],labels=['AP','Precision','Recall'])
+    plt.yticks(range(0,105,5))
+    plt.savefig(os.path.join(results_path,"bar_metrics.png"),dpi=600,bbox_inches="tight")
+    plt.show()
 
 
 

@@ -496,6 +496,7 @@ class metrics_evaluator:
 
         
         self.data.append(data_row)
+        print("GT Class Count Per Row: ",gt_class_difficulty_count_row)
         self.gt_class_difficulty_count.append(gt_class_difficulty_count_row)
         self.filtered_gt_instances_count.append([self.car_filtered_gt_instances,self.cyclist_filtered_gt_instances,self.pedestrian_filtered_gt_instances])
         

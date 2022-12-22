@@ -170,7 +170,7 @@ def build_test_loader(cfg, is_train=False):
     transforms = build_transforms(cfg, is_train)
     print(type(transforms))
     datasets = build_dataset(cfg, transforms, DatasetCatalog, is_train)
-    print(len(datasets))
+    print("len(datasets): ",len(datasets))
 
     data_loaders = []
     for dataset in datasets:

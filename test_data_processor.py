@@ -1,5 +1,9 @@
+import os
+
 
 from logging import root
+
+
 from SMOKE.smoke.config import cfg
 from SMOKE.smoke.engine import default_argument_parser
 from SMOKE.tools.my_functions import setup_network,preprocess
@@ -8,12 +12,15 @@ from SMOKE.tools.box import visualize
 import matplotlib.pyplot as plt
 import cv2
 from PIL import Image
+
+# Hide GPU 
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1" 
 import torch
 import csv
 import numpy as np
 import cv2
 torch.cuda.empty_cache()
-import os
+
 from datetime import datetime
 # from toolbox import get_IoU,Point,smoke_get_n_classes,yolo_get_n_classes
 #from metrics_functions_from_evaluation_script import plot_groundtruth,plot_prediction,metrics_evaluator,read_groundtruth,yolo_2_smoke_output_format
@@ -21,6 +28,8 @@ from EvaluatorClass2 import metrics_evaluator,plot_groundtruth
 from metrics_functions_from_evaluation_script import yolo_2_smoke_output_format,read_groundtruth,plot_prediction,write_prediction,read_prediction,get_pred_classes_boxes
 import subprocess
 import keyboard
+
+
 
 class ManualMatchingMouseHandler():
     def __init__(self,clean_image,distances,boxes):
@@ -169,7 +178,7 @@ session_datetime=datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 foldername='Stream'+str(stream_id)+session_datetime
 print('Foldername: ',foldername)
 
-root_dir='/home/hasan//perception-validation-verification'
+root_dir='/home/hashot51/Projects/perception-validation-verification'
 # boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')
 # test_images_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/image_2')
 
@@ -208,6 +217,8 @@ optimization_data_filepath=open(os.path.join(logs_path,'optimization_data.csv'),
 optimization_data_file=csv.writer(optimization_data_filepath)
 header = ['timetsamp','image_filename', 'X1 3D', 'Y1 3D','Z1 3D','X1 Obj Center 2D','Y1 Obj Center 2D']
 optimization_data_file.writerow(header)
+
+#Videos 1,2,6 are okay, other not useful
 
 video_filename='1.mp4'
 dictionary={
@@ -269,7 +280,7 @@ tracker,encoder=setup_tracker(model_filename)
     
 
 # Hide GPU 
-# os.environ["CUDA_VISIBLE_DEVICES"] = "-1" 
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1" 
 
 
 
@@ -338,8 +349,8 @@ while condition==True:
                 print('box---------------------',box)
                 TL= (int(box[0]),int(box[1]))
                 BR=(int(box[0]+box[2]),int(box[1]+box[3]))
-                image = cv2.circle(image,TL, 2, (0,255,0), 15)
-                image = cv2.circle(image,BR , 2, (255,0,0), 15)
+                # image = cv2.circle(image,TL, 2, (0,255,0), 15)
+                # image = cv2.circle(image,BR , 2, (255,0,0), 15)
                 processed_boxes_of_interest.append((TL,BR))
             print('yolo predictions list: ',yolo_predictions_list)
             write_prediction(data_path,fileid,yolo_predictions_list)
@@ -353,7 +364,7 @@ while condition==True:
             output_img=cv2.putText(output_img,'Mobileye Timestamp: '+ '{:.4f}'.format(closest_mobileye_timestamp),(0,80),cv2.FONT_HERSHEY_SIMPLEX,1,(255,00,00),4)
             output_img=cv2.putText(output_img,'Mobileye datarow : '+  str(timestamps.index(closest_mobileye_timestamp))+'/'+str(len(mobileye_datarows)),(0,110),cv2.FONT_HERSHEY_SIMPLEX,1,(255,00,00),4)
             output_img=cv2.putText(output_img,'Optimization Data Samples: '+  str(optimization_data_sample_points),(0,140),cv2.FONT_HERSHEY_SIMPLEX,1,(255,00,00),4)
-            output_img_distances=cv2.putText(output_img.copy(),str(current_row_pose_list),(250,20),cv2.FONT_HERSHEY_SIMPLEX,0.6,(255,00,00),4)
+            output_img_distances=cv2.putText(output_img.copy(),'Mobileye POSE List: '+str(current_row_pose_list),(420,20),cv2.FONT_HERSHEY_SIMPLEX,0.6,(255,00,00),4)
         
 
         

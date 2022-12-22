@@ -6,7 +6,7 @@ from matplotlib.gridspec import GridSpec
 
 class detectionInfo(object):
     def __init__(self, line):
-        # self.name = line[0]
+        self.name = line[0]
 
 
         # self.truncation = float(line[1])
@@ -71,9 +71,16 @@ def compute_3Dbox(P2, line):
     corners_3D += np.array([obj.tx, obj.ty, obj.tz]).reshape((3, 1))
 
     corners_3D_1 = np.vstack((corners_3D, np.ones((corners_3D.shape[-1]))))
-    corners_2D = P2.dot(corners_3D_1)
+    print("Corners 3D_1 : ",corners_3D_1)
+    print("Corners 3D_1 Shape: ",corners_3D_1.shape)
+    print("P2: ",P2)
+    print("P2 Shape: ",P2.shape)
+    corners_2D = P2.dot(corners_3D)
+    print("Dot Product Output: ",corners_2D)
+    print("Dot Product Output Shape: ",corners_2D.shape)
     corners_2D = corners_2D / corners_2D[2]
     corners_2D = corners_2D[:2]
+    print("corners 2D Final Version: ",corners_2D)
 
     return corners_2D
 
@@ -141,7 +148,7 @@ def compute_birdviewbox(line, shape, scale):
 
     return np.vstack((corners_2D, corners_2D[0,:]))
 
-def draw_birdeyes(ax2,  line_p, shape):
+def draw_birdeyes(ax2, birdimage, line_p, shape):
     # shape = 900
     scale = 1
 
@@ -164,9 +171,10 @@ def draw_birdeyes(ax2,  line_p, shape):
         p = patches.PathPatch(pth, fill=False, color='green', label='prediction')
         #print('Patch: ',p)
         ax2.add_patch(p)
+        ax2.imshow(birdimage)
 
 
-def visualize(shape,predictions_list,P2,image,tracker):
+def visualize(shape,predictions_list,P2,image):
     fig = plt.figure(figsize=(20.00, 5.12), dpi=100)
     # fig.tight_layout()
     gs = GridSpec(1, 4)
@@ -188,13 +196,13 @@ def visualize(shape,predictions_list,P2,image,tracker):
 
 
     draw_3Dbox(P2,predictions_list,'green',ax)
-    draw_birdeyes(ax2,predictions_list,shape)
+    draw_birdeyes(ax2,birdimage,predictions_list,shape)
 
     # visualize 3D bounding box
     ax.imshow(image,animated=True)
-    for track in tracker.tracks:
-        bbox = track.to_tlbr()
-        ax.text(int(bbox[0]), int(bbox[1]),'ID: '+str(track.track_id),color='green')
+    # for track in tracker.tracks:
+    #     bbox = track.to_tlbr()
+    #     ax.text(int(bbox[0]), int(bbox[1]),'ID: '+str(track.track_id),color='green')
     ax.set_xticks([]) #remove axis value
     ax.set_yticks([])
 

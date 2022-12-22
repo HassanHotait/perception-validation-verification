@@ -16,7 +16,7 @@ def default_argument_parser():
     parser = argparse.ArgumentParser(description="Detectron2 Training")
     parser.add_argument("--config-file", default="SMOKE/configs/smoke_gn_vector.yaml",
                         metavar="FILE", help="path to config file")
-    parser.add_argument("--eval-only", action="store_true", help="perform evaluation only")
+    parser.add_argument("--eval-only", default=True,action="store_true", help="perform evaluation only")
     parser.add_argument(
         "--ckpt",
         help="The path to the checkpoint for test, default is the latest checkpoint.",

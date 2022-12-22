@@ -25,9 +25,10 @@ def compute_on_dataset(model, data_loader, device, timer=None):
             if timer:
                 timer.tic()
             #print(images[0])
+            print('Input to Network: ',images)
 
             output = model(images, targets)
-            #print(output)
+            print('Prediction Complete ----------------------------------------------------------------')
             if timer:
                 torch.cuda.synchronize()
                 timer.toc()
@@ -83,6 +84,7 @@ def inference(
     inference_timer = Timer()
     total_timer.tic()
     predictions = compute_on_dataset(model, data_loader, device, inference_timer)
+    print('PREDICTIONS in INFERENCE: ',predictions)
     comm.synchronize()
 
     total_time = total_timer.toc()

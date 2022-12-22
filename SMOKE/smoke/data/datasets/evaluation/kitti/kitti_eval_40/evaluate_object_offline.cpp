@@ -814,7 +814,7 @@ bool eval(string gt_dir, string result_dir, Mail* mail){
 
   // holds wether orientation similarity shall be computed (might be set to false while loading detections)
   // and which labels where provided by this submission
-  bool compute_aos=false;
+  bool compute_aos=true;
   vector<bool> eval_image(NUM_CLASS, false);
   vector<bool> eval_ground(NUM_CLASS, false);
   vector<bool> eval_3d(NUM_CLASS, false);
@@ -879,48 +879,48 @@ bool eval(string gt_dir, string result_dir, Mail* mail){
     }
   }
 
-//   // don't evaluate AOS for birdview boxes and 3D boxes
-//   compute_aos = false;
+  // don't evaluate AOS for birdview boxes and 3D boxes
+  compute_aos = false;
 
-//   // eval bird's eye view bounding boxes
-//   for (int c = 0; c < NUM_CLASS; c++) {
-//     CLASSES cls = (CLASSES)c;
-//     //mail->msg("Checking bird's eye evaluation (%s) ...", CLASS_NAMES[c].c_str());
-//     if (eval_ground[c]) {
-// //      mail->msg("Starting bird's eye evaluation (%s) ...", CLASS_NAMES[c].c_str());
-//       fp_det = fopen((result_dir + "/stats_" + CLASS_NAMES[c] + "_detection_ground.txt").c_str(), "w");
-//       vector<double> precision[3], aos[3];
-//       if(   !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, groundBoxOverlap, precision[0], aos[0], EASY, GROUND)
-//          || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, groundBoxOverlap, precision[1], aos[1], MODERATE, GROUND)
-//          || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, groundBoxOverlap, precision[2], aos[2], HARD, GROUND)) {
-//         mail->msg("%s evaluation failed.", CLASS_NAMES[c].c_str());
-//         return false;
-//       }
-//       fclose(fp_det);
-//       saveAndPlotPlots(plot_dir, CLASS_NAMES[c] + "_detection_ground", CLASS_NAMES[c], precision, 0);
-// //      mail->msg("  done.");
-//     }
-//   }
+  // eval bird's eye view bounding boxes
+  for (int c = 0; c < NUM_CLASS; c++) {
+    CLASSES cls = (CLASSES)c;
+    //mail->msg("Checking bird's eye evaluation (%s) ...", CLASS_NAMES[c].c_str());
+    if (eval_ground[c]) {
+//      mail->msg("Starting bird's eye evaluation (%s) ...", CLASS_NAMES[c].c_str());
+      fp_det = fopen((result_dir + "/stats_" + CLASS_NAMES[c] + "_detection_ground.txt").c_str(), "w");
+      vector<double> precision[3], aos[3];
+      if(   !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, groundBoxOverlap, precision[0], aos[0], EASY, GROUND)
+         || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, groundBoxOverlap, precision[1], aos[1], MODERATE, GROUND)
+         || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, groundBoxOverlap, precision[2], aos[2], HARD, GROUND)) {
+        mail->msg("%s evaluation failed.", CLASS_NAMES[c].c_str());
+        return false;
+      }
+      fclose(fp_det);
+      saveAndPlotPlots(plot_dir, CLASS_NAMES[c] + "_detection_ground", CLASS_NAMES[c], precision, 0);
+//      mail->msg("  done.");
+    }
+  }
 
-//   // eval 3D bounding boxes
-//   for (int c = 0; c < NUM_CLASS; c++) {
-//     CLASSES cls = (CLASSES)c;
-//     //mail->msg("Checking 3D evaluation (%s) ...", CLASS_NAMES[c].c_str());
-//     if (eval_3d[c]) {
-// //      mail->msg("Starting 3D evaluation (%s) ...", CLASS_NAMES[c].c_str());
-//       fp_det = fopen((result_dir + "/stats_" + CLASS_NAMES[c] + "_detection_3d.txt").c_str(), "w");
-//       vector<double> precision[3], aos[3];
-//       if(   !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, box3DOverlap, precision[0], aos[0], EASY, BOX3D)
-//          || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, box3DOverlap, precision[1], aos[1], MODERATE, BOX3D)
-//          || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, box3DOverlap, precision[2], aos[2], HARD, BOX3D)) {
-//         mail->msg("%s evaluation failed.", CLASS_NAMES[c].c_str());
-//         return false;
-//       }
-//       fclose(fp_det);
-//       saveAndPlotPlots(plot_dir, CLASS_NAMES[c] + "_detection_3d", CLASS_NAMES[c], precision, 0);
-// //      mail->msg("  done.");
-//     }
-//   }
+  // eval 3D bounding boxes
+  for (int c = 0; c < NUM_CLASS; c++) {
+    CLASSES cls = (CLASSES)c;
+    //mail->msg("Checking 3D evaluation (%s) ...", CLASS_NAMES[c].c_str());
+    if (eval_3d[c]) {
+//      mail->msg("Starting 3D evaluation (%s) ...", CLASS_NAMES[c].c_str());
+      fp_det = fopen((result_dir + "/stats_" + CLASS_NAMES[c] + "_detection_3d.txt").c_str(), "w");
+      vector<double> precision[3], aos[3];
+      if(   !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, box3DOverlap, precision[0], aos[0], EASY, BOX3D)
+         || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, box3DOverlap, precision[1], aos[1], MODERATE, BOX3D)
+         || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, box3DOverlap, precision[2], aos[2], HARD, BOX3D)) {
+        mail->msg("%s evaluation failed.", CLASS_NAMES[c].c_str());
+        return false;
+      }
+      fclose(fp_det);
+      saveAndPlotPlots(plot_dir, CLASS_NAMES[c] + "_detection_3d", CLASS_NAMES[c], precision, 0);
+//      mail->msg("  done.");
+    }
+  }
 
   // success
   return true;

@@ -3,7 +3,7 @@ import cv2
 import time
 import glob
 
-from ..smoke.config import cfg
+from smoke.config import cfg
 from smoke.engine import (
     default_argument_parser,
     default_setup,
@@ -22,9 +22,9 @@ from smoke.data.transforms import transforms as T
 from smoke.data.transforms import build_transforms
 from smoke.data.build import build_dataset
 from smoke.utils.imports import import_file
-from smoke.utils.visualization import draw_birdeyes
-from smoke.structures.params_3d import ParamsList
-from smoke.structures.image_list import to_image_list
+# from smoke.utils.visualization import draw_birdeyes
+# from smoke.structures.params_3d import ParamsList
+# from smoke.structures.image_list import to_image_list
 
 import os
 import numpy as np
@@ -51,9 +51,9 @@ from PIL import Image
 
 from smoke.utils import comm
 
-from my_functions import birdeye_view, preprocess,setup_network
+from my_function2 import  preprocess,setup_network
 from box import draw_3Dbox,draw_birdeyes,visualize
-from deep_sort_processing import get_deepsort_input
+#from deep_sort_processing import get_deepsort_input
 
 torch.cuda.empty_cache()
 
@@ -116,7 +116,7 @@ if test_video==True:
             predictions_list=output.tolist()
             detections_n=len(predictions_list)
             print('smoke output item 0',predictions_list[0][0])
-            tracker=get_deepsort_input(predictions_list,frame)
+            #tracker=get_deepsort_input(predictions_list,frame)
             # for track in tracker.tracks:
             #     print('ID: ',track.track_id)
             # print('deep sort detections: ',deep_sort_detections)    
@@ -127,9 +127,9 @@ if test_video==True:
             #     print('feature: ',d.feature)
 
             birdeye_view_shape=(100,100)
-            fig,boundingbox_image,birdview_image=visualize(birdeye_view_shape,predictions_list,P2,pilimage,tracker)
-            detections_frames.append(boundingbox_image)
-            birdview_frames.append(birdview_image)
+            #fig,boundingbox_image,birdview_image=visualize(birdeye_view_shape,predictions_list,P2,pilimage,tracker)
+            # detections_frames.append(boundingbox_image)
+            # birdview_frames.append(birdview_image)
 
             #print("Results Dict: ",results_dict)
             # cv2.imshow('test',birdview_image)
@@ -155,27 +155,29 @@ if test_video==True:
 else:
     # Dataset Directory to Test
     image_dir="datasets/kitti/testing/image_2/"
-    test_dir='/home/hasan/SMOKE/datasets/KITTI_MOD_fixed/training/images/'
-    image_dir=test_dir
+    #test_dir='/home/hasan/SMOKE/datasets/KITTI_MOD_fixed/training/images/'
+    #image_dir=test_dir
+    test_dir=image_dir
 
     #images=[file for file in glob.glob()]
-    for filepath in glob.glob(os.path.join(test_dir,'2011_09_26_drive_0001_sync_*.png')):
-        print('file-----------------',filepath)
+    for fileid in [8]:# in glob.glob(os.path.join(test_dir,'*.png')):
+        #print('file-----------------',filepath)
         
-        IMAGE=str(fileid).zfill(10)+'.png'
+        IMAGE=str(fileid).zfill(6)+'.png'
         t1 = time.time()
 
         results_dict = {}
+        filename=os.path.join(image_dir,IMAGE)
         
         # Read a PIL image
-        filename=test_dir+'2011_09_26_drive_0001_sync_'+IMAGE
+        #filename=test_dir+'2011_09_26_drive_0001_sync_'+IMAGE
         # image_filename=str(fileid).zfill(6)+".png"
         # path_to_image=image_dir+image_filename
         image = Image.open(filename).convert('RGB')
-        filename=filename.split('/')[-1]
+        #filename=filename.split('/')[-1]
 
 
-        img_tensor,target,P2=preprocess(network_configuration,fileid,image,test_video)
+        img_tensor,target,P2=preprocess(network_configuration,fileid,image)
         tuple_target=(target,)
 
         with torch.no_grad():
@@ -206,7 +208,7 @@ else:
 
 
         birdeye_view_shape=(100,100)
-        # visualize(birdeye_view_shape,predictions_list,P2,image,tracker)
+        #visualize(birdeye_view_shape,predictions_list,P2,image,tracker)
         # plt.show() 
         
         delta_T=time.time()-t1

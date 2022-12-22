@@ -3,6 +3,7 @@ from turtle import width
 import torch
 import cv2
 import time
+from SMOKE.smoke.data.build import build_test_loader
 
 from SMOKE.smoke.config import cfg
 from SMOKE.smoke.engine import (
@@ -16,7 +17,7 @@ from SMOKE.smoke.modeling.detector import build_detection_model
 # from smoke.engine.inference import compute_on_dataset,inference
 # from smoke.engine.test_net import run_test
 # from smoke.data import transforms as T
-# from smoke.data.transforms.transforms import ToTensor, Compose,Normalize
+from SMOKE.smoke.data.transforms.transforms import ToTensor
 
 from torchvision.transforms import functional as F
 from SMOKE.smoke.data.transforms import transforms as T
@@ -29,6 +30,7 @@ from SMOKE.smoke.structures.params_3d import ParamsList
 
 import matplotlib.patches as patches
 from matplotlib.path import Path
+from SMOKE.smoke.structures.image_list import to_image_list
 
 import os
 import numpy as np
@@ -97,46 +99,72 @@ def get_K(file_name,calib_dir):
 
     return K,P2
 
-def preprocess(network_configuration,file_id,image):
 
-    # Get Intrinsic Matrix
 
-    K,P2=get_K(str(file_id).zfill(6)+".txt","/home/hasan/perception-validation-verification/SMOKE/datasets/kitti/training/calib")
-    # print('Type of K: ',type(K))
-    # K=np.array([[0,0,0],[0,0,0],[0,0,0]],dtype=np.float32)
+def preprocess(img_path,cfg,file_id):
+    img = Image.open(img_path)
+    K,P2=get_K(str(file_id).zfill(6)+".txt","/home/hashot51/Projects/perception-validation-verification/SMOKE/datasets/kitti/training/calib")
+    center = np.array([i / 2 for i in img.size], dtype=np.float32)
+    size = np.array([i for i in img.size], dtype=np.float32)
 
-    print('input image size: ',image.size)
+    print('K from Calib File: ',K)
 
+    # K=np.array([[935 ,  0  ,       399],
+    #             [  0   ,      935 ,298],
+    #             [  0     ,      0      ,     1       ]],dtype=np.float32)
     
-    target = ParamsList(image_size=image.size  ,is_train=False) # Default (1242.375)
+
+    input_width = cfg.INPUT.WIDTH_TRAIN
+    input_height = cfg.INPUT.HEIGHT_TRAIN
+    output_width = input_width // cfg.MODEL.BACKBONE.DOWN_RATIO
+    output_height = input_height // cfg.MODEL.BACKBONE.DOWN_RATIO
+
+
+    center_size = [center, size]
+    trans_affine = get_transfrom_matrix(
+        center_size,
+        [input_width, input_height]
+    )
+    trans_affine_inv = np.linalg.inv(trans_affine)
+    img = img.transform(
+        (input_width, input_height),
+        method=Image.AFFINE,
+        data=trans_affine_inv.flatten()[:6],
+        resample=Image.BILINEAR,
+    )
+
+    trans_mat = get_transfrom_matrix(
+        center_size,
+        [output_width, output_height]
+    )
+
+    target = ParamsList(image_size=size,
+                                is_train=False)
+    target.add_field("trans_mat", trans_mat)
     target.add_field("K", K)
 
 
 
-    print('Input Image Original Shape Before Resizing',image.size)
+    transform=build_transforms(cfg,is_train=False)
+    img_tensor = transform(img,target=target)
 
-    center = np.array([i / 2 for i in image.size], dtype=np.float32)
-    size = np.array([i for i in image.size], dtype=np.float32)
 
-    
-    center_size = [center, size]
+    return img_tensor[0],(target,),P2,K
 
-    img_tensor=transformation(network_configuration,image,center_size,target)
 
-    return img_tensor,target,P2
-
-def preprocess_then_predict(model,network_configuration,file_id,image,gpu_device,cpu_device):
-    img_tensor,target,P2=preprocess(network_configuration,file_id,image)
-    tuple_target=(target,)
+def preprocess_then_predict(model,cfg,file_id,img_path,gpu_device,cpu_device):
+    img,target,P2,K=preprocess(img_path,cfg,file_id)
+    model.eval()
     with torch.no_grad():
-        model.eval()
-        output=model.forward(img_tensor[0].to(gpu_device),targets=tuple_target)
+        img=img.to(gpu_device)
+        #print('Input Img for Network: ',img)
+        output=model(img,targets=target)
         output = output.to(cpu_device)
     
     smoke_predictions_list=output.tolist()
-    print('SMOKE Predictions list in fnctn:',smoke_predictions_list)
+    #print('SMOKE Predictions list in fnctn:',smoke_predictions_list)
 
-    return smoke_predictions_list
+    return smoke_predictions_list,P2,K
 
 
 def transformation(network_configuration,image,center_size,target):

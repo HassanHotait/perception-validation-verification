@@ -61,8 +61,8 @@ for i in frames_of_interest:#filepath in glob.glob(os.path.join(test_samples_fol
     #print('Ordered Filepath: ',ordered_filepath)
     frame=cv2.imread(ordered_filepath)
 
-    pilimage=Image.fromarray(frame)
-    smoke_predictions_list=preprocess_then_predict(model,network_configuration,i,pilimage,gpu_device,cpu_device)
+    # pilimage=Image.fromarray(frame)
+    smoke_predictions_list=preprocess_then_predict(model,network_configuration,i,ordered_filepath,gpu_device,cpu_device)
 
     #print('Predictions: ',smoke_predictions_list)
 

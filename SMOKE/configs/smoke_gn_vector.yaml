@@ -6,7 +6,7 @@ INPUT:
 DATASETS:
   DETECT_CLASSES: ("Car", "Cyclist", "Pedestrian")
   TRAIN: ("kitti_train",)
-  TEST: ("kitti_train",)
+  TEST: ("kitti_test",)
   TRAIN_SPLIT: "trainval"
   TEST_SPLIT: "test"
 SOLVER:
