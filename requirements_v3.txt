@@ -33,20 +33,20 @@ idna==3.4
 imageio==2.22.4
 importlib-metadata==5.0.0
 importlib-resources==5.10.0
-#ipython==8.6.0
+ipython==8.6.0
 jedi==0.18.2
 Jinja2==3.1.2
 jsonschema==4.17.1
-# jupyter_client==7.4.7
-# jupyter_core==5.0.0
-# jupyterlab-pygments==0.2.2
+jupyter_client==7.4.7
+jupyter_core==5.0.0
+jupyterlab-pygments==0.2.2
 keras==2.11.0
-#Keras-Preprocessing==1.1.2
-#keyboard==0.13.5
-#kiwisolver==1.4.4
-#libclang==14.0.6
-#Markdown==3.4.1
-#MarkupSafe==2.1.1
+Keras-Preprocessing==1.1.2
+keyboard==0.13.5
+kiwisolver==1.4.4
+libclang==14.0.6
+Markdown==3.4.1
+MarkupSafe==2.1.1
 matplotlib==3.6.2
 matplotlib-inline==0.1.6
 mistune==2.0.4
@@ -92,17 +92,17 @@ seaborn==0.12.1
 six==1.15.0
 soupsieve==2.3.2.post1
 stack-data==0.6.1
-# tensorboard==2.11.0
-# tensorboard-data-server==0.6.1
-# tensorboard-plugin-wit==1.8.1
-# tensorflow==2.4.0
-# tensorflow-estimator==2.4.0
+tensorboard==2.11.0
+tensorboard-data-server==0.6.1
+tensorboard-plugin-wit==1.8.1
+tensorflow==2.4.0
+tensorflow-estimator==2.4.0
 termcolor==1.1.0
 tifffile==2022.10.10
 tinycss2==1.2.1
-# torch==1.8.0+cu111
-# torchaudio==0.8.0
-# torchvision==0.9.0+cu111
+torch==1.8.0+cu111
+torchaudio==0.8.0
+torchvision==0.9.0+cu111
 tornado==6.2
 tqdm==4.64.1
 traitlets==5.5.0
