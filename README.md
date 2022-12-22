@@ -16,5 +16,18 @@ conda --version
 
 Make sure to create the environment for python 3.8 to avoid conflicts when installing pip modules later on.
 ```
-conda create -n SMOKE python=3.8
+conda create -n <env_name> python=3.8
 ```
+
+### Install Pytorch with CUDA support
+
+```
+conda activate <env_name>
+```
+[Pytorch Previous Versions](https://pytorch.org/get-started/previous-versions/)
+
+```
+conda install pytorch==1.8.0 torchvision==0.9.0 torchaudio==0.8.0 cudatoolkit=11.1 -c pytorch -c conda-forge
+```
+
+### Install required modules
