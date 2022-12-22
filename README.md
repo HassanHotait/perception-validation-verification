@@ -2,7 +2,7 @@
 
 
 
-## Get miniconda env for your OS of choice.
+### Get miniconda env for your OS of choice.
 
 [miniconda for windows](https://docs.conda.io/en/latest/miniconda.html)
 
