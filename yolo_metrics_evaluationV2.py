@@ -22,6 +22,12 @@ from EvaluatorClass2 import metrics_evaluator,plot_groundtruth
 from metrics_functions_from_evaluation_script import yolo_2_smoke_output_format,read_groundtruth,plot_prediction,write_prediction,read_prediction,construct_dataframe,get_class_AP
 import subprocess
 import dataframe_image as dfi 
+import argparse
+
+parser = argparse.ArgumentParser(description="Program Arg Parser",
+                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("-root_dir", "--root_directory", default="C:/Users/hashot51/Desktop/perception-validation-verification", help="repository root directory")
+args = parser.parse_args()
 
 
 
@@ -52,7 +58,7 @@ session_datetime=datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 foldername='Stream'+str(stream_id)+session_datetime
 print('Foldername: ',foldername)
 
-root_dir='/home/hashot51/Projects/perception-validation-verification'
+root_dir=args.root_directory#'/home/hashot51/Projects/perception-validation-verification'
 boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')
 test_images_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/image_2')
 
