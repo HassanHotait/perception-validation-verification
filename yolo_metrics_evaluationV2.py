@@ -19,7 +19,7 @@ from datetime import datetime
 # from toolbox import get_IoU,Point,smoke_get_n_classes,yolo_get_n_classes
 #from metrics_functions_from_evaluation_script import plot_groundtruth,plot_prediction,metrics_evaluator,read_groundtruth,yolo_2_smoke_output_format
 from EvaluatorClass2 import metrics_evaluator,plot_groundtruth
-from metrics_functions_from_evaluation_script import yolo_2_smoke_output_format,read_groundtruth,plot_prediction,write_prediction,read_prediction,construct_dataframe,get_class_AP
+from metrics_functions_from_evaluation_script import yolo_2_smoke_output_format,read_groundtruth,plot_prediction,write_prediction,read_prediction,construct_dataframe_v2,get_class_AP
 import subprocess
 import dataframe_image as dfi 
 import argparse
@@ -52,7 +52,7 @@ only_evaluate=False
 folder_path_for_evaluation='Streamkitti_trainingset_Yolo_metrics+2022_11_23_21_59_41'
 
 
-stream_id='kitti_trainingset_Yolo_metrics+'
+stream_id='Official_YOLOV3_eval'
 session_datetime=datetime.now().strftime("%Y_%m_%d_%H_%M_%S") 
 
 foldername='Stream'+str(stream_id)+session_datetime
@@ -79,6 +79,11 @@ yolo_image_stream_path=os.path.join(results_path,'yolo-image-stream'+str(stream_
 groundtruth_image_stream_path=os.path.join(results_path,'groundtruth-image-stream'+str(stream_id))
 
 logs_path=os.path.join(results_path,'logs')
+
+# Get Number of Images in Test Dir
+lst = os.listdir(test_images_path) # your directory path
+number_files = len(lst)
+print('number of files: ',number_files)
 
 
 
@@ -122,12 +127,9 @@ model_filename = 'YOLO_Detection/model_data/mars-small128.pb'
 tracker,encoder=setup_tracker(model_filename)
     
 
-# Hide GPU 
-#os.environ["CUDA_VISIBLE_DEVICES"] = "-1" 
 
-fileid=0
 
-n=7481
+n=number_files
 yolo_metrics_evaluator=metrics_evaluator(n,logs_path)
 #smoke_metrics_evaluator.results_path=logs_path
 print('LOGS Path: ',logs_path)
@@ -203,7 +205,7 @@ if only_evaluate==True or predict_then_evaluate==True:
     cars_AP=[cars_easy_AP,cars_moderate_AP,cars_hard_AP]
     pedestrians_AP=[pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP]
 
-    df,bar_metrics=construct_dataframe(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,difficulty_metrics,n_object_classes,n_object_difficulties)
+    df,bar_metrics=construct_dataframe_v2(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,difficulty_metrics,n_object_classes,n_object_difficulties)
 
     dfi.export(df,os.path.join(results_path,'MetricsTable.png'))
 
@@ -212,15 +214,37 @@ if only_evaluate==True or predict_then_evaluate==True:
     cv2.imshow('Metrics',metrics_img)
     cv2.waitKey(0)
 
-    bar_metrics.plot(kind='bar',title="YOLO Evaluation Results",figsize=(20, 8))
+    # Visualize Results in Bar Graphs
+
+    bar_metrics.iloc[:,0:3].plot(kind='bar',title="YOLOv3 AP Evaluation ",figsize=(20, 8))
     plt.legend(loc=(-0.16,0.7))
     plt.xlabel("Metrics")
     plt.ylabel("Percentage %")
-    plt.xticks(ticks=[0,1,2],labels=['AP','Precision','Recall'])
+    plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
     plt.yticks(range(0,105,5))
-    plt.savefig(os.path.join(results_path,"bar_metrics.png"),dpi=600,bbox_inches="tight")
+    plt.savefig(os.path.join(results_path,"bar_metrics_AP.png"),dpi=600,bbox_inches="tight")
+    plt.grid(True)
     plt.show()
 
+    bar_metrics.iloc[:,3:6].plot(kind='bar',title="YOLOv3 Precision Evaluation",figsize=(20, 8))
+    plt.legend(loc=(-0.16,0.7))
+    plt.xlabel("Metrics")
+    plt.ylabel("Percentage %")
+    plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
+    plt.yticks(range(0,105,5))
+    plt.savefig(os.path.join(results_path,"bar_metrics_precision.png"),dpi=600,bbox_inches="tight")
+    plt.grid(True)
+    plt.show()
+
+    bar_metrics.iloc[:,6:9].plot(kind='bar',title="YOLOv3 Recall Evaluation",figsize=(20, 8))
+    plt.legend(loc=(-0.16,0.7))
+    plt.xlabel("Metrics")
+    plt.ylabel("Percentage %")
+    plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
+    plt.yticks(range(0,105,5))
+    plt.savefig(os.path.join(results_path,"bar_metrics_recall.png"),dpi=600,bbox_inches="tight")
+    plt.grid(True)
+    plt.show()
 
 
 
