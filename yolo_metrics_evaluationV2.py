@@ -18,7 +18,7 @@ import os
 from datetime import datetime
 # from toolbox import get_IoU,Point,smoke_get_n_classes,yolo_get_n_classes
 #from metrics_functions_from_evaluation_script import plot_groundtruth,plot_prediction,metrics_evaluator,read_groundtruth,yolo_2_smoke_output_format
-from EvaluatorClass2 import metrics_evaluator,plot_groundtruth
+from EvaluatorClass3 import metrics_evaluator,plot_groundtruth
 from metrics_functions_from_evaluation_script import yolo_2_smoke_output_format,read_groundtruth,plot_prediction,write_prediction,read_prediction,construct_dataframe_v2,get_class_AP
 import subprocess
 import dataframe_image as dfi 
@@ -129,7 +129,7 @@ tracker,encoder=setup_tracker(model_filename)
 
 
 
-n=number_files
+n=50#number_files
 yolo_metrics_evaluator=metrics_evaluator(n,logs_path)
 #smoke_metrics_evaluator.results_path=logs_path
 print('LOGS Path: ',logs_path)
@@ -167,7 +167,7 @@ for fileid in range(n):
 
     if only_evaluate==True or predict_then_evaluate==True:
         yolo_predictions_read_from_file=read_prediction(data_path,fileid)
-        car_metrics,pedestrian_metrics,cyclist_metrics,difficulty_metrics,n_object_classes,n_object_difficulties=yolo_metrics_evaluator.evaluate_metrics(groundtruth,yolo_predictions_read_from_file)
+        car_metrics,pedestrian_metrics,cyclist_metrics,difficulty_metrics,n_object_classes,n_object_difficulties=yolo_metrics_evaluator.eval_metrics(groundtruth,yolo_predictions_read_from_file)
 
 
 
@@ -181,14 +181,14 @@ for fileid in range(n):
 
 
 
-precision_evaluation_path='SMOKE/smoke/data/datasets/evaluation/kitti/kitti_eval_40/evaluate_object_3d_offline'
-boxs_groundtruth_path='SMOKE/datasets/kitti/training/label_2'
-results_path2=os.path.join('results',foldername)
+precision_evaluation_path='.\SMOKE\smoke\data\datasets\evaluation\kitti\kitti_eval_40\eval8.exe'
+boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')#"C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\SMOKE\\datasets\\kitti\\training\\label_2"
 
 
 
 
-command = "./{} {} {} ".format(precision_evaluation_path,boxs_groundtruth_path, results_path)
+
+command = "{} {} {} ".format(precision_evaluation_path,boxs_groundtruth_path, results_path.replace("/","\\"))
 #print(command)
 
 if only_evaluate==True or predict_then_evaluate==True:
