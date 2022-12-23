@@ -7,6 +7,7 @@ from yacs.config import CfgNode as CN
 # -----------------------------------------------------------------------------
 
 _C = CN()
+_C.root_dir="C:/Users/hashot51/Desktop/perception-validation-verification"
 _C.MODEL = CN()
 _C.MODEL.SMOKE_ON = True
 _C.MODEL.DEVICE = "cuda"

@@ -1962,8 +1962,21 @@ def read_prediction(predictions_folder_path,fileid):
         reader=csv.reader(f)
         rows=list(reader)
 
+    print("predictions_folder: ",predictions_folder_path)
+    print("fileid: ",fileid)
+    print("rows: \n",rows)
+    # for row in rows:
+    #     print("type(row[0]): ",type(row[0]))
+    #     print("row[0]: ",row[0])
+        # print('row[0]: ',row[0])
+        # print('row: ',row[0].split(' '))
 
-    smoke_predictions_read_from_file=[[float(row[0].split(' ')[i])  if i!=0 else TYPE_ID_CONVERSION[row[0].split(' ')[i] ]for i in [0]+list(range(3,len(row[0].split(' '))))] for row in rows]
+    # predictions=[[float(row[0].split(' '))]]
+
+    # smoke_predictions_read_from_file=[[float(row[0].split(' ')[i])  if i!=0 else TYPE_ID_CONVERSION[row[0].split(' ')[i] ] for i in [0]+list(range(3,len(row[0].split(' '))))] for row in rows]
+
+    smoke_predictions_read_from_file=[[float(row[0].split(' ')[i])  if i!=0 else TYPE_ID_CONVERSION[row[0].split(' ')[i] ] for i in [0]+list(range(3,len(row[0].split(' '))))] for row in rows if len(row)!=0]
+    #smoke_predictions_read_from_file=[[float(row[0].split(' ')[i])  if i!=0 else TYPE_ID_CONVERSION[row[0].split(' ')[i] ] for i in [0]+list(range(3,len(row[0].split(' '))))] for row in rows]
 
     return smoke_predictions_read_from_file
 

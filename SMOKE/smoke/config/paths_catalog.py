@@ -32,7 +32,7 @@ class ModelCatalog():
     # Default: "DLA34": "http://dl.yf.io/dla/models/imagenet/dla34-ba72cf86.pth"
     IMAGENET_MODELS = {
 
-        "DLA34": "/home/hashot51/Projects/perception-validation-verification/tools/model_final.pth"
+        "DLA34": "C:/Users/hashot51/Desktop/perception-validation-verification/tools/model_final.pth"
         
         
     }

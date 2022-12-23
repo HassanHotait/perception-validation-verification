@@ -10,31 +10,38 @@ from datetime import datetime
 from EvaluatorClass3 import metrics_evaluator,plot_groundtruth,MetricsHolder
 from metrics_functions_from_evaluation_script import smoke_get_n_classes,plot_prediction,read_groundtruth,get_key,read_prediction,write_prediction,get_class_AP,construct_dataframe_v2,construct_dataframe
 import subprocess
+import argparse
 
 import dataframe_image as dfi
+
+parser = argparse.ArgumentParser(description="Program Arg Parser",
+                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("-root_dir", "--root_directory", default="C:/Users/hashot51/Desktop/perception-validation-verification", help="repository root directory")
+args = parser.parse_args()
+
 
 # Define Settings
 
 visualize_3D=False
-predict_then_evaluate=True
+predict_then_evaluate=False
 only_predict=False
-only_evaluate=False
+only_evaluate=True
 
 
 # Folder Used when only_evaluate=True
-folder_path_for_evaluation='Streamsmoke_1000_frames2022_12_21_21_32_37'
+folder_path_for_evaluation='StreamOfficial_SMOKE_eval2022_12_22_14_02_56'
 
 
 
 # Define Test Name
-stream_id='Official_SMOKE_eval'
+stream_id='test_AP_eval'
 session_datetime=datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 foldername='Stream'+str(stream_id)+session_datetime
 print('Foldername: ',foldername)
 
 # Define Directories
 
-root_dir='/home/hashot51/Projects/perception-validation-verification'
+root_dir=args.root_directory#'/home/hashot51/Projects/perception-validation-verification'
 boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')
 test_images_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/image_2')
 
@@ -55,6 +62,7 @@ data_path=os.path.join(results_path,'data')
 smoke_image_stream_path=os.path.join(results_path,'smoke-image-stream'+str(stream_id))
 groundtruth_image_stream_path=os.path.join(results_path,'groundtruth-image-stream'+str(stream_id))
 logs_path=os.path.join(results_path,'logs')
+plot_path_for_evaluation=os.path.join(results_path,"plot")
 
 # Get Number of Images in Test Dir
 lst = os.listdir(test_images_path) # your directory path
@@ -66,6 +74,7 @@ if predict_then_evaluate==True or only_predict==True:
     # Create Folder with Datetime to store results of stream
     os.mkdir(results_path)
     os.mkdir(data_path)
+    #os.mkdir(plot_path_for_evaluation)
     # Create Folders in which to store YOLO and SMOKE Frames
     os.mkdir(smoke_image_stream_path)
     # Create foler in which to store text file logs
@@ -106,7 +115,7 @@ for fileid in range(n):
 
     if predict_then_evaluate==True or only_predict==True:
         # Predict,Visualize & Save predictions in logs
-        smoke_predictions_list,P2,K=preprocess_then_predict(model,cfg,fileid,ordered_filepath,gpu_device,cpu_device)
+        smoke_predictions_list,P2,K=preprocess_then_predict(model,cfg,fileid,ordered_filepath,gpu_device,cpu_device,)
         write_prediction(data_path,fileid,smoke_predictions_list)
         output_img=plot_prediction(frame,smoke_predictions_list)
         #print('P2: ',P2)
@@ -126,17 +135,18 @@ for fileid in range(n):
 
 
 
-precision_evaluation_path='SMOKE/smoke/data/datasets/evaluation/kitti/kitti_eval_40/evaluate_object_3d_offline'
-boxs_groundtruth_path='/home/hashot51/Projects/perception-validation-verification/SMOKE/datasets/kitti/training/label_2'
+precision_evaluation_path='.\SMOKE\smoke\data\datasets\evaluation\kitti\kitti_eval_40\eval8.exe'
+boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')#"C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\SMOKE\\datasets\\kitti\\training\\label_2"
 
 
-command = "./{} {} {} ".format(precision_evaluation_path,boxs_groundtruth_path, results_path)
-#print(command)
+
+command = "{} {} {} ".format(precision_evaluation_path,boxs_groundtruth_path, results_path.replace("/","\\"))#"C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\results\\Streamtest_AP_eval2022_12_23_15_05_34"
+print(command)
 
 if only_evaluate==True or predict_then_evaluate==True:
     # Run evaluation command from terminal
     average_precision_command=subprocess.check_output(command, shell=True, universal_newlines=True).strip()
-    #print(average_precision_command)
+    print(average_precision_command)
 
     # Get AP from generated files (by previous command)
     cars_easy_AP,cars_moderate_AP,cars_hard_AP=get_class_AP(results_path,'Car')

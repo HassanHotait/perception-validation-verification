@@ -6,6 +6,8 @@ import time
 from SMOKE.smoke.data.build import build_test_loader
 
 from SMOKE.smoke.config import cfg
+
+
 from SMOKE.smoke.engine import (
     default_argument_parser,
     default_setup,
@@ -103,7 +105,7 @@ def get_K(file_name,calib_dir):
 
 def preprocess(img_path,cfg,file_id):
     img = Image.open(img_path)
-    K,P2=get_K(str(file_id).zfill(6)+".txt","/home/hashot51/Projects/perception-validation-verification/SMOKE/datasets/kitti/training/calib")
+    K,P2=get_K(str(file_id).zfill(6)+".txt",os.path.join(cfg.root_dir,"SMOKE/datasets/kitti/training/calib"))
     center = np.array([i / 2 for i in img.size], dtype=np.float32)
     size = np.array([i for i in img.size], dtype=np.float32)
 

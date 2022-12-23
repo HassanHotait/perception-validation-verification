@@ -4,19 +4,21 @@
 #include <math.h>
 #include <vector>
 #include <numeric>
-#include <strings.h>
+#include <string.h>
 #include <assert.h>
 
 #include <dirent.h>
 
-#include <boost/numeric/ublas/matrix.hpp>
+//#include "matrix.hpp"
+
+
 #include <boost/numeric/ublas/io.hpp>
 
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point_xy.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
 #include <boost/geometry/geometries/adapted/c_array.hpp>
-
+#include <boost/numeric/ublas/matrix.hpp>
 #include "mail.h"
 
 BOOST_GEOMETRY_REGISTER_C_ARRAY_CS(cs::cartesian)
