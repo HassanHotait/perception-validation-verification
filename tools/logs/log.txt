@@ -50700,3 +50700,402 @@ TEST:
   PRED_2D: True
   SINGLE_GPU_TEST: True
 root_dir: C:/Users/hashot51/Desktop/perception-validation-verification
+[2022-12-26 00:24:55,147] smoke INFO: Using 1 GPUs
+[2022-12-26 00:24:55,147] smoke INFO: Collecting environment info
+[2022-12-26 00:24:58,357] smoke INFO: 
+PyTorch version: 1.8.0
+Is debug build: False
+CUDA used to build PyTorch: 11.1
+ROCM used to build PyTorch: N/A
+
+OS: Microsoft Windows 10 Enterprise
+GCC version: (MinGW.org GCC-6.3.0-1) 6.3.0
+Clang version: Could not collect
+CMake version: Could not collect
+
+Python version: 3.8 (64-bit runtime)
+Is CUDA available: True
+CUDA runtime version: Could not collect
+GPU models and configuration: GPU 0: NVIDIA RTX A2000 8GB Laptop GPU
+Nvidia driver version: 512.36
+cuDNN version: Could not collect
+HIP runtime version: N/A
+MIOpen runtime version: N/A
+
+Versions of relevant libraries:
+[pip3] numpy==1.19.2
+[pip3] torch==1.8.0
+[pip3] torchaudio==0.8.0
+[pip3] torchvision==0.9.0
+[conda] blas                      2.116                       mkl    conda-forge
+[conda] blas-devel                3.9.0              16_win64_mkl    conda-forge
+[conda] cudatoolkit               11.1.1              heb2d755_10    conda-forge
+[conda] libblas                   3.9.0              16_win64_mkl    conda-forge
+[conda] libcblas                  3.9.0              16_win64_mkl    conda-forge
+[conda] liblapack                 3.9.0              16_win64_mkl    conda-forge
+[conda] liblapacke                3.9.0              16_win64_mkl    conda-forge
+[conda] mkl                       2022.1.0           h6a75c08_874    conda-forge
+[conda] mkl-devel                 2022.1.0           h57928b3_875    conda-forge
+[conda] mkl-include               2022.1.0           h6a75c08_874    conda-forge
+[conda] numpy                     1.19.2                   pypi_0    pypi
+[conda] pytorch                   1.8.0           py3.8_cuda11.1_cudnn8_0    pytorch
+[conda] torchaudio                0.8.0                      py38    pytorch
+[conda] torchvision               0.9.0                py38_cu111    pytorch
+        Pillow (9.3.0)
+[2022-12-26 00:24:58,360] smoke INFO: Namespace(ckpt=None, config_file='SMOKE/configs/smoke_gn_vector.yaml', dist_url='tcp://127.0.0.1:49152', eval_only=True, machine_rank=0, num_gpus=1, num_machines=1, opts=[])
+[2022-12-26 00:24:58,361] smoke INFO: Loaded configuration file SMOKE/configs/smoke_gn_vector.yaml
+[2022-12-26 00:24:58,361] smoke INFO: 
+MODEL:
+  WEIGHT: "catalog://ImageNetPretrained/DLA34"
+INPUT:
+  FLIP_PROB_TRAIN: 0.5
+  SHIFT_SCALE_PROB_TRAIN: 0.3
+DATASETS:
+  DETECT_CLASSES: ("Car", "Cyclist", "Pedestrian")
+  TRAIN: ("kitti_train",)
+  TEST: ("kitti_test",)
+  TRAIN_SPLIT: "trainval"
+  TEST_SPLIT: "test"
+SOLVER:
+  BASE_LR: 2.5e-4
+  STEPS: (10000, 18000)
+  MAX_ITERATION: 25000
+  IMS_PER_BATCH: 1
+[2022-12-26 00:24:58,363] smoke INFO: Running with config:
+CUDNN_BENCHMARK: True
+DATALOADER:
+  ASPECT_RATIO_GROUPING: False
+  NUM_WORKERS: 4
+  SIZE_DIVISIBILITY: 0
+DATASETS:
+  DETECT_CLASSES: ('Car', 'Cyclist', 'Pedestrian')
+  MAX_OBJECTS: 30
+  TEST: ('kitti_test',)
+  TEST_SPLIT: test
+  TRAIN: ('kitti_train',)
+  TRAIN_SPLIT: trainval
+INPUT:
+  FLIP_PROB_TRAIN: 0.5
+  HEIGHT_TEST: 384
+  HEIGHT_TRAIN: 384
+  PIXEL_MEAN: [0.485, 0.456, 0.406]
+  PIXEL_STD: [0.229, 0.224, 0.225]
+  SHIFT_SCALE_PROB_TRAIN: 0.3
+  SHIFT_SCALE_TRAIN: (0.2, 0.4)
+  TO_BGR: True
+  WIDTH_TEST: 1280
+  WIDTH_TRAIN: 1280
+MODEL:
+  BACKBONE:
+    BACKBONE_OUT_CHANNELS: 64
+    CONV_BODY: DLA-34-DCN
+    DOWN_RATIO: 4
+    FREEZE_CONV_BODY_AT: 0
+    USE_NORMALIZATION: GN
+  DEVICE: cuda
+  GROUP_NORM:
+    DIM_PER_GP: -1
+    EPSILON: 1e-05
+    NUM_GROUPS: 32
+  SMOKE_HEAD:
+    DEPTH_REFERENCE: (28.01, 16.32)
+    DIMENSION_REFERENCE: ((3.88, 1.63, 1.53), (1.78, 1.7, 0.58), (0.88, 1.73, 0.67))
+    LOSS_ALPHA: 2
+    LOSS_BETA: 4
+    LOSS_TYPE: ('FocalLoss', 'DisL1')
+    LOSS_WEIGHT: (1.0, 10.0)
+    NUM_CHANNEL: 256
+    PREDICTOR: SMOKEPredictor
+    REGRESSION_CHANNEL: (1, 2, 3, 2)
+    REGRESSION_HEADS: 8
+    USE_NMS: False
+    USE_NORMALIZATION: GN
+  SMOKE_ON: True
+  WEIGHT: catalog://ImageNetPretrained/DLA34
+OUTPUT_DIR: ./tools/logs
+PATHS_CATALOG: c:\Users\hashot51\Desktop\perception-validation-verification\SMOKE\smoke\config\paths_catalog.py
+SEED: -1
+SOLVER:
+  BASE_LR: 0.00025
+  BIAS_LR_FACTOR: 2
+  CHECKPOINT_PERIOD: 20
+  EVALUATE_PERIOD: 20
+  IMS_PER_BATCH: 1
+  LOAD_OPTIMIZER_SCHEDULER: True
+  MASTER_BATCH: -1
+  MAX_ITERATION: 25000
+  OPTIMIZER: Adam
+  STEPS: (10000, 18000)
+TEST:
+  DETECTIONS_PER_IMG: 50
+  DETECTIONS_THRESHOLD: 0.25
+  IMS_PER_BATCH: 1
+  PRED_2D: True
+  SINGLE_GPU_TEST: True
+root_dir: C:/Users/hashot51/Desktop/perception-validation-verification
+[2022-12-26 00:26:36,769] smoke INFO: Using 1 GPUs
+[2022-12-26 00:26:36,770] smoke INFO: Collecting environment info
+[2022-12-26 00:26:40,011] smoke INFO: 
+PyTorch version: 1.8.0
+Is debug build: False
+CUDA used to build PyTorch: 11.1
+ROCM used to build PyTorch: N/A
+
+OS: Microsoft Windows 10 Enterprise
+GCC version: (MinGW.org GCC-6.3.0-1) 6.3.0
+Clang version: Could not collect
+CMake version: Could not collect
+
+Python version: 3.8 (64-bit runtime)
+Is CUDA available: True
+CUDA runtime version: Could not collect
+GPU models and configuration: GPU 0: NVIDIA RTX A2000 8GB Laptop GPU
+Nvidia driver version: 512.36
+cuDNN version: Could not collect
+HIP runtime version: N/A
+MIOpen runtime version: N/A
+
+Versions of relevant libraries:
+[pip3] numpy==1.19.2
+[pip3] torch==1.8.0
+[pip3] torchaudio==0.8.0
+[pip3] torchvision==0.9.0
+[conda] blas                      2.116                       mkl    conda-forge
+[conda] blas-devel                3.9.0              16_win64_mkl    conda-forge
+[conda] cudatoolkit               11.1.1              heb2d755_10    conda-forge
+[conda] libblas                   3.9.0              16_win64_mkl    conda-forge
+[conda] libcblas                  3.9.0              16_win64_mkl    conda-forge
+[conda] liblapack                 3.9.0              16_win64_mkl    conda-forge
+[conda] liblapacke                3.9.0              16_win64_mkl    conda-forge
+[conda] mkl                       2022.1.0           h6a75c08_874    conda-forge
+[conda] mkl-devel                 2022.1.0           h57928b3_875    conda-forge
+[conda] mkl-include               2022.1.0           h6a75c08_874    conda-forge
+[conda] numpy                     1.19.2                   pypi_0    pypi
+[conda] pytorch                   1.8.0           py3.8_cuda11.1_cudnn8_0    pytorch
+[conda] torchaudio                0.8.0                      py38    pytorch
+[conda] torchvision               0.9.0                py38_cu111    pytorch
+        Pillow (9.3.0)
+[2022-12-26 00:26:40,020] smoke INFO: Namespace(ckpt=None, config_file='SMOKE/configs/smoke_gn_vector.yaml', dist_url='tcp://127.0.0.1:49152', eval_only=True, machine_rank=0, num_gpus=1, num_machines=1, opts=[])
+[2022-12-26 00:26:40,020] smoke INFO: Loaded configuration file SMOKE/configs/smoke_gn_vector.yaml
+[2022-12-26 00:26:40,021] smoke INFO: 
+MODEL:
+  WEIGHT: "catalog://ImageNetPretrained/DLA34"
+INPUT:
+  FLIP_PROB_TRAIN: 0.5
+  SHIFT_SCALE_PROB_TRAIN: 0.3
+DATASETS:
+  DETECT_CLASSES: ("Car", "Cyclist", "Pedestrian")
+  TRAIN: ("kitti_train",)
+  TEST: ("kitti_test",)
+  TRAIN_SPLIT: "trainval"
+  TEST_SPLIT: "test"
+SOLVER:
+  BASE_LR: 2.5e-4
+  STEPS: (10000, 18000)
+  MAX_ITERATION: 25000
+  IMS_PER_BATCH: 1
+[2022-12-26 00:26:40,022] smoke INFO: Running with config:
+CUDNN_BENCHMARK: True
+DATALOADER:
+  ASPECT_RATIO_GROUPING: False
+  NUM_WORKERS: 4
+  SIZE_DIVISIBILITY: 0
+DATASETS:
+  DETECT_CLASSES: ('Car', 'Cyclist', 'Pedestrian')
+  MAX_OBJECTS: 30
+  TEST: ('kitti_test',)
+  TEST_SPLIT: test
+  TRAIN: ('kitti_train',)
+  TRAIN_SPLIT: trainval
+INPUT:
+  FLIP_PROB_TRAIN: 0.5
+  HEIGHT_TEST: 384
+  HEIGHT_TRAIN: 384
+  PIXEL_MEAN: [0.485, 0.456, 0.406]
+  PIXEL_STD: [0.229, 0.224, 0.225]
+  SHIFT_SCALE_PROB_TRAIN: 0.3
+  SHIFT_SCALE_TRAIN: (0.2, 0.4)
+  TO_BGR: True
+  WIDTH_TEST: 1280
+  WIDTH_TRAIN: 1280
+MODEL:
+  BACKBONE:
+    BACKBONE_OUT_CHANNELS: 64
+    CONV_BODY: DLA-34-DCN
+    DOWN_RATIO: 4
+    FREEZE_CONV_BODY_AT: 0
+    USE_NORMALIZATION: GN
+  DEVICE: cuda
+  GROUP_NORM:
+    DIM_PER_GP: -1
+    EPSILON: 1e-05
+    NUM_GROUPS: 32
+  SMOKE_HEAD:
+    DEPTH_REFERENCE: (28.01, 16.32)
+    DIMENSION_REFERENCE: ((3.88, 1.63, 1.53), (1.78, 1.7, 0.58), (0.88, 1.73, 0.67))
+    LOSS_ALPHA: 2
+    LOSS_BETA: 4
+    LOSS_TYPE: ('FocalLoss', 'DisL1')
+    LOSS_WEIGHT: (1.0, 10.0)
+    NUM_CHANNEL: 256
+    PREDICTOR: SMOKEPredictor
+    REGRESSION_CHANNEL: (1, 2, 3, 2)
+    REGRESSION_HEADS: 8
+    USE_NMS: False
+    USE_NORMALIZATION: GN
+  SMOKE_ON: True
+  WEIGHT: catalog://ImageNetPretrained/DLA34
+OUTPUT_DIR: ./tools/logs
+PATHS_CATALOG: c:\Users\hashot51\Desktop\perception-validation-verification\SMOKE\smoke\config\paths_catalog.py
+SEED: -1
+SOLVER:
+  BASE_LR: 0.00025
+  BIAS_LR_FACTOR: 2
+  CHECKPOINT_PERIOD: 20
+  EVALUATE_PERIOD: 20
+  IMS_PER_BATCH: 1
+  LOAD_OPTIMIZER_SCHEDULER: True
+  MASTER_BATCH: -1
+  MAX_ITERATION: 25000
+  OPTIMIZER: Adam
+  STEPS: (10000, 18000)
+TEST:
+  DETECTIONS_PER_IMG: 50
+  DETECTIONS_THRESHOLD: 0.25
+  IMS_PER_BATCH: 1
+  PRED_2D: True
+  SINGLE_GPU_TEST: True
+root_dir: C:/Users/hashot51/Desktop/perception-validation-verification
+[2022-12-26 00:27:04,971] smoke INFO: Using 1 GPUs
+[2022-12-26 00:27:04,971] smoke INFO: Collecting environment info
+[2022-12-26 00:27:07,998] smoke INFO: 
+PyTorch version: 1.8.0
+Is debug build: False
+CUDA used to build PyTorch: 11.1
+ROCM used to build PyTorch: N/A
+
+OS: Microsoft Windows 10 Enterprise
+GCC version: (MinGW.org GCC-6.3.0-1) 6.3.0
+Clang version: Could not collect
+CMake version: Could not collect
+
+Python version: 3.8 (64-bit runtime)
+Is CUDA available: True
+CUDA runtime version: Could not collect
+GPU models and configuration: GPU 0: NVIDIA RTX A2000 8GB Laptop GPU
+Nvidia driver version: 512.36
+cuDNN version: Could not collect
+HIP runtime version: N/A
+MIOpen runtime version: N/A
+
+Versions of relevant libraries:
+[pip3] numpy==1.19.2
+[pip3] torch==1.8.0
+[pip3] torchaudio==0.8.0
+[pip3] torchvision==0.9.0
+[conda] blas                      2.116                       mkl    conda-forge
+[conda] blas-devel                3.9.0              16_win64_mkl    conda-forge
+[conda] cudatoolkit               11.1.1              heb2d755_10    conda-forge
+[conda] libblas                   3.9.0              16_win64_mkl    conda-forge
+[conda] libcblas                  3.9.0              16_win64_mkl    conda-forge
+[conda] liblapack                 3.9.0              16_win64_mkl    conda-forge
+[conda] liblapacke                3.9.0              16_win64_mkl    conda-forge
+[conda] mkl                       2022.1.0           h6a75c08_874    conda-forge
+[conda] mkl-devel                 2022.1.0           h57928b3_875    conda-forge
+[conda] mkl-include               2022.1.0           h6a75c08_874    conda-forge
+[conda] numpy                     1.19.2                   pypi_0    pypi
+[conda] pytorch                   1.8.0           py3.8_cuda11.1_cudnn8_0    pytorch
+[conda] torchaudio                0.8.0                      py38    pytorch
+[conda] torchvision               0.9.0                py38_cu111    pytorch
+        Pillow (9.3.0)
+[2022-12-26 00:27:08,012] smoke INFO: Namespace(ckpt=None, config_file='SMOKE/configs/smoke_gn_vector.yaml', dist_url='tcp://127.0.0.1:49152', eval_only=True, machine_rank=0, num_gpus=1, num_machines=1, opts=[])
+[2022-12-26 00:27:08,012] smoke INFO: Loaded configuration file SMOKE/configs/smoke_gn_vector.yaml
+[2022-12-26 00:27:08,013] smoke INFO: 
+MODEL:
+  WEIGHT: "catalog://ImageNetPretrained/DLA34"
+INPUT:
+  FLIP_PROB_TRAIN: 0.5
+  SHIFT_SCALE_PROB_TRAIN: 0.3
+DATASETS:
+  DETECT_CLASSES: ("Car", "Cyclist", "Pedestrian")
+  TRAIN: ("kitti_train",)
+  TEST: ("kitti_test",)
+  TRAIN_SPLIT: "trainval"
+  TEST_SPLIT: "test"
+SOLVER:
+  BASE_LR: 2.5e-4
+  STEPS: (10000, 18000)
+  MAX_ITERATION: 25000
+  IMS_PER_BATCH: 1
+[2022-12-26 00:27:08,014] smoke INFO: Running with config:
+CUDNN_BENCHMARK: True
+DATALOADER:
+  ASPECT_RATIO_GROUPING: False
+  NUM_WORKERS: 4
+  SIZE_DIVISIBILITY: 0
+DATASETS:
+  DETECT_CLASSES: ('Car', 'Cyclist', 'Pedestrian')
+  MAX_OBJECTS: 30
+  TEST: ('kitti_test',)
+  TEST_SPLIT: test
+  TRAIN: ('kitti_train',)
+  TRAIN_SPLIT: trainval
+INPUT:
+  FLIP_PROB_TRAIN: 0.5
+  HEIGHT_TEST: 384
+  HEIGHT_TRAIN: 384
+  PIXEL_MEAN: [0.485, 0.456, 0.406]
+  PIXEL_STD: [0.229, 0.224, 0.225]
+  SHIFT_SCALE_PROB_TRAIN: 0.3
+  SHIFT_SCALE_TRAIN: (0.2, 0.4)
+  TO_BGR: True
+  WIDTH_TEST: 1280
+  WIDTH_TRAIN: 1280
+MODEL:
+  BACKBONE:
+    BACKBONE_OUT_CHANNELS: 64
+    CONV_BODY: DLA-34-DCN
+    DOWN_RATIO: 4
+    FREEZE_CONV_BODY_AT: 0
+    USE_NORMALIZATION: GN
+  DEVICE: cuda
+  GROUP_NORM:
+    DIM_PER_GP: -1
+    EPSILON: 1e-05
+    NUM_GROUPS: 32
+  SMOKE_HEAD:
+    DEPTH_REFERENCE: (28.01, 16.32)
+    DIMENSION_REFERENCE: ((3.88, 1.63, 1.53), (1.78, 1.7, 0.58), (0.88, 1.73, 0.67))
+    LOSS_ALPHA: 2
+    LOSS_BETA: 4
+    LOSS_TYPE: ('FocalLoss', 'DisL1')
+    LOSS_WEIGHT: (1.0, 10.0)
+    NUM_CHANNEL: 256
+    PREDICTOR: SMOKEPredictor
+    REGRESSION_CHANNEL: (1, 2, 3, 2)
+    REGRESSION_HEADS: 8
+    USE_NMS: False
+    USE_NORMALIZATION: GN
+  SMOKE_ON: True
+  WEIGHT: catalog://ImageNetPretrained/DLA34
+OUTPUT_DIR: ./tools/logs
+PATHS_CATALOG: c:\Users\hashot51\Desktop\perception-validation-verification\SMOKE\smoke\config\paths_catalog.py
+SEED: -1
+SOLVER:
+  BASE_LR: 0.00025
+  BIAS_LR_FACTOR: 2
+  CHECKPOINT_PERIOD: 20
+  EVALUATE_PERIOD: 20
+  IMS_PER_BATCH: 1
+  LOAD_OPTIMIZER_SCHEDULER: True
+  MASTER_BATCH: -1
+  MAX_ITERATION: 25000
+  OPTIMIZER: Adam
+  STEPS: (10000, 18000)
+TEST:
+  DETECTIONS_PER_IMG: 50
+  DETECTIONS_THRESHOLD: 0.25
+  IMS_PER_BATCH: 1
+  PRED_2D: True
+  SINGLE_GPU_TEST: True
+root_dir: C:/Users/hashot51/Desktop/perception-validation-verification

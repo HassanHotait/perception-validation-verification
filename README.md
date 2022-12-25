@@ -69,4 +69,23 @@ perception-validation-verification
 └──YOLO_Detection   
 ```  
 
-    
+### Average Precision Executable
+
+To Compile Average Precision Executable on Windows you need MinGW and Boost Libraries
+
+
+[MinGW](https://sourceforge.net/projects/mingw/)
+[Boost](https://www.boost.org/users/download/)
+
+Executable is available in this repository, however if changes are to be made.
+
+Compile again as shown below.
+
+Move to SMOKE dir
+```
+g++ -c <cpp filename>.cpp -I"<path_to_boost_library>"
+```
+Build SMOKE extension
+```
+g++ <cpp filename>.o -o <executable name>.exe
+```

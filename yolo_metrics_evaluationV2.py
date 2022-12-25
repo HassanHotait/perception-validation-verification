@@ -149,7 +149,7 @@ tracker,encoder=setup_tracker(model_filename)
 
 
 n=20#number_files
-yolo_metrics_evaluator=metrics_evaluator(n,logs_path,results_path)
+yolo_metrics_evaluator=metrics_evaluator("YOLOv3",n,logs_path,results_path)
 #smoke_metrics_evaluator.results_path=logs_path
 print('LOGS Path: ',logs_path)
 

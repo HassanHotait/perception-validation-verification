@@ -190,86 +190,8 @@ if only_evaluate==True or predict_then_evaluate==True:
     yolo_metrics_table_df=yolo_metrics_evaluator.construct_dataframe()
     #yolo_metrics_evaluator.show_results()
 
-    # metrics_dictionary=smoke_metrics_table_df.to_dict()
-    # print("Metrics Table converted to Dictionary: ",metrics_dictionary)
-    # print("dictionary values: ",metrics_dictionary.values())
-    # print("dictionary keys: ",metrics_dictionary.keys())
-    # print("length of items in dictionary values list: ",len(metrics_dictionary.values()))
 
     plot_SMOKE_vs_YOLO(smoke_metrics_table_df,yolo_metrics_table_df,results_path)
-    # smoke_vs_yolo_AP={
 
-    #         'SMOKE cars AP':smoke_metrics_evaluator.cars_AP,
-    #         'SMOKE pedestrians AP':smoke_metrics_evaluator.pedestrians_AP,
-    #         'YOLOv3 cars AP':yolo_metrics_evaluator.cars_AP,
-    #         'YOLOv3 pedestrians AP':yolo_metrics_evaluator.pedestrians_AP,
-            
-    #     }
-
-    # comparison_df=pd.DataFrame(smoke_vs_yolo_AP)
-
-    # comparison_df.plot(kind='bar',title="SMOKE vs YOLOv3 AP",figsize=(20, 8))
-    # plt.legend(loc=(-0.16,0.7))
-    # plt.xlabel("Difficulties")
-    # plt.ylabel("Average Precision %")
-    # plt.xticks(ticks=[0,1,2],labels=['Easy','Moderate','Hard'])
-    # plt.yticks(range(0,105,5))
-    # plt.savefig(os.path.join(results_path,"SMOKE_vs_YOLO_AP.png"),dpi=600,bbox_inches="tight")
-    # plt.grid(True)
-    # plt.show()
-    # # Run SMOKE evaluation command from terminal
-    # average_precision_command=subprocess.check_output(command, shell=True, universal_newlines=True).strip()
-    # print(average_precision_command)
-
-    # # Get AP from generated files (by previous command)
-    # cars_easy_AP,cars_moderate_AP,cars_hard_AP=get_class_AP(results_path,'Car')
-    # pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP=get_class_AP(results_path,'Pedestrian')
-
-
-    # cars_AP=[cars_easy_AP,cars_moderate_AP,cars_hard_AP]
-    # pedestrians_AP=[pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP]
-
-    # # Organize results in clear format + Get weighted average for categories with unavailable info
-    # df,bar_metrics=construct_dataframe_v2(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,difficulty_metrics,n_object_classes,n_object_difficulties)
-
-    # # Save Metrics Table as image
-    # dfi.export(df,os.path.join(results_path,'MetricsTable.png'))
-
-    # # Show Metrics Image
-    # metrics_img=cv2.imread(os.path.join(results_path,'MetricsTable.png'))
-    # cv2.imshow('Metrics',metrics_img)
-    # cv2.waitKey(0)
-
-    # # Visualize Results in Bar Graphs
-
-    # bar_metrics.iloc[:,0:3].plot(kind='bar',title="SMOKE AP Evaluation ",figsize=(20, 8))
-    # plt.legend(loc=(-0.16,0.7))
-    # plt.xlabel("Metrics")
-    # plt.ylabel("Percentage %")
-    # plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
-    # plt.yticks(range(0,105,5))
-    # plt.savefig(os.path.join(results_path,"bar_metrics_AP.png"),dpi=600,bbox_inches="tight")
-    # plt.grid(True)
-    # plt.show()
-
-    # bar_metrics.iloc[:,3:6].plot(kind='bar',title="SMOKE Precision Evaluation",figsize=(20, 8))
-    # plt.legend(loc=(-0.16,0.7))
-    # plt.xlabel("Metrics")
-    # plt.ylabel("Percentage %")
-    # plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
-    # plt.yticks(range(0,105,5))
-    # plt.savefig(os.path.join(results_path,"bar_metrics_precision.png"),dpi=600,bbox_inches="tight")
-    # plt.grid(True)
-    # plt.show()
-
-    # bar_metrics.iloc[:,6:9].plot(kind='bar',title="SMOKE Recall Evaluation",figsize=(20, 8))
-    # plt.legend(loc=(-0.16,0.7))
-    # plt.xlabel("Metrics")
-    # plt.ylabel("Percentage %")
-    # plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
-    # plt.yticks(range(0,105,5))
-    # plt.savefig(os.path.join(results_path,"bar_metrics_recall.png"),dpi=600,bbox_inches="tight")
-    # plt.grid(True)
-    # plt.show()
 
     
