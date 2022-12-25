@@ -19,7 +19,7 @@ from datetime import datetime
 # from toolbox import get_IoU,Point,smoke_get_n_classes,yolo_get_n_classes
 #from metrics_functions_from_evaluation_script import plot_groundtruth,plot_prediction,metrics_evaluator,read_groundtruth,yolo_2_smoke_output_format
 from EvaluatorClass3 import metrics_evaluator,plot_groundtruth
-from metrics_functions_from_evaluation_script import yolo_2_smoke_output_format,read_groundtruth,plot_prediction,write_prediction,read_prediction,construct_dataframe_v2,get_class_AP
+from metrics_functions_from_evaluation_script import yolo_2_smoke_output_format,yolo_2_json_output_format,read_groundtruth,plot_prediction,write_prediction,write_json,read_prediction,construct_dataframe_v2,get_class_AP
 import subprocess
 import dataframe_image as dfi 
 import argparse
@@ -30,6 +30,18 @@ parser.add_argument("-root_dir", "--root_directory", default="C:/Users/hashot51/
 args = parser.parse_args()
 
 
+def get_coco_val_set_imgs(path):
+    with open(path,"r") as f:
+        reader=csv.reader(f)
+        data=list(reader)
+
+
+    imgs_list=[]
+    for row in data:
+        img_filename=row[0].split('/')[-1].split(' ')[0]
+        imgs_list.append(img_filename)
+
+    return imgs_list
 
 def get_key(val):
     TYPE_ID_CONVERSION = {
@@ -49,10 +61,10 @@ predict_then_evaluate=True
 only_predict=False
 only_evaluate=False
 
-folder_path_for_evaluation='Streamkitti_trainingset_Yolo_metrics+2022_11_23_21_59_41'
+folder_path_for_evaluation='StreamOfficial_YOLOV3_eval_threshold_0.5_2022_12_22_17_53_48'
 
 
-stream_id='Official_YOLOV3_eval'
+stream_id="test_new_metrics_function"
 session_datetime=datetime.now().strftime("%Y_%m_%d_%H_%M_%S") 
 
 foldername='Stream'+str(stream_id)+session_datetime
@@ -61,6 +73,7 @@ print('Foldername: ',foldername)
 root_dir=args.root_directory#'/home/hashot51/Projects/perception-validation-verification'
 boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')
 test_images_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/image_2')
+coco_dataset_path="C:\\Users\\hashot51\\Desktop\\TensorFlow-2.x-YOLOv3\\model_data\\coco\\val2017"
 
 
 
@@ -80,10 +93,16 @@ groundtruth_image_stream_path=os.path.join(results_path,'groundtruth-image-strea
 
 logs_path=os.path.join(results_path,'logs')
 
-# Get Number of Images in Test Dir
-lst = os.listdir(test_images_path) # your directory path
+# # # Get Number of Images in Test Dir
+# # lst = os.listdir(test_images_path) # your directory path
+# # number_files = len(lst)
+
+# Get Number of Images in COCO VAL Dataset
+lst = os.listdir(test_images_path)#get_coco_val_set_imgs("C:\\Users\\hashot51\\Desktop\\TensorFlow-2.x-YOLOv3\\model_data\\coco\\val2017.txt") # your directory path
 number_files = len(lst)
-print('number of files: ',number_files)
+# print("lst",lst[:100])
+
+# print('number of files: ',number_files)
 
 
 
@@ -129,21 +148,19 @@ tracker,encoder=setup_tracker(model_filename)
 
 
 
-n=50#number_files
-yolo_metrics_evaluator=metrics_evaluator(n,logs_path)
+n=20#number_files
+yolo_metrics_evaluator=metrics_evaluator(n,logs_path,results_path)
 #smoke_metrics_evaluator.results_path=logs_path
 print('LOGS Path: ',logs_path)
-#fileid=0
-# vid = cv2.VideoCapture('test_videos/'+str(1)+'.mp4')
-# total_frames = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
-# fps    = vid.get(cv2.CAP_PROP_FPS)
-# ret,frame=vid.read()
+
 for fileid in range(n):
 
-    # fileid=i
-    ordered_filepath=os.path.join(test_images_path,str(fileid).zfill(6)+'.png')
+    #filepath=
+    ordered_filepath=os.path.join(test_images_path,str(fileid).zfill(6)+".png")
     frame=cv2.imread(ordered_filepath)
     print('frame: ',fileid)
+
+
 
     groundtruth=read_groundtruth(boxs_groundtruth_path,fileid)
     groundtruth_image=plot_groundtruth(frame,groundtruth)
@@ -155,14 +172,14 @@ for fileid in range(n):
         boxs,classes,scores,tracker=postprocess_YOLO(encoder,tracker,class_names,frame,boxes,scores,classes)
 
         yolo_predictions_list=yolo_2_smoke_output_format(boxs=boxs,classes=classes,scores=scores)
+        #yolo_predictions_list=yolo_2_json_output_format(boxs=boxs,classes=classes,scores=scores)
 
         print('yolo predictions list: ',yolo_predictions_list)
         write_prediction(data_path,fileid,yolo_predictions_list)
+        #write_json(data_path,fileid,yolo_predictions_list)
 
         output_img=plot_prediction(frame,yolo_predictions_list)
         cv2.imwrite(os.path.join(yolo_image_stream_path,'frame'+str(fileid)+'.png'),output_img)
-
-
 
 
     if only_evaluate==True or predict_then_evaluate==True:
@@ -172,89 +189,15 @@ for fileid in range(n):
 
 
 
-    #fileid+=1
 
-    # ret,frame=vid.read()
+precision_evaluation_path='.\SMOKE\smoke\data\datasets\evaluation\kitti\kitti_eval_40\eval12.exe'
 
-
-
-
-
-
-precision_evaluation_path='.\SMOKE\smoke\data\datasets\evaluation\kitti\kitti_eval_40\eval8.exe'
-boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')#"C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\SMOKE\\datasets\\kitti\\training\\label_2"
-
-
-
-
-
-command = "{} {} {} ".format(precision_evaluation_path,boxs_groundtruth_path, results_path.replace("/","\\"))
-#print(command)
 
 if only_evaluate==True or predict_then_evaluate==True:
-    average_precision_command=subprocess.check_output(command, shell=True, universal_newlines=True).strip()
-
-    print(average_precision_command)
-
-    cars_easy_AP,cars_moderate_AP,cars_hard_AP=get_class_AP(results_path,'Car')
-    pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP=get_class_AP(results_path,'Pedestrian')
-
-    print('Cars AP: ',)
-
-
-    cars_AP=[cars_easy_AP,cars_moderate_AP,cars_hard_AP]
-    pedestrians_AP=[pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP]
-
-    df,bar_metrics=construct_dataframe_v2(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,difficulty_metrics,n_object_classes,n_object_difficulties)
-
-    dfi.export(df,os.path.join(results_path,'MetricsTable.png'))
-
-
-    metrics_img=cv2.imread(os.path.join(results_path,'MetricsTable.png'))
-    cv2.imshow('Metrics',metrics_img)
-    cv2.waitKey(0)
-
-    # Visualize Results in Bar Graphs
-
-    bar_metrics.iloc[:,0:3].plot(kind='bar',title="YOLOv3 AP Evaluation ",figsize=(20, 8))
-    plt.legend(loc=(-0.16,0.7))
-    plt.xlabel("Metrics")
-    plt.ylabel("Percentage %")
-    plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
-    plt.yticks(range(0,105,5))
-    plt.savefig(os.path.join(results_path,"bar_metrics_AP.png"),dpi=600,bbox_inches="tight")
-    plt.grid(True)
-    plt.show()
-
-    bar_metrics.iloc[:,3:6].plot(kind='bar',title="YOLOv3 Precision Evaluation",figsize=(20, 8))
-    plt.legend(loc=(-0.16,0.7))
-    plt.xlabel("Metrics")
-    plt.ylabel("Percentage %")
-    plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
-    plt.yticks(range(0,105,5))
-    plt.savefig(os.path.join(results_path,"bar_metrics_precision.png"),dpi=600,bbox_inches="tight")
-    plt.grid(True)
-    plt.show()
-
-    bar_metrics.iloc[:,6:9].plot(kind='bar',title="YOLOv3 Recall Evaluation",figsize=(20, 8))
-    plt.legend(loc=(-0.16,0.7))
-    plt.xlabel("Metrics")
-    plt.ylabel("Percentage %")
-    plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
-    plt.yticks(range(0,105,5))
-    plt.savefig(os.path.join(results_path,"bar_metrics_recall.png"),dpi=600,bbox_inches="tight")
-    plt.grid(True)
-    plt.show()
+    yolo_metrics_evaluator.run_kitti_AP_evaluation_executable(root_dir,precision_evaluation_path,"data")
+    yolo_metrics_evaluator.construct_dataframe()
+    yolo_metrics_evaluator.show_results()
 
 
 
-# column_headers=['Easy','Moderate','Hard','Overall']
-# row_headers=['Car','Pedestrian','Overall']
 
-# data=np.zeros((3,4))
-
-# ARRAY=np.column_stack((row_headers,data))
-
-# ARRAY=np.row_stack((column_headers,ARRAY))
-
-# print(ARRAY)

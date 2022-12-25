@@ -1,9 +1,12 @@
 
 
-from metrics_functions_from_evaluation_script import tabularize_metrics,Point,get_pred_classes_boxes,get_IoU
+from metrics_functions_from_evaluation_script import tabularize_metrics,Point,get_pred_classes_boxes,get_IoU,get_class_AP,construct_dataframe_v2
 import numpy as np
 import cv2
-
+import subprocess
+import os
+import dataframe_image as dfi 
+import matplotlib.pyplot as plt
 # Helper Class that makes it easier to hold data
 
 class DifficultyHolder(object):
@@ -217,8 +220,9 @@ def plot_groundtruth(img,groundtruth):
 
 # Class For Evaluating Object Detector 
 class metrics_evaluator:
-    def __init__(self,n_frames,results_path):
+    def __init__(self,object_detector,n_frames,logs_path,results_path):
         # Initial Config
+        self.object_detector=object_detector
         self.labels=['Car','Cyclist','Pedestrian']
         self.difficulties=['Easy','Moderate','Hard']
         self.data=[]
@@ -232,6 +236,7 @@ class metrics_evaluator:
         self.pred_class_difficulty_count=[]
         self.pred_class_total_count=[]
         self.filtered_pred_instances_count=[]
+        self.logs_path=logs_path
         self.results_path=results_path
         self.ignored_gt_count=[]
         self.ignored_pred_count=[]
@@ -543,7 +548,7 @@ class metrics_evaluator:
             print('Data: ',self.data)
             #print('Data Array Size',self.data.shape)
 
-            self.car_metrics,self.pedestrian_metrics,self.cyclists_metrics,self.difficulty_specific_metrics,self.n_object_classes,self.n_object_difficulties=tabularize_metrics(self.data,self.gt_class_total_count,self.filtered_gt_instances_count,self.gt_class_difficulty_count,self.ignored_gt_count,self.pred_class_total_count,self.filtered_pred_instances_count,self.pred_class_difficulty_count,self.ignored_pred_count,self.n_frames,self.results_path)
+            self.car_metrics,self.pedestrian_metrics,self.cyclists_metrics,self.difficulty_specific_metrics,self.n_object_classes,self.n_object_difficulties=tabularize_metrics(self.data,self.gt_class_total_count,self.filtered_gt_instances_count,self.gt_class_difficulty_count,self.ignored_gt_count,self.pred_class_total_count,self.filtered_pred_instances_count,self.pred_class_difficulty_count,self.ignored_pred_count,self.n_frames,self.logs_path)
 
             # print('N Object Classes: ',self.n_object_classes)
             # print("N Object Difficulties: ",self.n_object_difficulties)
@@ -563,3 +568,77 @@ class metrics_evaluator:
             return self.car_metrics,self.pedestrian_metrics,self.cyclists_metrics,self.difficulty_specific_metrics,self.n_object_classes,self.n_object_difficulties
         else:
             return None,None,None,None,None,None
+
+    def run_kitti_AP_evaluation_executable(self,root_dir,evaluation_executable_path,predictions_foldername):
+
+        #evaluation_executable_path='.\SMOKE\smoke\data\datasets\evaluation\kitti\kitti_eval_40\eval8.exe'
+        boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')
+        command = "{} {} {} {}".format(evaluation_executable_path,boxs_groundtruth_path, self.results_path.replace("/","\\"),predictions_foldername)#"C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\results\\Streamtest_AP_eval2022_12_23_15_05_34"
+
+        # Run evaluation command from terminal
+        average_precision_command=subprocess.check_output(command, shell=True, universal_newlines=True).strip()
+        print(average_precision_command)
+
+        # # Get AP from generated files (by previous command)
+        # cars_easy_AP,cars_moderate_AP,cars_hard_AP=get_class_AP(results_path,'Car')
+        # pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP=get_class_AP(results_path,'Pedestrian')
+
+
+        # cars_AP=[cars_easy_AP,cars_moderate_AP,cars_hard_AP]
+        # pedestrians_AP=[pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP]
+
+        # # Organize results in clear format + Get weighted average for categories with unavailable info
+        # df,bar_metrics=construct_dataframe_v2(cars_AP,pedestrians_AP,metrics_evaluator.car_metrics,metrics_evaluator.pedestrian_metrics,metrics_evaluator.difficulty_metrics,metrics_evaluator.n_object_classes,metrics_evaluator.n_object_difficulties)
+
+    def get_AP(self):
+        cars_easy_AP,cars_moderate_AP,cars_hard_AP=get_class_AP(self.results_path,'Car')
+        pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP=get_class_AP(self.results_path,'Pedestrian')
+
+        #print('Cars AP: ',)
+
+
+        self.cars_AP=[cars_easy_AP,cars_moderate_AP,cars_hard_AP]
+        self.pedestrians_AP=[pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP]
+
+    def construct_dataframe(self):
+        self.get_AP()
+        df,self.bar_metrics=construct_dataframe_v2(self.object_detector,self.cars_AP,self.pedestrians_AP,self.car_metrics,self.pedestrian_metrics,self.difficulty_specific_metrics,self.n_object_classes,self.n_object_difficulties)
+
+        dfi.export(df,os.path.join(self.results_path,'{}MetricsTable.png'.format(self.object_detector)))
+        self.metrics_img=cv2.imread(os.path.join(self.results_path,'{}MetricsTable.png'.format(self.object_detector)))
+        return df.data
+
+    def show_results(self):
+
+        cv2.imshow('Metrics',self.metrics_img)
+        cv2.waitKey(0)
+
+        self.bar_metrics.iloc[:,0:3].plot(kind='bar',title="{} AP Evaluation ".format(self.object_detector),figsize=(20, 8))
+        plt.legend(loc=(-0.16,0.7))
+        plt.xlabel("Metrics")
+        plt.ylabel("Percentage %")
+        plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
+        plt.yticks(range(0,105,5))
+        plt.savefig(os.path.join(self.results_path,"{}_bar_metrics_AP.png".format(self.object_detector)),dpi=600,bbox_inches="tight")
+        plt.grid(True)
+        plt.show()
+
+        self.bar_metrics.iloc[:,3:6].plot(kind='bar',title="{} Precision Evaluation".format(self.object_detector),figsize=(20, 8))
+        plt.legend(loc=(-0.16,0.7))
+        plt.xlabel("Metrics")
+        plt.ylabel("Percentage %")
+        plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
+        plt.yticks(range(0,105,5))
+        plt.savefig(os.path.join(self.results_path,"{}_bar_metrics_precision.png".format(self.object_detector)),dpi=600,bbox_inches="tight")
+        plt.grid(True)
+        plt.show()
+
+        self.bar_metrics.iloc[:,6:9].plot(kind='bar',title="{} Recall Evaluation".format(self.object_detector),figsize=(20, 8))
+        plt.legend(loc=(-0.16,0.7))
+        plt.xlabel("Metrics")
+        plt.ylabel("Percentage %")
+        plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard','Overall'])
+        plt.yticks(range(0,105,5))
+        plt.savefig(os.path.join(self.results_path,"{}_bar_metrics_recall.png".format(self.object_detector)),dpi=600,bbox_inches="tight")
+        plt.grid(True)
+        plt.show()

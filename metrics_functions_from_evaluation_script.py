@@ -3,6 +3,7 @@ from matplotlib.pyplot import table
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import subprocess
 
 #from torch import mode
 import csv
@@ -1892,6 +1893,20 @@ def yolo_2_smoke_output_format(boxs,classes,scores):
 
     return output_per_frame
 
+def yolo_2_json_output_format(boxs,classes,scores):
+
+    output_per_frame=[]
+
+    for label,box,score in zip(classes,boxs,scores):
+
+
+        x1,y1,x2,y2=yolobbox2bbox(box[0],box[1],box[2],box[3])
+
+
+        output_per_frame.append([label,-9,x1,y1,x2,y2,-9,-9,-9,-9,-9,-9,-9,score])
+
+    return output_per_frame
+
 
 def modified_yolo_2_smoke_output_format(boxs,classes):
 
@@ -1929,6 +1944,28 @@ def convert_prediction_text_format(prediction):
     class_in_text_format=get_key(int(prediction[0]))
 
     data=[class_in_text_format,
+                0,
+                0,
+                prediction[1],
+                prediction[2],
+                prediction[3],
+                prediction[4],
+                prediction[5],
+                prediction[6],
+                prediction[7],
+                prediction[8],
+                prediction[9],
+                prediction[10],
+                prediction[11],
+                prediction[12],
+                prediction[13]
+                ]
+    return data
+
+def convert_prediction_json_format(prediction):
+    #class_in_text_format=get_key(int(prediction[0]))
+
+    data=[prediction[0],
                 0,
                 0,
                 prediction[1],
@@ -1990,6 +2027,18 @@ def write_prediction(predictions_folder_path,fileid,predictions_list):
             print('Prediction: ',prediction)
             print('Items in Prediction: ',len(prediction))
             writer.writerow(convert_prediction_text_format(prediction))
+
+    return True
+
+def write_json(predictions_folder_path,fileid,predictions_list):
+    with open(os.path.join(predictions_folder_path,str(fileid).zfill(6)+'.txt'),'w') as f:
+        writer=csv.writer(f,delimiter=' ',lineterminator = '\n')
+
+        
+        for j,prediction in enumerate(predictions_list):
+            print('Prediction: ',prediction)
+            print('Items in Prediction: ',len(prediction))
+            writer.writerow(convert_prediction_json_format(prediction))
 
     return True
 
@@ -2238,7 +2287,7 @@ def construct_dataframe(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,di
 
 
 
-def construct_dataframe_v2(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,difficulty_metrics,n_objects_classes,n_objects_difficulties):
+def construct_dataframe_v2(object_detector,cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,difficulty_metrics,n_objects_classes,n_objects_difficulties):
 
     cars_easy_AP,cars_moderate_AP,cars_hard_AP=cars_AP[0],cars_AP[1],cars_AP[2]
     pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP=pedestrians_AP[0],pedestrians_AP[1],pedestrians_AP[2]
@@ -2396,7 +2445,7 @@ def construct_dataframe_v2(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics
         {"selector": "th", "props": [("border", "1px solid")]},
         {"selector": "th", "props": [("text-align", "center")]},
         ])
-    df1.set_caption('Object Detector Metrics Evaluation [Average Precision - Precision - Recall ]')
+    df1.set_caption('{} Metrics Evaluation [Average Precision - Precision - Recall ]'.format(object_detector))
     df1.set_properties(**{'text-align': 'center'}).hide_index()
     #df1.style.set_table_attributes("style='display:inline'").set_caption('Caption table')
 
@@ -2457,3 +2506,92 @@ def construct_dataframe_v2(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics
 
 
     return df1,bar_metrics
+
+def get_kitti_AP_evaluation(root_dir,results_path,evaluation_executable_path,metrics_evaluator):
+    #evaluation_executable_path='.\SMOKE\smoke\data\datasets\evaluation\kitti\kitti_eval_40\eval8.exe'
+    boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')
+    command = "{} {} {} ".format(evaluation_executable_path,boxs_groundtruth_path, results_path.replace("/","\\"))#"C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\results\\Streamtest_AP_eval2022_12_23_15_05_34"
+
+    # Run evaluation command from terminal
+    average_precision_command=subprocess.check_output(command, shell=True, universal_newlines=True).strip()
+    print(average_precision_command)
+
+    # # Get AP from generated files (by previous command)
+    # cars_easy_AP,cars_moderate_AP,cars_hard_AP=get_class_AP(results_path,'Car')
+    # pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP=get_class_AP(results_path,'Pedestrian')
+
+
+    # cars_AP=[cars_easy_AP,cars_moderate_AP,cars_hard_AP]
+    # pedestrians_AP=[pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP]
+
+    # # Organize results in clear format + Get weighted average for categories with unavailable info
+    # df,bar_metrics=construct_dataframe_v2(cars_AP,pedestrians_AP,metrics_evaluator.car_metrics,metrics_evaluator.pedestrian_metrics,metrics_evaluator.difficulty_metrics,metrics_evaluator.n_object_classes,metrics_evaluator.n_object_difficulties)
+
+
+def plot_SMOKE_vs_YOLO(smoke_df,yolo_df,results_path):
+    
+    smoke_metrics_dict=smoke_df.to_dict()
+    #print("SMOKE metrics dictionary: ",smoke_metrics_dict)
+    smoke_metrics_values=list(smoke_metrics_dict.values())
+    #print("SMOKE metrics values as list: ",smoke_metrics_values)
+
+    smoke_difficulty_columns=[smoke_metrics_values[i] for i in range(1,5)]
+
+    #print("SMOKE difficulty columns: ",smoke_difficulty_columns)
+
+    smoke_cars_AP=[]
+    smoke_pedestrians_AP=[]
+    smoke_cars_and_predestrians_AP=[]
+    for difficulty_column in smoke_difficulty_columns:
+        smoke_cars_AP.append(float(difficulty_column[1].split(' - ')[0]))
+        smoke_pedestrians_AP.append(float(difficulty_column[2].split(' - ')[0]))
+        smoke_cars_and_predestrians_AP.append(float(difficulty_column[3].split(' - ')[0]))
+
+    print("SMOKE cars AP: \n",smoke_cars_AP)
+    print("SMOKE pedestrians AP: \n",smoke_pedestrians_AP)
+    print("SMOKE cars+pedestrians AP: \n",smoke_cars_and_predestrians_AP)
+
+    yolo_metrics_dict=yolo_df.to_dict()
+    #print("SMOKE metrics dictionary: ",yolo_metrics_dict)
+    yolo_metrics_values=list(yolo_metrics_dict.values())
+    #print("SMOKE metrics values as list: ",yolo_metrics_values)
+
+    yolo_difficulty_columns=[yolo_metrics_values[i] for i in range(1,5)]
+
+    #print("SMOKE difficulty columns: ",yolo_difficulty_columns)
+
+    yolo_cars_AP=[]
+    yolo_pedestrians_AP=[]
+    yolo_cars_and_predestrians_AP=[]
+    for difficulty_column in yolo_difficulty_columns:
+        yolo_cars_AP.append(float(difficulty_column[1].split(' - ')[0]))
+        yolo_pedestrians_AP.append(float(difficulty_column[2].split(' - ')[0]))
+        yolo_cars_and_predestrians_AP.append(float(difficulty_column[3].split(' - ')[0]))
+
+    print("SMOKE cars AP: \n",yolo_cars_AP)
+    print("SMOKE pedestrians AP: \n",yolo_pedestrians_AP)
+    print("SMOKE cars+pedestrians AP: \n",yolo_cars_and_predestrians_AP)
+
+    smoke_vs_yolo_AP={
+
+            'SMOKE cars AP':smoke_cars_AP,
+            'YOLOv3 cars AP':yolo_cars_AP,
+            'SMOKE pedestrians AP':smoke_pedestrians_AP,
+            'YOLOv3 pedestrians AP':yolo_pedestrians_AP,
+            'SMOKE cars & pedestrians AP':smoke_cars_and_predestrians_AP,
+            'YOLOv3 cars & pedestrians AP':yolo_cars_and_predestrians_AP,
+            
+            
+        }
+
+    comparison_df=pd.DataFrame(smoke_vs_yolo_AP)
+
+    comparison_df.plot(kind='bar',title="SMOKE vs YOLOv3 AP",figsize=(20, 8))
+    plt.legend(loc=(-0.16,0.7))
+    plt.xlabel("Difficulties")
+    plt.ylabel("Average Precision %")
+    plt.xticks(ticks=[0,1,2,3],labels=['Easy','Moderate','Hard',"Overall"])
+    plt.yticks(range(0,105,5))
+    plt.savefig(os.path.join(results_path,"SMOKE_vs_YOLO_AP.png"),dpi=600,bbox_inches="tight")
+    plt.grid(True)
+    plt.show()
