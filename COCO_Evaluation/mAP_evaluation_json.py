@@ -21,6 +21,7 @@ from yolov3.configs import *
 import shutil
 import json
 import time
+from convert_predictions_to_json import convert_predictions
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if len(gpus) > 0:
@@ -76,7 +77,7 @@ def voc_ap(rec, prec):
     return ap, mrec, mpre
 
 
-def get_gt(dataset,ground_truth_dir_path):
+def get_gt(dataset,ground_truth_dir_path,n_frames):
     MINOVERLAP = 0.5 # default value (defined in the PASCAL VOC2012 challenge)
     NUM_CLASS = read_class_names(TRAIN_CLASSES)
     if os.path.exists(ground_truth_dir_path): shutil.rmtree(ground_truth_dir_path)
@@ -88,7 +89,7 @@ def get_gt(dataset,ground_truth_dir_path):
 
     gt_counter_per_class = {}
     #print("dataset num samples: ",dataset.num_samples)
-    for index in range(4952):
+    for index in range(n_frames):
         ann_dataset = dataset.annotations[index]
 
         original_image, bbox_data_gt = dataset.parse_annotation(ann_dataset, True)
@@ -126,13 +127,13 @@ def get_gt(dataset,ground_truth_dir_path):
             json.dump(bounding_boxes, outfile)
 
 
-def get_mAP(ground_truth_dir_path):
+def get_mAP(ground_truth_dir_path,predictions_dir_path):
 
 
     # Ground Truth Stats
 
     #ground_truth_dir_path="C:\\Users\\hashot51\\Desktop\\yolo_benchmark_checkpoint\\mAP\\ground-truth"
-    predictions_dir_path="C:\\Users\\hashot51\\Desktop\\TensorFlow-2.x-YOLOv3\\converted_predictions"
+    #predictions_dir_path="C:\\Users\\hashot51\\Desktop\\TensorFlow-2.x-YOLOv3\\converted_predictions"
 
     gt_counter_per_class = {}
 
@@ -150,8 +151,6 @@ def get_mAP(ground_truth_dir_path):
 
             class_name=gt["class_name"]
 
-            if class_name=="bench":
-                print("filename with bench: ",filename)
             if class_name in gt_counter_per_class:
                 gt_counter_per_class[class_name] += 1
             else:
@@ -178,19 +177,25 @@ def get_mAP(ground_truth_dir_path):
     ap_dictionary = {}
     # open file to store the results
     
-    with open(os.path.join("C:\\Users\\hashot51\\Desktop\\yolo_benchmark_checkpoint\\mAP","results.txt"), 'w') as results_file:
+    with open(os.path.join("C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation","results.txt"), 'w') as results_file:
         results_file.write("# AP and precision/recall per class\n")
         count_true_positives = {}
         for class_index, class_name in enumerate(gt_classes):
             count_true_positives[class_name] = 0
             # Load predictions of that class
-            predictions_file = f'{predictions_dir_path}\\{class_name}_predictions.json'
-            predictions_data = json.load(open(predictions_file))
+            predictions_filename = f'{class_name}_predictions.json'
+            predictions_filepath=os.path.join(predictions_dir_path,predictions_filename)
+
+            if os.path.exists(predictions_filepath):
+                predictions_data = json.load(open(predictions_filepath))
+            else:
+                with open(predictions_filepath,"w") as predictions_file:
+                    json.dump([],predictions_file)
+
+                with open(predictions_filepath,"r") as predictions_file:
+                    predictions_data = json.load(predictions_file)
 
             
-
-
-
             # Assign predictions to ground truth objects
             nd = len(predictions_data)
             tp = [0] * nd # creates an array of zeros of size nd
@@ -305,6 +310,10 @@ if __name__ == '__main__':
     #     yolo = saved_model_loaded.signatures['serving_default']
 
     testset = Dataset('test', TEST_INPUT_SIZE=YOLO_INPUT_SIZE)
-    gt_path="C:\\Users\\hashot51\\Desktop\\gt"
-    get_gt(testset,gt_path)
-    get_mAP(gt_path)
+    convert_predictions(predictions_kitti_format_dir="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\results\\StreamBenchmark_YOLO2022_12_25_16_32_51\\data",
+                        predictions_coco_format_dir="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation\\yolo_predictions_json_format",
+                        n_frames=10)
+    gt_path="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation\\coco\\coco_gt"
+    get_gt(testset,gt_path,10)
+    get_mAP(ground_truth_dir_path=gt_path,
+            predictions_dir_path="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation\\yolo_predictions_json_format")

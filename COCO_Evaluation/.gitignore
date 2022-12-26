@@ -1,2 +1,7 @@
 /coco/
 /yolo_predictions_json_format/
+yolov3.weights
+mars-small128.pb
+results.txt
+/__pycache__/
+

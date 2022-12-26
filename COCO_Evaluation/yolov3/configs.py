@@ -12,14 +12,14 @@
 # YOLO options
 YOLO_TYPE                   = "yolov3" # yolov4 or yolov3
 YOLO_FRAMEWORK              = "tf" # "tf" or "trt"
-YOLO_V3_WEIGHTS             = "model_data/yolov3.weights"
+YOLO_V3_WEIGHTS             = "C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation\\yolov3.weights"
 YOLO_V4_WEIGHTS             = "model_data/yolov4.weights"
 YOLO_V3_TINY_WEIGHTS        = "model_data/yolov3-tiny.weights"
 YOLO_V4_TINY_WEIGHTS        = "model_data/yolov4-tiny.weights"
 YOLO_TRT_QUANTIZE_MODE      = "INT8" # INT8, FP16, FP32
 YOLO_CUSTOM_WEIGHTS         = False # "checkpoints/yolov3_custom" # used in evaluate_mAP.py and custom model detection, if not using leave False
                             # YOLO_CUSTOM_WEIGHTS also used with TensorRT and custom model detection
-YOLO_COCO_CLASSES           = "model_data/coco/coco.names"
+YOLO_COCO_CLASSES           = "C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation\\coco\\coco.names"
 YOLO_STRIDES                = [8, 16, 32]
 YOLO_IOU_LOSS_THRESH        = 0.5
 YOLO_ANCHOR_PER_SCALE       = 3
@@ -37,7 +37,7 @@ if YOLO_TYPE                == "yolov3":
 TRAIN_YOLO_TINY             = False
 TRAIN_SAVE_BEST_ONLY        = True # saves only best model according validation loss (True recommended)
 TRAIN_SAVE_CHECKPOINT       = False # saves all best validated checkpoints in training process (may require a lot disk space) (False recommended)
-TRAIN_CLASSES               = "model_data/coco/coco.names"
+TRAIN_CLASSES               = "C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation\\coco\\coco.names"
 TRAIN_ANNOT_PATH            = "mnist/mnist_train.txt"
 TRAIN_LOGDIR                = "log"
 TRAIN_CHECKPOINTS_FOLDER    = "checkpoints"
@@ -54,7 +54,7 @@ TRAIN_WARMUP_EPOCHS         = 2
 TRAIN_EPOCHS                = 100
 
 # TEST options
-TEST_ANNOT_PATH             = "C:\\Users\\hashot51\\Desktop\\TensorFlow-2.x-YOLOv3\\model_data\\coco\\val2017.txt"
+TEST_ANNOT_PATH             = "C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation\\coco\\val2017.txt"
 TEST_BATCH_SIZE             = 4
 TEST_INPUT_SIZE             = 416
 TEST_DATA_AUG               = False

@@ -75,6 +75,8 @@ class Dataset(object):
                     break
             # print("check if image path exists: ",os.path.exists(image_path))
             # print("check 2: ",os.path.exists("model_data//val2017//000000199395.jpg"))
+            img_filename=image_path.split('/')[-1]
+            image_path=os.path.join("C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation\\coco\\val2017",img_filename)
             if not os.path.exists(image_path):
                 #print("image path: ",image_path)
                 raise KeyError("%s does not exist ... " %image_path)
