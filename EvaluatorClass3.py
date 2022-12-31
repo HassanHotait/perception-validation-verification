@@ -392,11 +392,11 @@ class metrics_evaluator:
         box_height=box[1].y-box[0].y
 
         if box_height>40:
-            return "Easy"
+            return "Hard"
         elif 30<box_height<40:
             return "Moderate"
         elif 25<box_height<30:
-            return "Hard"
+            return "Easy"
         else:
             return "Ignored"
 

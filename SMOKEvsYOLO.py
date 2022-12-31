@@ -30,9 +30,9 @@ args = parser.parse_args()
 # Define Settings
 
 visualize_3D=False
-predict_then_evaluate=False
+predict_then_evaluate=True
 only_predict=False
-only_evaluate=True
+only_evaluate=False
 
 
 # Folder Used when only_evaluate=True
@@ -41,7 +41,7 @@ folder_path_for_evaluation='StreamSMOKEvsYOLO2022_12_26_00_02_16'
 
 
 # Define Test Name
-stream_id='SMOKEvsYOLO'
+stream_id='SMOKEvsYOLO_Offical_'
 session_datetime=datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 foldername='Stream_'+str(stream_id)+session_datetime
 print('Foldername: ',foldername)
@@ -70,7 +70,8 @@ yolo_data_path=os.path.join(results_path,'yolo_data')
 smoke_image_stream_path=os.path.join(results_path,'smoke-image-stream'+str(stream_id))
 groundtruth_image_stream_path=os.path.join(results_path,'groundtruth-image-stream'+str(stream_id))
 yolo_image_stream_path=os.path.join(results_path,'yolo-image-stream'+str(stream_id))
-logs_path=os.path.join(results_path,'logs')
+yolo_logs_path=os.path.join(results_path,'yolo_logs')
+smoke_logs_path=os.path.join(results_path,'smoke_logs')
 plot_path_for_evaluation=os.path.join(results_path,"plot")
 
 # Get Number of Images in Test Dir
@@ -87,8 +88,10 @@ if predict_then_evaluate==True or only_predict==True:
     #os.mkdir(plot_path_for_evaluation)
     # Create Folders in which to store YOLO and SMOKE Frames
     os.mkdir(smoke_image_stream_path)
+    os.mkdir(yolo_image_stream_path)
     # Create foler in which to store text file logs
-    os.mkdir(logs_path)
+    os.mkdir(yolo_logs_path)
+    os.mkdir(smoke_logs_path)
     os.mkdir(groundtruth_image_stream_path)
 
 
@@ -118,8 +121,8 @@ frames_of_interest=[1,2,3,4,5,8,10,15,16,18,19,21,23,25,26,27,37,40,42,43,48,51,
 
 
 n=100#number_files#len(frames_of_interest[:8])
-smoke_metrics_evaluator=metrics_evaluator("SMOKE",n,logs_path,results_path)
-yolo_metrics_evaluator=metrics_evaluator("YOLOv3",n,logs_path,results_path)
+smoke_metrics_evaluator=metrics_evaluator("SMOKE",n,smoke_logs_path,results_path)
+yolo_metrics_evaluator=metrics_evaluator("YOLOv3",n,yolo_logs_path,results_path)
 
 
 
@@ -136,7 +139,7 @@ for fileid in range(n):
         #  SMOKE Predict,Visualize & Save predictions in logs
         smoke_predictions_list,P2,K=preprocess_then_predict(model,cfg,fileid,ordered_filepath,gpu_device,cpu_device,)
         write_prediction(smoke_data_path,fileid,smoke_predictions_list)
-        output_img=plot_prediction(frame,smoke_predictions_list)
+        output_img=plot_prediction(frame.copy(),smoke_predictions_list)
         #print('P2: ',P2)
         #b,g,r=cv2.split(frame)
         #rgb_frame=cv2.merge([r,g,b])
@@ -145,7 +148,7 @@ for fileid in range(n):
         cv2.imwrite(os.path.join(smoke_image_stream_path,'frame'+str(fileid).zfill(6)+'.png'),output_img)
 
         #  YOLO Predict,Visualize & Save predictions in logs
-        boxes, scores, classes, nums=preprocess_predict_YOLO(yolo,frame)
+        boxes, scores, classes, nums=preprocess_predict_YOLO(yolo,frame.copy())
 
         boxs,classes,scores,tracker=postprocess_YOLO(encoder,tracker,class_names,frame,boxes,scores,classes)
 
@@ -156,7 +159,7 @@ for fileid in range(n):
         write_prediction(yolo_data_path,fileid,yolo_predictions_list)
         #write_json(data_path,fileid,yolo_predictions_list)
 
-        output_img=plot_prediction(frame,yolo_predictions_list)
+        output_img=plot_prediction(frame.copy(),yolo_predictions_list)
         cv2.imwrite(os.path.join(yolo_image_stream_path,'frame'+str(fileid)+'.png'),output_img)
     if only_evaluate==True or predict_then_evaluate==True:
         # SMOKE Read predictions from file then feed to evaluator
@@ -183,12 +186,12 @@ print(command)
 if only_evaluate==True or predict_then_evaluate==True:
     smoke_metrics_evaluator.run_kitti_AP_evaluation_executable(root_dir,precision_evaluation_path,"smoke_data")
     smoke_metrics_table_df=smoke_metrics_evaluator.construct_dataframe()
-    #smoke_metrics_evaluator.show_results()
+    smoke_metrics_evaluator.show_results()
 
     ####################################################################
     yolo_metrics_evaluator.run_kitti_AP_evaluation_executable(root_dir,precision_evaluation_path,"yolo_data")
     yolo_metrics_table_df=yolo_metrics_evaluator.construct_dataframe()
-    #yolo_metrics_evaluator.show_results()
+    yolo_metrics_evaluator.show_results()
 
 
     plot_SMOKE_vs_YOLO(smoke_metrics_table_df,yolo_metrics_table_df,results_path)

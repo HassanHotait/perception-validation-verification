@@ -57,14 +57,14 @@ def get_key(val):
 
 
 
-predict_then_evaluate=True
-only_predict=False
+predict_then_evaluate=False
+only_predict=True
 only_evaluate=False
 
 folder_path_for_evaluation='StreamOfficial_YOLOV3_eval_threshold_0.5_2022_12_22_17_53_48'
 
 
-stream_id="test_new_metrics_function"
+stream_id="YOLO_benchmark_COCO_@0.05_"
 session_datetime=datetime.now().strftime("%Y_%m_%d_%H_%M_%S") 
 
 foldername='Stream'+str(stream_id)+session_datetime
@@ -98,11 +98,11 @@ logs_path=os.path.join(results_path,'logs')
 # # number_files = len(lst)
 
 # Get Number of Images in COCO VAL Dataset
-lst = os.listdir(test_images_path)#get_coco_val_set_imgs("C:\\Users\\hashot51\\Desktop\\TensorFlow-2.x-YOLOv3\\model_data\\coco\\val2017.txt") # your directory path
+lst = get_coco_val_set_imgs("C:\\Users\\hashot51\\Desktop\\TensorFlow-2.x-YOLOv3\\model_data\\coco\\val2017.txt") # your directory path
 number_files = len(lst)
 # print("lst",lst[:100])
 
-# print('number of files: ',number_files)
+# print('number of files: ',number_fies)
 
 
 
@@ -148,35 +148,36 @@ tracker,encoder=setup_tracker(model_filename)
 
 
 
-n=20#number_files
+n=number_files
 yolo_metrics_evaluator=metrics_evaluator("YOLOv3",n,logs_path,results_path)
 #smoke_metrics_evaluator.results_path=logs_path
 print('LOGS Path: ',logs_path)
 
-for fileid in range(n):
+for fileid,filename in enumerate(lst):
 
     #filepath=
-    ordered_filepath=os.path.join(test_images_path,str(fileid).zfill(6)+".png")
+    #ordered_filepath=os.path.join(test_images_path,str(fileid).zfill(6)+".png") # SMOKE
+    ordered_filepath=os.path.join(coco_dataset_path,filename) # KITTI
     frame=cv2.imread(ordered_filepath)
     print('frame: ',fileid)
 
 
 
-    groundtruth=read_groundtruth(boxs_groundtruth_path,fileid)
-    groundtruth_image=plot_groundtruth(frame,groundtruth)
-    cv2.imwrite(os.path.join(groundtruth_image_stream_path,'frame'+str(fileid)+'.png'),groundtruth_image)
+    # groundtruth=read_groundtruth(boxs_groundtruth_path,fileid)
+    # groundtruth_image=plot_groundtruth(frame,groundtruth)
+    # cv2.imwrite(os.path.join(groundtruth_image_stream_path,'frame'+str(fileid)+'.png'),groundtruth_image)
 
     if predict_then_evaluate==True or only_predict==True:
         boxes, scores, classes, nums=preprocess_predict_YOLO(yolo,frame)
 
         boxs,classes,scores,tracker=postprocess_YOLO(encoder,tracker,class_names,frame,boxes,scores,classes)
 
-        yolo_predictions_list=yolo_2_smoke_output_format(boxs=boxs,classes=classes,scores=scores)
-        #yolo_predictions_list=yolo_2_json_output_format(boxs=boxs,classes=classes,scores=scores)
+        #yolo_predictions_list=yolo_2_smoke_output_format(boxs=boxs,classes=classes,scores=scores)
+        yolo_predictions_list=yolo_2_json_output_format(boxs=boxs,classes=classes,scores=scores)
 
         print('yolo predictions list: ',yolo_predictions_list)
-        write_prediction(data_path,fileid,yolo_predictions_list)
-        #write_json(data_path,fileid,yolo_predictions_list)
+        #write_prediction(data_path,fileid,yolo_predictions_list)
+        write_json(data_path,fileid,yolo_predictions_list)
 
         output_img=plot_prediction(frame,yolo_predictions_list)
         cv2.imwrite(os.path.join(yolo_image_stream_path,'frame'+str(fileid)+'.png'),output_img)

@@ -11,6 +11,7 @@ from EvaluatorClass3 import metrics_evaluator,plot_groundtruth,MetricsHolder
 from metrics_functions_from_evaluation_script import smoke_get_n_classes,plot_prediction,read_groundtruth,get_key,read_prediction,write_prediction,get_class_AP,construct_dataframe_v2,construct_dataframe
 import subprocess
 import argparse
+import pandas as pd
 
 import dataframe_image as dfi
 
@@ -29,12 +30,12 @@ only_evaluate=False
 
 
 # Folder Used when only_evaluate=True
-folder_path_for_evaluation='StreamOfficial_SMOKE_eval2022_12_22_14_02_56'
+folder_path_for_evaluation='StreamSMOKE_get_FP2022_12_27_21_45_15'
 
 
 
 # Define Test Name
-stream_id='test_AP_eval'
+stream_id='SMOKE_Offical_val_smoke_split'
 session_datetime=datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 foldername='Stream'+str(stream_id)+session_datetime
 print('Foldername: ',foldername)
@@ -52,7 +53,7 @@ if predict_then_evaluate==True or only_predict==True:
     results_path=os.path.join(root_dir,'results',foldername)
 
 elif only_evaluate==True:
-    results_path=os.path.join(root_dir,'results',folder_path_for_evaluation)
+    results_path=os.path.join(root_dir,'results',folder_path_for_evaluation).replace("/","\\")
 else:
     pass
     
@@ -64,9 +65,15 @@ groundtruth_image_stream_path=os.path.join(results_path,'groundtruth-image-strea
 logs_path=os.path.join(results_path,'logs')
 plot_path_for_evaluation=os.path.join(results_path,"plot")
 
+# Val Split
+
+path_to_val_csv_file="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\SMOKE\\datasets\\kitti\\training\\ImageSets\\val.txt"
+val_split_list=pd.read_csv(path_to_val_csv_file).values.tolist()
+print("val split: \n",val_split_list)
+
 # Get Number of Images in Test Dir
 lst = os.listdir(test_images_path) # your directory path
-number_files = len(lst)
+number_files = len(val_split_list)
 print('number of files: ',number_files)
 
 
@@ -99,12 +106,14 @@ frames_of_interest=[1,2,3,4,5,8,10,15,16,18,19,21,23,25,26,27,37,40,42,43,48,51,
 
 
 
-n=10#number_files#len(frames_of_interest[:8])
+n=number_files#len(frames_of_interest[:8])
 smoke_metrics_evaluator=metrics_evaluator("SMOKE",n,logs_path,results_path)
 
 
 
-for fileid in range(n):
+
+for fileid in val_split_list:
+    fileid=fileid[0]
 
     # Read Frame and Visualize Groundtruth 2D
     ordered_filepath=os.path.join(test_images_path,str(fileid).zfill(6)+'.png')
@@ -135,7 +144,7 @@ for fileid in range(n):
 
 
 
-precision_evaluation_path='.\SMOKE\smoke\data\datasets\evaluation\kitti\kitti_eval_40\eval12.exe'
+precision_evaluation_path='.\SMOKE\smoke\data\datasets\evaluation\kitti\kitti_eval_11\kitti_eval_11.exe'
 boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')#"C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\SMOKE\\datasets\\kitti\\training\\label_2"
 
 

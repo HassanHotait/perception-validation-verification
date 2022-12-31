@@ -14,7 +14,7 @@ import time
 import random
 import colorsys
 import numpy as np
-import tensorflow as tf
+#import tensorflow as tf
 from yolov3.configs import *
 from yolov3.yolov4 import *
 from tensorflow.python.saved_model import tag_constants

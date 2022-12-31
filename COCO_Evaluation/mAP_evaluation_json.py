@@ -9,24 +9,24 @@
 #
 #================================================================
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+#os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import cv2
 import numpy as np
-import tensorflow as tf
-from tensorflow.python.saved_model import tag_constants
+#import tensorflow as tf
+#from tensorflow.python.saved_model import tag_constants
 from yolov3.dataset import Dataset
-from yolov3.yolov4 import Create_Yolo
-from yolov3.utils import load_yolo_weights, detect_image, image_preprocess, postprocess_boxes, nms, read_class_names
+#from yolov3.yolov4 import Create_Yolo
+from yolov3.utils import read_class_names
 from yolov3.configs import *
 import shutil
 import json
 import time
 from convert_predictions_to_json import convert_predictions
 
-gpus = tf.config.experimental.list_physical_devices('GPU')
-if len(gpus) > 0:
-    try: tf.config.experimental.set_memory_growth(gpus[0], True)
-    except RuntimeError: print("RuntimeError in tf.config.experimental.list_physical_devices('GPU')")
+# gpus = tf.config.experimental.list_physical_devices('GPU')
+# if len(gpus) > 0:
+#     try: tf.config.experimental.set_memory_growth(gpus[0], True)
+#     except RuntimeError: print("RuntimeError in tf.config.experimental.list_physical_devices('GPU')")
 
 
 def voc_ap(rec, prec):
@@ -82,7 +82,7 @@ def get_gt(dataset,ground_truth_dir_path,n_frames):
     NUM_CLASS = read_class_names(TRAIN_CLASSES)
     if os.path.exists(ground_truth_dir_path): shutil.rmtree(ground_truth_dir_path)
 
-    if not os.path.exists('mAP'): os.mkdir('mAP')
+    # if not os.path.exists('mAP'): os.mkdir('mAP')
     os.mkdir(ground_truth_dir_path)
 
     #print(f'\ncalculating mAP{int(iou_threshold*100)}...\n')
@@ -113,8 +113,8 @@ def get_gt(dataset,ground_truth_dir_path,n_frames):
             bbox = xmin + " " + ymin + " " + xmax + " " +ymax
             bounding_boxes.append({"class_name":class_name, "bbox":bbox, "used":False})
 
-            if class_name=="donut":
-                print("donut in groundtruth: ",index)
+            # if class_name=="donut":
+            #     print("donut in groundtruth: ",index)
 
             # count that object
             if class_name in gt_counter_per_class:
@@ -310,10 +310,10 @@ if __name__ == '__main__':
     #     yolo = saved_model_loaded.signatures['serving_default']
 
     testset = Dataset('test', TEST_INPUT_SIZE=YOLO_INPUT_SIZE)
-    convert_predictions(predictions_kitti_format_dir="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\results\\StreamBenchmark_YOLO2022_12_25_16_32_51\\data",
+    convert_predictions(predictions_kitti_format_dir="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\results\\StreamYOLO_benchmark_COCO_@0.05_2022_12_28_01_21_13\\data",
                         predictions_coco_format_dir="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation\\yolo_predictions_json_format",
-                        n_frames=10)
+                        n_frames=4952)
     gt_path="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation\\coco\\coco_gt"
-    get_gt(testset,gt_path,10)
+    get_gt(testset,gt_path,4952)
     get_mAP(ground_truth_dir_path=gt_path,
             predictions_dir_path="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\COCO_Evaluation\\yolo_predictions_json_format")
