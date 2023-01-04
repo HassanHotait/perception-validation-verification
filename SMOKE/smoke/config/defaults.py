@@ -114,11 +114,24 @@ _C.MODEL.SMOKE_HEAD.NUM_CHANNEL = 256
 _C.MODEL.SMOKE_HEAD.LOSS_WEIGHT = (1., 10.)
 # Reference car size in (length, height, width)
 # for (car, cyclist, pedestrian)
+# SMOKE Kitti Ref
+# ((3.88, 1.63, 1.53),
+# (1.78, 1.70, 0.58),
+# (0.88, 1.73, 0.67))
 _C.MODEL.SMOKE_HEAD.DIMENSION_REFERENCE = ((3.88, 1.63, 1.53),
                                            (1.78, 1.70, 0.58),
                                            (0.88, 1.73, 0.67))
 # Reference depth (28.01, 16.32)
-_C.MODEL.SMOKE_HEAD.DEPTH_REFERENCE = (28.01, 16.32)
+# Frame 1 Scenario 15 Logger 1 (31,0)
+# All frames Scenario 15 Logger 1 (31,0)
+# Depth Less than 40m all frames Scenario 15 Logger 1 (25.1,10.6)
+# Function for Depth Stats for values above was incorrect
+# Correct FUnction Values:
+# Frame 1 Scenario 15 Logger 1 (33.4,2.44) Less than 40 m
+# Frame 1 Scenario 15 Logger 1 (69.11,20.35) Less than 200 m
+# Frame 1 Scenario 15 Logger 1 (44.25,11.3) Less than  60 m
+# Frame 1 Scenario 15 Logger 1 (33.4,2.44) Less than  45 m
+_C.MODEL.SMOKE_HEAD.DEPTH_REFERENCE = (28.01,16.32)
 _C.MODEL.SMOKE_HEAD.USE_NMS = False
 
 # ---------------------------------------------------------------------------- #

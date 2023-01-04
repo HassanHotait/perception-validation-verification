@@ -224,8 +224,53 @@ field_name_pedestrians=['Easy Pedestrian TP',
 'ΣPred Moderate Pedestrians',
 'ΣPred Hard Pedestrians',]
 
-def read_groundtruth(gt_folder,fileid):
-    boxs_groundtruth_file=os.path.join(gt_folder,str(fileid).zfill(6)+'.txt')
+class GtInfo():
+    def __init__(self, line):
+        self.name = line[0]
+
+
+        self.truncation = float(line[1])
+        self.occlusion = float(line[2])
+
+        # local orientation = alpha + pi/2
+        self.alpha = float(line[3])
+
+        # in pixel coordinate
+        self.xmin = float(line[4])
+        self.ymin = float(line[5])
+        self.xmax = float(line[6])
+        self.ymax = float(line[7])
+
+        # height, weigh, length in object coordinate, meter
+        self.h = float(line[8])
+        self.w = float(line[9])
+        self.l = float(line[10])
+
+        # x, y, z in camera coordinate, meter
+        self.tx = float(line[11])
+        self.ty = float(line[12])
+        self.tz = float(line[13])
+
+        # global orientation [-pi, pi]
+        self.rot_global = float(line[14])
+
+        self.labels_list=[self.name,self.truncation,self.occlusion,
+                self.alpha,
+                self.xmin,self.ymin,self.xmax,self.ymax,
+                self.h,self.w,self.l,
+                self.tx,self.ty,self.tz,
+                self.rot_global]
+
+    def get_labels_list(self):
+
+        self.labels_list=[self.name,self.truncation,self.occlusion,
+                        self.alpha,
+                        self.xmin,self.ymin,self.xmax,self.ymax,
+                        self.h,self.w,self.l,
+                        self.tx,self.ty,self.tz,
+                        self.rot_global]
+def read_groundtruth(gt_folder,fileid,extension):
+    boxs_groundtruth_file=os.path.join(gt_folder,str(fileid).zfill(6)+extension)
     with open(boxs_groundtruth_file,'r') as file:
         boxs_groundtruth_string=file.read()
 
@@ -234,7 +279,34 @@ def read_groundtruth(gt_folder,fileid):
 
 
     groundtruth_list=boxs_groundtruth_string.split()
+    #groundtruth_list=[boxs_groundtruth_string[i].split(',') for i in range(len(boxs_groundtruth_string))]
+    print("Groundtruth[0]: ",groundtruth_list[0])
     groundtruth = [groundtruth_list[x:x+firstLine_elements] for x in range(0,int(len(groundtruth_list)),firstLine_elements)]
+
+    return groundtruth
+
+def new_read_groundtruth(gt_folder,fileid,extension,dataset):
+    boxs_groundtruth_filepath=os.path.join(gt_folder,str(fileid).zfill(6)+extension)
+    with open(boxs_groundtruth_filepath,'r') as file:
+        reader=csv.reader(file)
+        boxs_groundtruth_string=list(reader)
+
+    print("list of groundtruth: \n",boxs_groundtruth_string)
+    
+
+    if dataset=="Kitti":
+        groundtruth=[GtInfo(gt[0].split(' ')) for gt in boxs_groundtruth_string]
+    elif dataset=="Prescan":
+        groundtruth=[GtInfo(gt) for gt in boxs_groundtruth_string]
+
+    # with open(boxs_groundtruth_file,'r') as file:
+    #     firstLine_elements = len(file.readline().split())
+
+
+    # groundtruth_list=boxs_groundtruth_string.split()
+    # #groundtruth_list=[boxs_groundtruth_string[i].split(',') for i in range(len(boxs_groundtruth_string))]
+    # print("Groundtruth[0]: ",groundtruth_list[0])
+    # groundtruth = [groundtruth_list[x:x+firstLine_elements] for x in range(0,int(len(groundtruth_list)),firstLine_elements)]
 
     return groundtruth
 
@@ -2595,3 +2667,48 @@ def plot_SMOKE_vs_YOLO(smoke_df,yolo_df,results_path):
     plt.savefig(os.path.join(results_path,"SMOKE_vs_YOLO_AP.png"),dpi=600,bbox_inches="tight")
     plt.grid(True)
     plt.show()
+
+
+def get_dataset_depth_stats(labels_path,n_frames,depth_condition):
+
+    n_labels=n_frames
+
+    groundtruth=[]
+    for i in range(n_labels):
+        groundtruth.append(new_read_groundtruth(labels_path,i,extension='.csv'))
+
+    
+    objects_depth=[]
+    cars_l=[]
+    cars_w=[]
+    cars_h=[]
+
+    for gt_list in groundtruth:
+        for gt in gt_list:
+            if gt.name in ["Person","Car","Cyclist"]:
+                depth=gt.tz
+                if depth_condition>=depth:
+
+                    objects_depth.append(float(depth))
+
+                    if gt.name=="Car":
+                        cars_l.append(gt.l)
+                        cars_w.append(gt.w)
+                        cars_h.append(gt.h)
+
+    depth_mean=np.mean(objects_depth)
+    depth_std=np.std(objects_depth)
+
+    car_dim_reference=(np.mean(cars_l),np.mean(cars_h),np.mean(cars_w))
+
+    return depth_mean,depth_std,car_dim_reference
+
+
+    
+
+
+
+
+
+
+

@@ -1,7 +1,8 @@
 import torch
 from torch import nn
+import cv2
 
-from SMOKE.smoke.modeling.smoke_coder import SMOKECoder
+from SMOKE.smoke.modeling.smoke_coder import SMOKECoder,my_decode_dimensions,my_decode_location
 from SMOKE.smoke.layers.utils import (
     nms_hm,
     select_topk,
@@ -57,7 +58,20 @@ class PostProcessor(nn.Module):
         pred_dimensions_offsets = pred_regression_pois[:, 3:6]
         pred_orientation = pred_regression_pois[:, 6:]
 
-        pred_depths = self.smoke_coder.decode_depth(pred_depths_offset)
+
+
+        # Added by Hassan 
+        pred_dimensions=my_decode_dimensions(clses,pred_dimensions_offsets,dim_ref=self.smoke_coder.dim_ref)
+        proj_points_img=my_decode_location(device=pred_proj_points.device,
+                                            trans_mat=target_varibales["trans_mat"],
+                                            points=pred_proj_points,
+                                            points_offset=pred_proj_offsets)
+
+
+
+        # Modified decode depth input args for alternative depth computation
+        pred_depths = self.smoke_coder.decode_depth(pred_depths_offset,proj_points_img,pred_dimensions,target_varibales["K"],default=False)
+
         pred_locations = self.smoke_coder.decode_location(
             pred_proj_points,
             pred_proj_offsets,
@@ -65,6 +79,7 @@ class PostProcessor(nn.Module):
             target_varibales["K"],
             target_varibales["trans_mat"]
         )
+        print("Decoded Location")
         pred_dimensions = self.smoke_coder.decode_dimension(
             clses,
             pred_dimensions_offsets
@@ -101,7 +116,35 @@ class PostProcessor(nn.Module):
         ], dim=1)
 
         keep_idx = result[:, -1] > self.det_threshold
+
+        # print("keep_idx: \n",keep_idx)
+
+        valid_indices=[i for i in range(keep_idx.shape[0]) if keep_idx[i]==True]
+        # print("Index of detections with valid detections out of 50: \n",valid_indices)
+
+        # final_predicted_relative_depths=[pred_depths_offset[i] for i in valid_indices]
+        # final_predicted_absolute_depths=[pred_depths[i] for i in valid_indices]
+
+        # print("Predicted Relative Depths: ",final_predicted_relative_depths)
+        # print("Predicted Absolute Depths: ",final_predicted_absolute_depths)
+        final_object_centers=[proj_points_img[i].flatten() for i in valid_indices]
+        final_object_image_offsets=[pred_proj_offsets[i] for i in valid_indices]
         result = result[keep_idx]
+
+        # img_path="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\Dataset2Kitti\\PrescanRawData_Scenario15\\DataLogger1\\images_2\\"+str(0).zfill(6)+".png"
+        # img=cv2.imread(img_path)
+        # print("predicted final object centers: ",final_object_centers)
+
+        # for object_center in final_object_centers:
+        #     x=int(object_center[0])
+        #     print("Float Y Coordinate in Inference: ",object_center[1])
+        #     y=int(object_center[1])
+        #     img=cv2.circle(img,(x,y) , 0, (0,0,255), 2)
+        # print("Image Plane Offsets: \n",final_object_image_offsets)
+        # cv2.imshow("output image in forward inference: ",img)
+        # cv2.waitKey(0)
+
+
 
         return result
 

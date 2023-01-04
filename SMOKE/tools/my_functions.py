@@ -103,18 +103,27 @@ def get_K(file_name,calib_dir):
 
 
 
-def preprocess(img_path,cfg,file_id):
+def preprocess(img_path,cfg,file_id,dataset):
     img = Image.open(img_path)
-    K,P2=get_K(str(file_id).zfill(6)+".txt",os.path.join(cfg.root_dir,"SMOKE/datasets/kitti/training/calib"))
+    
     center = np.array([i / 2 for i in img.size], dtype=np.float32)
     size = np.array([i for i in img.size], dtype=np.float32)
 
-    print('K from Calib File: ',K)
+    if dataset=="Kitti":
+        K,P2=get_K(str(file_id).zfill(6)+".txt",os.path.join(cfg.root_dir,"SMOKE/datasets/kitti/training/calib"))
+    else:
+        K=np.array([[935 ,  0  ,       399],
+                    [  0   ,      935 ,298],
+                    [  0     ,      0      ,     1       ]],dtype=np.float32)
 
-    # K=np.array([[935 ,  0  ,       399],
-    #             [  0   ,      935 ,298],
-    #             [  0     ,      0      ,     1       ]],dtype=np.float32)
-    
+
+        K=np.array([[937.5 ,  0  ,      400 ],
+                    [  0   ,      937.5 ,300],
+                    [  0     ,      0      ,     1       ]],dtype=np.float32)
+
+    print("Camera Calibration Matrix: \n",K)
+
+
 
     input_width = cfg.INPUT.WIDTH_TRAIN
     input_height = cfg.INPUT.HEIGHT_TRAIN
@@ -151,11 +160,11 @@ def preprocess(img_path,cfg,file_id):
     img_tensor = transform(img,target=target)
 
 
-    return img_tensor[0],(target,),P2,K
+    return img_tensor[0],(target,),K
 
 
-def preprocess_then_predict(model,cfg,file_id,img_path,gpu_device,cpu_device):
-    img,target,P2,K=preprocess(img_path,cfg,file_id)
+def preprocess_then_predict(model,cfg,file_id,img_path,gpu_device,cpu_device,dataset):
+    img,target,K=preprocess(img_path,cfg,file_id,dataset)
     model.eval()
     with torch.no_grad():
         img=img.to(gpu_device)
@@ -166,7 +175,7 @@ def preprocess_then_predict(model,cfg,file_id,img_path,gpu_device,cpu_device):
     smoke_predictions_list=output.tolist()
     #print('SMOKE Predictions list in fnctn:',smoke_predictions_list)
 
-    return smoke_predictions_list,P2,K
+    return smoke_predictions_list,K
 
 
 def transformation(network_configuration,image,center_size,target):

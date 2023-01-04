@@ -110,8 +110,8 @@ class SMOKE_Viz(object):
         self.ax2.plot(x2, x2, ls='--', color='grey', linewidth=1, alpha=0.5)
         self.ax2.plot(0, 0.2, marker='+', markersize=16, markeredgecolor='red')
 
-    def compute_3Dbox(self,P2, gt_obj):
-        obj=gt_obj
+    def compute_3Dbox(self,P2, obj):
+        #obj=gt_obj
         # if gt_list==None:
         #obj = GtInfo(line)
         # else:
@@ -166,15 +166,15 @@ class SMOKE_Viz(object):
             raise print("No Input Object Provided")
 
         if predictions_list!=None:
-            line=predictions_list
+            obj_list=predictions_list
             color='red'
         else:
-            line=gt_list
+            obj_list=gt_list
             color='green'
 
-        for i in range(len(line)):
+        for obj in obj_list:
 
-            obj=GtInfo(line[i])
+            #obj=GtInfo(line[i])
             corners_2D = self.compute_3Dbox(P2, obj)
 
             # draw all lines through path
@@ -254,16 +254,17 @@ class SMOKE_Viz(object):
 
         return np.vstack((corners_2D, corners_2D[0,:])),rot_y
 
-    def draw_birdeyes(self,  gt_list):
+    def draw_birdeyes(self,  obj_list):
         shape = self.shape
 
-        for i in range(len(gt_list)):
+        #for i in range(len(gt_list)):
+        for obj in obj_list:
 
-            if gt_list[i][0]=='DontCare':
+            if obj.name=='DontCare':
                 continue
-            print('line_p[i]: ',gt_list[i])
+            # print('line_p[i]: ',gt_list[i])
 
-            obj=GtInfo(gt_list[i])
+            #obj=GtInfo(gt_list[i])
             pred_corners_2d,rot = self.compute_birdviewbox(obj)
             #gt_corners_2d = compute_birdviewbox(line_gt, shape, scale)
 

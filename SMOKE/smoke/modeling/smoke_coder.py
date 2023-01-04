@@ -105,6 +105,11 @@ class SMOKECoder():
         if len(locs.shape) == 3:
             locs = locs.view(-1, 3)
 
+        print("----------------------Encode Box 3D -----------------")
+        # print("rotys: \n",rotys)
+        # print("dims: \n",dims)
+        # print("locs: \n",locs)
+
         device = rotys.device
         N = rotys.shape[0]
         ry = self.rad_to_matrix(rotys, N)
@@ -122,11 +127,51 @@ class SMOKECoder():
 
         return box_3d
 
-    def decode_depth(self, depths_offset):
+    def decode_depth(self, depths_offset,proj_points,pred_dimensions,K,default=True):
         '''
         Transform depth offset to depth
         '''
-        depth = depths_offset * self.depth_ref[1] + self.depth_ref[0]
+
+        #print("Object Dimensions: \n",pred_dimensions)
+        objects_height=pred_dimensions[:,1]
+        print("Objects Height: \n",objects_height)
+        height_relative_to_camera=1.65-(objects_height/2)
+
+        
+        print("K in decode depth: \n",K)
+        K=K[0].to(device="cuda")
+        fy=K[1][1]
+        cy=K[1][2]
+        K_inv=K.inverse()
+
+        #print("K_inv: ",K_inv)
+        a=K_inv[0][0]
+        b=K_inv[0][2]
+
+        #print("K_inv[1]: ",K_inv[1])
+        c=K_inv[1][1]
+        d=K_inv[1][2]
+
+        #print("a b c d : ",(a,b,c,d))
+        print("(Xc,Yc): \n",proj_points)
+        print("Heights Relative to Camera: \n",height_relative_to_camera)
+        pixel_y_coordinates=proj_points[:,1]
+        print("Y_coordinates: \n",pixel_y_coordinates.flatten())
+        print("")
+        #Z=(height_relative_to_camera)/((c*pixel_y_coordinates.flatten())+d)
+
+        
+        Z=(height_relative_to_camera*fy)/(pixel_y_coordinates.flatten().type(torch.int64)-cy)
+
+        print("Z no extra : \n",Z)
+
+        if default==True:
+            depth = depths_offset * self.depth_ref[1] + self.depth_ref[0]
+        else:
+            depth=Z
+
+        print("Relative Depth: ",depths_offset)
+        print("Relative Depth Tensor Shape: ",depths_offset.shape)
 
         return depth
 
@@ -153,6 +198,11 @@ class SMOKECoder():
         Ks = Ks.to(device=device)
         trans_mats = trans_mats.to(device=device)
 
+        # print("Ks: \n",Ks)
+        # print("Ks inverse: \n",Ks.inverse())
+        # print("trans_mats: \n",trans_mats)
+        # print("trans_mats inverse: ",trans_mats.inverse())
+
         # number of points
         N = points_offset.shape[0]
         # batch size
@@ -160,12 +210,16 @@ class SMOKECoder():
         batch_id = torch.arange(N_batch).unsqueeze(1)
         obj_id = batch_id.repeat(1, N // N_batch).flatten()
 
-        trans_mats_inv = trans_mats.inverse()[obj_id]
-        Ks_inv = Ks.inverse()[obj_id]
+        trans_mats_inv = trans_mats.inverse()#[obj_id] I commented obj_id
+        print("trans_mats_inv [obj_id]: ",trans_mats_inv)
+        Ks_inv = Ks.inverse()#[obj_id] I commented obj_id
+        print("Ks_inv [obj_id]: ",Ks_inv)
 
         points = points.view(-1, 2)
         assert points.shape[0] == N
         proj_points = points + points_offset
+
+        #print("proj points: \n",proj_points)
         # transform project points in homogeneous form.
         proj_points_extend = torch.cat(
             (proj_points, torch.ones(N, 1).to(device=device)), dim=1)
@@ -173,10 +227,16 @@ class SMOKECoder():
         proj_points_extend = proj_points_extend.unsqueeze(-1)
         # transform project points back on image
         proj_points_img = torch.matmul(trans_mats_inv, proj_points_extend)
+        print("proj_points_img step 1: \n",proj_points_img)
+        print("")
         # with depth
         proj_points_img = proj_points_img * depths.view(N, -1, 1)
         # transform image coordinates back to object locations
+        print("proj_points_img step 2: \n",proj_points_img)
         locations = torch.matmul(Ks_inv, proj_points_img)
+
+        # print("locations: \n",locations)
+        # print("locations.squeeze(2): \n",locations.squeeze(2))
 
         return locations.squeeze(2)
 
@@ -248,7 +308,51 @@ class SMOKECoder():
 
         else:
             return rotys, alphas
+def my_decode_location(device,trans_mat,points,points_offset):
 
+        N = points_offset.shape[0]
+        points = points.view(-1, 2)
+        assert points.shape[0] == N
+        proj_points = points + points_offset
+        trans_mats_inv=trans_mat.inverse()
+
+
+
+        # SOlve this
+        print("proj points: \n",proj_points)
+        # transform project points in homogeneous form.
+        proj_points_extend = torch.cat(
+            (proj_points, torch.ones(N, 1).to(device=device)), dim=1)
+        # expand project points as [N, 3, 1]
+        proj_points_extend = proj_points_extend.unsqueeze(-1)
+        # transform project points back on image
+        proj_points_img = torch.matmul(trans_mats_inv.to(device), proj_points_extend)
+        print("proj_points_img step 1: \n",proj_points_img)
+        #Solve this
+
+        # print("pred_proj_points: \n",pred_proj_points)
+        # print("pred_proj_offsets: \n",pred_proj_offsets)
+
+        # Until Here
+
+        return proj_points_img
+
+def my_decode_dimensions(cls_id, dims_offset,dim_ref):
+    '''
+    retrieve object dimensions
+    Args:
+        cls_id: each object id
+        dims_offset: dimension offsets, shape = (N, 3)
+
+    Returns:
+
+    '''
+    cls_id = cls_id.flatten().long()
+
+    dims_select = dim_ref[cls_id, :]
+    dimensions = dims_offset.exp() * dims_select
+
+    return dimensions
 
 if __name__ == '__main__':
     sc = SMOKECoder(depth_ref=(28.01, 16.32),

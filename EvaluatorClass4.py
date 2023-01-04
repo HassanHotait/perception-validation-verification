@@ -392,6 +392,117 @@ class metrics_evaluator:
 
 
         print("{} {} Relevant Gt Indices: ".format(label,difficulty),self.relevant_gt_indices)
+    def new_clean_data(self,groundtruth,predictions,label,difficulty):
+        # Clean groundtruth
+        # Get GT classes,boxs,truncation,occlusion in a list.
+        # self.gt_classes,self.gt_boxs=get_gt_classes_boxes(groundtruth)
+        # gt_truncations,gt_occlusions=get_gt_truncation_occlusion(groundtruth)
+
+        self.gt_classes=[gt.name for gt in groundtruth]
+        self.gt_boxs=[(Point(gt.xmin,gt.ymin),Point(gt.xmax,gt.ymax)) for gt in groundtruth]
+        gt_truncations=[gt.truncation for gt in groundtruth]
+        gt_occlusions=[gt.occlusion for gt in groundtruth]
+
+        # Placeholders for storing info
+        valid_label_specific_gt_indices=[]
+        dontcare_gt_indices=[]
+        invalid_label_specific_indices=[]
+        neighbouring_class_indices=[]
+
+        self.filtered_gt_for_debugging_purposes_indices=[]
+
+
+        # Stores valid gt index in list for debugging purposes
+        for i,gt_box in enumerate(self.gt_boxs):
+            computed_difficulty=get_gt_difficulty(gt_box=gt_box,gt_truncation=gt_truncations[i],gt_occlusion=gt_occlusions[i])
+
+            if self.gt_classes[i]==label:
+            # Filter By Difficulty
+                if computed_difficulty=='Ignored':
+                    pass
+                    #print('gt ',i,' is ignored ')
+                    
+                else:
+                    self.filtered_gt_for_debugging_purposes_indices.append(i)
+                    #print('gt ',i,' is valid')
+            else:
+                pass
+
+
+        # Sort groundtruth into valid_label_specific list,dontcare list, neighbouring_class list, and invalid_label_specific list
+        for i,gt_class in enumerate(self.gt_classes):
+            # Label is current class being evaluated
+            if gt_class==label:
+                valid_label_specific_gt_indices.append(i)
+            # DontCare Classes due to small box height
+            elif gt_class=='DontCare':
+                dontcare_gt_indices.append(i)
+            # Neighbouring Classes such as Van for Car and Person Sitting for Person
+            elif gt_class=='Van' or gt_class=='Person Sitting':
+                neighbouring_class_indices.append(i)
+            # Groundtruth with label other than one currently being evaluated --> invalid
+            else:
+                invalid_label_specific_indices.append(i)
+
+        
+        valid_label_and_difficulty_specific_gt_indices=[]
+        ignored_label_specific_gt_indices=[]
+
+        # Previously we only filter according to label, now we filter according to difficulty
+        # We only iterate over groundtruth with valid labels (Ones already added into valid_label_specific_gt_indices list)
+        for valid_label_index in valid_label_specific_gt_indices:
+            # Get groundtruth difficulty from box height, truncation and occlusion.
+            computed_difficulty=get_gt_difficulty(gt_box=self.gt_boxs[valid_label_index],
+                                                  gt_truncation=gt_truncations[valid_label_index],
+                                                  gt_occlusion=gt_occlusions[valid_label_index])
+
+            # Filter By Difficulty
+            if computed_difficulty==difficulty:
+                # If groundtruth matches label and difficulty seeked then add to valid_gt_list
+                valid_label_and_difficulty_specific_gt_indices.append(valid_label_index)
+            elif computed_difficulty=='Ignored':
+                # If groundtruth matches label but not difficulty is ignored due to not fitting in Kitti Criteria add to ignored_gt_list
+                ignored_label_specific_gt_indices.append(valid_label_index)
+
+            else:
+                # If groundtruth matches label but not difficulty --> pass
+                pass
+
+
+        # Clean Predictions
+        self.pred_classes,self.pred_boxes=get_pred_classes_boxes(predictions)
+
+        # Placeholders for predictions
+        valid_difficulty_specific_pred_indices=[]
+        ignored_difficulty_specific_pred_indices=[]
+
+
+        for index,box in enumerate(self.pred_boxes):
+            box_height=box[1].y-box[0].y
+
+            # Ignore predictions with height less than the minimum
+            if box_height>25:
+                valid_difficulty_specific_pred_indices.append(index)
+
+            else:
+                ignored_difficulty_specific_pred_indices.append(index)
+                
+
+        # Define various indices list as global attributes to be used by the evaluator class
+
+        # Groundtruth
+        self.relevant_gt_indices=valid_label_and_difficulty_specific_gt_indices
+        self.ignored_label_specific_gt_indices=ignored_label_specific_gt_indices
+        self.dontcare_gt_indices=dontcare_gt_indices
+        self.neighbouring_class_indices=neighbouring_class_indices
+
+        # Predictions
+        self.relevant_pred_indices=[index for index in valid_difficulty_specific_pred_indices if self.pred_classes[index]==label]
+        self.ignored_difficulty_specific_pred_indices=ignored_difficulty_specific_pred_indices
+        self.valid_difficulty_specific_pred_indices=[index for index in valid_difficulty_specific_pred_indices if self.pred_classes[index]==label]
+
+
+        print("{} {} Relevant Gt Indices: ".format(label,difficulty),self.relevant_gt_indices)
     def get_ignored_gt_indices(self):
         # These are the indices of groundtruth objects that we use to crosscheck a potential fp
         # before we are sure that it's a fp, 
@@ -492,7 +603,7 @@ class metrics_evaluator:
         for label in self.labels:
             for difficulty in self.difficulties:
                 # Filter Groundtruth and Predictions according to label and difficulty
-                self.clean_data(groundtruth,predictions,label,difficulty)
+                self.new_clean_data(groundtruth,predictions,label,difficulty)
                 # Get Metrics according to label and difficulty inputs
                 class_gt_instances,class_pred_instances,TP,FP,FN=self.get_label_specific_metrics(difficulty=difficulty)
                 # Add Metrics to Metrics Holder
@@ -536,7 +647,8 @@ class metrics_evaluator:
         # self.pred_class_difficulty_count=[]
 
         # Get Classes for Count
-        self.total_gt_classes,_=get_gt_classes_boxes(groundtruth)
+        #self.total_gt_classes,_=get_gt_classes_boxes(groundtruth)4
+        self.total_gt_classes=[gt.name for gt in groundtruth]
         self.total_pred_classes,_=get_pred_classes_boxes(predictions)
 
         for l in self.labels:
