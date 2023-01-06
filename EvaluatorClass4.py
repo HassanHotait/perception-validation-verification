@@ -718,10 +718,10 @@ class metrics_evaluator:
         else:
             return None,None,None,None,None,None
 
-    def run_kitti_AP_evaluation_executable(self,root_dir,evaluation_executable_path,predictions_foldername):
+    def run_kitti_AP_evaluation_executable(self,root_dir,evaluation_executable_path,predictions_foldername,label_dir):
 
         #evaluation_executable_path='.\SMOKE\smoke\data\datasets\evaluation\kitti\kitti_eval_40\eval8.exe'
-        boxs_groundtruth_path=os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')
+        boxs_groundtruth_path=label_dir#os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')
         command = "{} {} {} {}".format(evaluation_executable_path,boxs_groundtruth_path, self.results_path.replace("/","\\"),predictions_foldername)#"C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\results\\Streamtest_AP_eval2022_12_23_15_05_34"
 
         # Run evaluation command from terminal

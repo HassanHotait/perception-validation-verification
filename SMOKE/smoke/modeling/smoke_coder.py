@@ -135,7 +135,7 @@ class SMOKECoder():
         #print("Object Dimensions: \n",pred_dimensions)
         objects_height=pred_dimensions[:,1]
         print("Objects Height: \n",objects_height)
-        height_relative_to_camera=1.65-(objects_height/2)
+        height_relative_to_camera=1.32-(objects_height/2)
 
         
         print("K in decode depth: \n",K)

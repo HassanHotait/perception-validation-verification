@@ -294,10 +294,12 @@ def new_read_groundtruth(gt_folder,fileid,extension,dataset):
     print("list of groundtruth: \n",boxs_groundtruth_string)
     
 
-    if dataset=="Kitti":
-        groundtruth=[GtInfo(gt[0].split(' ')) for gt in boxs_groundtruth_string]
-    elif dataset=="Prescan":
-        groundtruth=[GtInfo(gt) for gt in boxs_groundtruth_string]
+    # if dataset=="Kitti":
+    #     groundtruth=[GtInfo(gt[0].split(' ')) for gt in boxs_groundtruth_string]
+    # elif dataset=="Prescan":
+    #     groundtruth=[GtInfo(gt) for gt in boxs_groundtruth_string]
+
+    groundtruth=[GtInfo(gt[0].split(' ')) for gt in boxs_groundtruth_string if len(gt)!=0]
 
     # with open(boxs_groundtruth_file,'r') as file:
     #     firstLine_elements = len(file.readline().split())
@@ -2361,8 +2363,7 @@ def construct_dataframe(cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,di
 
 def construct_dataframe_v2(object_detector,cars_AP,pedestrians_AP,car_metrics,pedestrian_metrics,difficulty_metrics,n_objects_classes,n_objects_difficulties):
 
-    cars_easy_AP,cars_moderate_AP,cars_hard_AP=cars_AP[0],cars_AP[1],cars_AP[2]
-    pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP=pedestrians_AP[0],pedestrians_AP[1],pedestrians_AP[2]
+
 
     # easy_car_metrics=
     # moderate_car_metrics=
@@ -2387,11 +2388,17 @@ def construct_dataframe_v2(object_detector,cars_AP,pedestrians_AP,car_metrics,pe
     # hard_classes='AP: {} - Precision: {} - Recall: {}       '.format(0,0,0)
     # overall_classes='AP: {} - Precision: {} - Recall: {}        '.format(0,0,0)
 
+    # Fix According to n objects (currently quick fix)
     if n_objects_classes[3]!=0:
 
         ratio_easy_cars_to_total_cars=n_objects_classes[0]/n_objects_classes[3]
         ratio_moderate_cars_to_total_cars=n_objects_classes[1]/n_objects_classes[3]
         ratio_hard_cars_to_total_cars=n_objects_classes[2]/n_objects_classes[3]
+
+        #if n_objects_difficulties[0]==
+        easy_cars_AP=cars_AP[0]
+        moderate_cars_AP=cars_AP[1]
+        hard_cars_AP=cars_AP[2]
         
 
     else:
@@ -2399,17 +2406,50 @@ def construct_dataframe_v2(object_detector,cars_AP,pedestrians_AP,car_metrics,pe
         ratio_easy_cars_to_total_cars=0
         ratio_moderate_cars_to_total_cars=0
         ratio_hard_cars_to_total_cars=0
+        easy_cars_AP=0
+        moderate_cars_AP=0
+        hard_cars_AP=0
+
+
+
+
 
 
     if n_objects_classes[7]!=0:
         ratio_easy_pedestrians_to_total_pedestrians=n_objects_classes[4]/n_objects_classes[7]
         ratio_moderate_pedestrians_to_total_pedestrians=n_objects_classes[5]/n_objects_classes[7]
         ratio_hard_pedestrians_to_total_pedestrians=n_objects_classes[6]/n_objects_classes[7]
+        
+        easy_pedestrians_AP=pedestrians_AP[0]
+        moderate_pedestrians_AP=pedestrians_AP[1]
+        hard_pedestrians_AP=pedestrians_AP[2]
+
+
     else:
         ratio_easy_pedestrians_to_total_pedestrians=0
         ratio_moderate_pedestrians_to_total_pedestrians=0
         ratio_hard_pedestrians_to_total_pedestrians=0
 
+        easy_pedestrians_AP=0
+        moderate_pedestrians_AP=0
+        hard_pedestrians_AP=0
+
+
+    if n_objects_difficulties[0]==0:
+        easy_cars_AP=0
+        easy_pedestrians_AP=0
+
+    if n_objects_difficulties[1]==0:
+        moderate_cars_AP=0
+        moderate_pedestrians_AP=0
+
+    if n_objects_difficulties[2]==0:
+        hard_cars_AP=0
+        hard_pedestrians_AP=0
+
+
+    cars_easy_AP,cars_moderate_AP,cars_hard_AP=easy_cars_AP,moderate_cars_AP,hard_cars_AP
+    pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP=easy_pedestrians_AP,moderate_pedestrians_AP,hard_pedestrians_AP
 
 
     overall_cars_AP=(cars_easy_AP*ratio_easy_cars_to_total_cars) +(cars_moderate_AP*ratio_moderate_cars_to_total_cars)+(cars_hard_AP*ratio_hard_cars_to_total_cars)
@@ -2600,6 +2640,7 @@ def get_kitti_AP_evaluation(root_dir,results_path,evaluation_executable_path,met
     # df,bar_metrics=construct_dataframe_v2(cars_AP,pedestrians_AP,metrics_evaluator.car_metrics,metrics_evaluator.pedestrian_metrics,metrics_evaluator.difficulty_metrics,metrics_evaluator.n_object_classes,metrics_evaluator.n_object_difficulties)
 
 
+
 def plot_SMOKE_vs_YOLO(smoke_df,yolo_df,results_path):
     
     smoke_metrics_dict=smoke_df.to_dict()
@@ -2703,6 +2744,47 @@ def get_dataset_depth_stats(labels_path,n_frames,depth_condition):
 
     return depth_mean,depth_std,car_dim_reference
 
+def video_writer(images_folder_path,video_filename,fps,results_path):
+
+    print("video_writer")
+    print("Images Folder Path: ",images_folder_path)
+
+    for folder in [images_folder_path]:
+
+        images_dir_list= os.listdir(folder) # your directory path
+        number_images =len(images_dir_list)
+
+        print("Number of Images: ",number_images)
+
+        # choose codec according to format needed
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v') 
+        codec = cv2.VideoWriter_fourcc(*'XVID')
+        # Read Image Just To get shape
+        image_path=os.path.join(folder,str(0).zfill(6)+'.png')
+        print("Image Path: ",image_path)
+        print("Image Path replaced backslash: ",image_path)
+        img=cv2.imread(image_path)
+
+        # if folder==smoke_image_results_folder:
+        #     video_filename="SMOKE_detections.mp4"
+        # elif folder==smoke_birdview_results_folder:
+        #     video_filename="SMOKE_birdview.mp4"
+        # else:
+        #     video_filename="SMOKE_overview.mp4"
+        video = cv2.VideoWriter(os.path.join(results_path,video_filename), codec, fps, (img.shape[1],img.shape[0]))
+
+
+        for i in range(number_images):
+            image_path=os.path.join(folder,str(i).zfill(6)+'.png')
+            print('IMAGE PATH: ',image_path)
+            img = cv2.imread(image_path)
+            # cv2.imshow('output',img)
+            # cv2.waitKey(0)
+            video.write(img)
+            #frame_id+=1
+
+        cv2.destroyAllWindows()
+        video.release()
 
     
 
