@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DepthEvaluatorClass &mdash; Internship Professional Products Documentation 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Internship Professional Products Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Internship Professional Products Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">DepthEvaluatorClass</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for DepthEvaluatorClass</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<div class="viewcode-block" id="get_calculated_2d_points"><a class="viewcode-back" href="../index.html#DepthEvaluatorClass.get_calculated_2d_points">[docs]</a><span class="k">def</span> <span class="nf">get_calculated_2d_points</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">pose</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">):</span>
+
+    <span class="n">x_3d</span><span class="o">=</span><span class="n">pose</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">y_3d</span><span class="o">=</span><span class="n">pose</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">z_3d</span><span class="o">=</span><span class="n">pose</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">calculated_output</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">x_3d</span><span class="p">],[</span><span class="n">y_3d</span><span class="p">],[</span><span class="n">z_3d</span><span class="p">]]))</span>
+    <span class="k">if</span> <span class="n">z_3d</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">calculated_x</span><span class="o">=</span><span class="n">calculated_output</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">z_3d</span>
+        <span class="c1"># if prediction==True:</span>
+        <span class="c1">#     print(&quot;Float Y Coordinate in Application: &quot;,calculated_output[1]/z_3d)</span>
+        <span class="n">calculated_y</span><span class="o">=</span><span class="n">calculated_output</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">z_3d</span>
+
+    <span class="n">float_coordinates</span><span class="o">=</span><span class="p">(</span><span class="n">calculated_x</span><span class="p">,</span><span class="n">calculated_y</span><span class="p">)</span>
+    <span class="n">int_coordinates</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">calculated_x</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">calculated_y</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">dtype</span><span class="o">==</span><span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">int_coordinates</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">float_coordinates</span></div>
+
+
+<div class="viewcode-block" id="match_pred_2_gt_by_obj_center"><a class="viewcode-back" href="../index.html#DepthEvaluatorClass.match_pred_2_gt_by_obj_center">[docs]</a><span class="k">def</span> <span class="nf">match_pred_2_gt_by_obj_center</span><span class="p">(</span><span class="n">pred_obj_center</span><span class="p">,</span><span class="n">gt_objs_center</span><span class="p">):</span>
+
+    <span class="n">error_list</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">gt_obj_center</span> <span class="ow">in</span> <span class="n">gt_objs_center</span><span class="p">:</span>
+        <span class="n">x_error</span><span class="o">=</span><span class="p">(</span><span class="n">pred_obj_center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">gt_obj_center</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">y_error</span><span class="o">=</span><span class="p">(</span><span class="n">pred_obj_center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">gt_obj_center</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">error</span><span class="o">=</span><span class="n">x_error</span><span class="o">+</span><span class="n">y_error</span>
+        <span class="n">error_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+    <span class="n">gt_object_match_index</span><span class="o">=</span><span class="n">error_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">error_list</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">gt_object_match_index</span></div>
+<div class="viewcode-block" id="depth_evaluator"><a class="viewcode-back" href="../index.html#DepthEvaluatorClass.depth_evaluator">[docs]</a><span class="k">class</span> <span class="nc">depth_evaluator</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_frames</span><span class="p">,</span><span class="n">results_path</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initialized Depth Evaluator&quot;</span><span class="p">)</span>
+        <span class="c1">#self.K=K</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_path</span><span class="o">=</span><span class="n">results_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="o">=</span><span class="n">n_frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predicted_depth</span><span class="o">=</span><span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groundtruth_depth</span><span class="o">=</span><span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_gt_matched_depth_list</span><span class="o">=</span><span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">internal_counter</span><span class="o">=</span><span class="mi">0</span>
+
+<div class="viewcode-block" id="depth_evaluator.match_pred_with_gt_by_object_center"><a class="viewcode-back" href="../index.html#DepthEvaluatorClass.depth_evaluator.match_pred_with_gt_by_object_center">[docs]</a>    <span class="k">def</span> <span class="nf">match_pred_with_gt_by_object_center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">groundtruth</span><span class="p">,</span><span class="n">predictions</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">=</span><span class="n">K</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gt_objs_center</span><span class="o">=</span><span class="p">[</span><span class="n">get_calculated_2d_points</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">,[</span><span class="n">obj</span><span class="o">.</span><span class="n">tx</span><span class="p">,</span><span class="n">obj</span><span class="o">.</span><span class="n">ty</span><span class="o">-</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span><span class="n">obj</span><span class="o">.</span><span class="n">tz</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">groundtruth</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_objs_center</span><span class="o">=</span><span class="p">[</span><span class="n">get_calculated_2d_points</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">,[</span><span class="n">obj</span><span class="o">.</span><span class="n">tx</span><span class="p">,</span><span class="n">obj</span><span class="o">.</span><span class="n">ty</span><span class="o">-</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span><span class="n">obj</span><span class="o">.</span><span class="n">tz</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">predictions</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">pred_obj_center</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pred_objs_center</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pred obj center: &quot;</span><span class="p">,</span><span class="n">pred_obj_center</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;gt objs center list&quot;</span><span class="p">)</span>
+            <span class="n">gt_match_index</span><span class="o">=</span><span class="n">match_pred_2_gt_by_obj_center</span><span class="p">(</span><span class="n">pred_obj_center</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_objs_center</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pred_gt_matched_depth_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predictions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">tz</span><span class="p">,</span><span class="n">groundtruth</span><span class="p">[</span><span class="n">gt_match_index</span><span class="p">]</span><span class="o">.</span><span class="n">tz</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">internal_counter</span><span class="o">+=</span><span class="mi">1</span></div>
+
+<div class="viewcode-block" id="depth_evaluator.viz_object_centers"><a class="viewcode-back" href="../index.html#DepthEvaluatorClass.depth_evaluator.viz_object_centers">[docs]</a>    <span class="k">def</span> <span class="nf">viz_object_centers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">img</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">obj_center</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gt_objs_center</span><span class="p">:</span>
+            <span class="n">img</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">obj_center</span> <span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">obj_center</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_objs_center</span><span class="p">:</span>
+                <span class="n">img</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">obj_center</span> <span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Visualize Obj Centers&quot;</span><span class="p">,</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="depth_evaluator.plot_eror"><a class="viewcode-back" href="../index.html#DepthEvaluatorClass.depth_evaluator.plot_eror">[docs]</a>    <span class="k">def</span> <span class="nf">plot_eror</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">method</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">internal_counter</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">:</span>
+            <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_gt_matched_depth_list</span><span class="p">]</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_gt_matched_depth_list</span><span class="p">]</span>
+            <span class="n">indices_sorted</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x_sorted</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices_sorted</span><span class="p">]</span>
+            <span class="n">y_sorted</span><span class="o">=</span><span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices_sorted</span><span class="p">]</span>
+
+            <span class="c1"># #plt.figure().clear()</span>
+            <span class="c1"># #plt.close()</span>
+            <span class="c1"># fig, ax = plt.subplots()  # Create a figure containing a single axes.</span>
+            <span class="c1"># #ax.plot([1, 2, 3, 4], [1, 4, 2, 3]);  # Plot some data on the axes.</span>
+            <span class="c1"># ax.scatter(x_sorted,y_sorted)</span>
+            <span class="c1"># plt.ylabel(&quot;Error [m]&quot;)</span>
+            <span class="c1"># plt.xlabel(&quot;GroundTruth [m]&quot;)</span>
+            <span class="c1"># plt.xlim([0,60])</span>
+            <span class="c1"># plt.ylim([0,15])</span>
+            
+            <span class="c1">#x.sort()</span>
+
+
+
+            <span class="n">y_smoothed</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">range_coeffs</span><span class="o">=</span><span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">):</span>
+                
+                    
+                <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x_sorted</span><span class="p">[(</span><span class="n">i</span><span class="o">*</span><span class="mi">10</span><span class="p">):(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">],</span> <span class="n">y_sorted</span><span class="p">[(</span><span class="n">i</span><span class="o">*</span><span class="mi">10</span><span class="p">):(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">range_coeffs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Range: &quot;</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> - </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="mi">10</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(a,b): &quot;</span><span class="p">,(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">))</span>
+                <span class="c1"># y_smooth=a*(i*10)+(b)</span>
+                <span class="c1"># y_smoothed.append(y_smooth)</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">70</span><span class="p">,</span><span class="mi">10</span><span class="p">))):</span>
+                <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">range_coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">range_coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">y_smooth</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+                <span class="c1"># elif i==1:</span>
+                <span class="c1">#     a,b=range_coeffs[i-1][0],range_coeffs[i-1][1]</span>
+                <span class="c1">#     y_smooth=(a*x)+(b)</span>
+                <span class="c1">#     print(&quot;Range: &quot;,&quot;{} - {}&quot;.format(i*10,(i+1)*10))</span>
+                <span class="c1">#     print(&quot;(a,b): &quot;,(a,b))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">range_coeffs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">range_coeffs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">y_smooth</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+
+                <span class="n">y_smoothed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_smooth</span><span class="p">)</span>
+
+
+            <span class="c1">#fig,ax = plt.subplots(nrows=1,ncols=1)</span>
+            <span class="c1"># ax.plot(list(range(0,70,10)),y_smoothed)</span>
+            <span class="c1"># #plt.plot(list(range(0,70,10)),y_smoothed)</span>
+            <span class="c1"># plt.ylabel(&quot;Error [m]&quot;)</span>
+            <span class="c1"># plt.xlabel(&quot;GroundTruth [m]&quot;)</span>
+            <span class="c1"># plt.xlim([0,60])</span>
+            <span class="c1"># plt.ylim([0,max(y_smoothed)+1])</span>
+            <span class="c1"># plt.show()</span>
+            <span class="c1">#fig.savefig(os.path.join(self.results_path,&quot;Depth Evaluation via Linear Regression.png&quot;))</span>
+
+            <span class="n">average_y</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">x_for_average_error</span><span class="o">=</span><span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+                <span class="c1">#print(&quot;X Sorted: &quot;,x_sorted)</span>
+                <span class="c1">#print(&quot;Y Sorted: &quot;,y_sorted)</span>
+                <span class="n">x_range_indices</span><span class="o">=</span><span class="p">[</span><span class="n">x_sorted</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x_sorted</span> <span class="k">if</span> <span class="p">(</span><span class="mi">0</span><span class="o">*</span><span class="n">i</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">x</span><span class="o">&lt;</span><span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">)]</span>
+                <span class="n">x_for_average_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">y_for_range</span><span class="o">=</span><span class="p">[</span><span class="n">y_sorted</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x_range_indices</span><span class="p">]</span>
+                <span class="c1">#if len(y_for_range)!=0:</span>
+                <span class="n">average_for_range</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_for_range</span><span class="p">)</span>
+                <span class="c1">#if average_for_range==&quot;nan&quot;:</span>
+                <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Method: &quot;</span><span class="p">,</span><span class="n">method</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;X Sorted: &quot;</span><span class="p">,</span><span class="n">x_sorted</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mean for range: &quot;</span><span class="p">,</span><span class="n">average_for_range</span><span class="p">)</span>
+                <span class="c1"># print(&quot;x for range: &quot;,[x_sorted[i] for i in x_range_indices])</span>
+                <span class="c1"># print(&quot;y for range: &quot;,y_for_range)</span>
+                <span class="n">average_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">average_for_range</span><span class="p">)</span>
+                <span class="c1"># else:</span>
+                <span class="c1">#     average_y.append(0)</span>
+
+
+            <span class="n">average_plot_labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="mi">10</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">)]</span>
+            <span class="c1"># fig,ax = plt.subplots(nrows=1,ncols=1)</span>
+            <span class="c1"># ax.plot(list(range(1,8)),average_y)</span>
+            <span class="c1"># #plt.plot(list(range(1,8)),average_y)</span>
+            <span class="c1"># plt.xticks(ticks=list(range(1,8)),labels=average_plot_labels)</span>
+            <span class="c1"># plt.ylabel(&quot;Average Error [m]&quot;)</span>
+            <span class="c1"># plt.xlabel(&quot;GroundTruth Range [m]&quot;)</span>
+            <span class="c1"># plt.xlim([0,8])</span>
+            <span class="c1"># plt.ylim([0,20])</span>
+            <span class="c1">#plt.show()</span>
+            <span class="c1">#fig.savefig(os.path.join(self.results_path,&quot;Depth Evaluation via Range Average.png&quot;))</span>
+
+            <span class="n">x_filtered_indices</span><span class="o">=</span><span class="p">[</span><span class="n">x_for_average_error</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x_for_average_error</span> <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">==</span><span class="kc">False</span><span class="p">]</span>
+            <span class="n">x_filtered</span><span class="o">=</span><span class="p">[</span><span class="n">x_for_average_error</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x_filtered_indices</span><span class="p">]</span>
+            <span class="n">y_filtered</span><span class="o">=</span><span class="p">[</span><span class="n">average_y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x_filtered_indices</span><span class="p">]</span>
+            <span class="c1"># # Count nan</span>
+            <span class="n">count_nan</span><span class="o">=</span><span class="mi">0</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">y_filtered</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+                    <span class="n">count_nan</span><span class="o">+=</span><span class="mi">1</span>
+
+            <span class="c1">#count_nan=y_filtered.count(math.nan)</span>
+            <span class="k">if</span> <span class="n">count_nan</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">x_filtered</span><span class="o">=</span><span class="n">x_filtered</span><span class="p">[</span><span class="n">count_nan</span><span class="p">:]</span>
+                <span class="n">x_filtered</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x_filtered</span><span class="p">]</span>
+                <span class="n">y_filtered</span><span class="o">=</span><span class="p">[</span><span class="n">average_y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x_filtered_indices</span><span class="p">]</span>
+                <span class="n">y_filtered</span><span class="o">=</span><span class="n">y_filtered</span><span class="p">[</span><span class="n">count_nan</span><span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y_filtered</span><span class="o">=</span><span class="p">[</span><span class="n">average_y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x_filtered_indices</span><span class="p">]</span>
+
+
+            <span class="k">return</span> <span class="n">x_filtered</span><span class="p">,</span><span class="n">y_filtered</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span><span class="kc">None</span></div></div>
+
+        
+        
+
+        
+
+
+
+    
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Hassan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

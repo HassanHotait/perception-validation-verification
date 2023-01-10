@@ -344,15 +344,18 @@ for fileid in  range(number_files):
         # Predictions Default
         viz.draw_3Dbox(K,frame,predictions_list=frame_detection_info_list)
         viz.draw_birdeyes(obj_list=frame_detection_info_list)
-        # Predictions V1
-        viz.draw_3Dbox(K,frame,predictions_list=frame_detection_info_list_v1,optimized=True)
-        viz.draw_birdeyes(obj_list=frame_detection_info_list_v1)
-        # # Predictions V2
-        viz.draw_3Dbox(K,frame,predictions_list=frame_detection_info_list_v2,optimized=True)
-        viz.draw_birdeyes(obj_list=frame_detection_info_list_v2)
+        # # Predictions V1
+        # viz.draw_3Dbox(K,frame,predictions_list=frame_detection_info_list_v1,optimized=True)
+        # viz.draw_birdeyes(obj_list=frame_detection_info_list_v1)
+        # # # Predictions V2
+        # viz.draw_3Dbox(K,frame,predictions_list=frame_detection_info_list_v2,optimized=True)
+        # viz.draw_birdeyes(obj_list=frame_detection_info_list_v2)
         # # Predictions V3
         # viz.draw_3Dbox(K,frame,predictions_list=frame_detection_info_list_v3,optimized=True)
         # viz.draw_birdeyes(obj_list=frame_detection_info_list_v3)
+        # # Predictions V4
+        viz.draw_3Dbox(K,frame,predictions_list=frame_detection_info_list_v4,optimized=True)
+        viz.draw_birdeyes(obj_list=frame_detection_info_list_v4)
         # GroundTruth
         viz.draw_3Dbox(K,frame.copy(),gt_list=groundtruth)
         viz.draw_birdeyes(obj_list=groundtruth)

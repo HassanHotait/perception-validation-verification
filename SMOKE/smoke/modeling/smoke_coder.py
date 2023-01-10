@@ -249,13 +249,17 @@ class SMOKECoder():
             elif method=="ideal_depth":
                 check_threshold=scores>0.25
                 #print("Check Threshold: ",check_threshold)
-                valid_indices=[i for i in range(scores.shape[0]) if check_threshold[0][i]==True]
+                print("Scores Shape:",scores.shape)
+                valid_indices=[i for i in range(scores.shape[1]) if check_threshold[0][i].item()==True]
                 print(check_threshold)
                 frame_gt=new_read_groundtruth(gt_folder=path,fileid=frame_id,extension=".txt",dataset="Prescan")
                 gt_objs_center=get_groundtruth_obj_center(K,frame_gt)
                 depth=torch.empty(50)
                 #groundtruth=new_read_groundtruth(boxs_groundtruth_path,fileid,extension=labels_extension,dataset=dataset)
 
+                print("Valid Indices: ",valid_indices)
+                print("Check Threshold: ",check_threshold)
+                print("Check Threshold[0]: ",check_threshold[0])
                 for i in range(50):
                     
 
@@ -273,6 +277,7 @@ class SMOKECoder():
                         # img=cv2.circle(img,(int(gt_objs_center[gt_index_match][0]),int(gt_objs_center[gt_index_match][1])) , 0, (0,255,0), 2)
                         # pred_obj_center=(int(proj_points[i][0].item()),int(proj_points[i][1].item()))
                         # img=cv2.circle(img,pred_obj_center , 0, (0,0,255), 2)
+                        # print("Pred Depth: ",depth[i])
                         # cv2.imshow("Validate Matched Pair",img)
                         # cv2.waitKey(0)
 
