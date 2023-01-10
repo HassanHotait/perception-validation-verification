@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import cv2
+import math
 
 from SMOKE.smoke.modeling.smoke_coder import SMOKECoder,my_decode_dimensions,my_decode_location
 from SMOKE.smoke.layers.utils import (
@@ -33,7 +34,7 @@ class PostProcessor(nn.Module):
                     K=K,
                     size=size)
 
-    def forward(self, predictions, targets):
+    def forward(self, predictions, targets,default,method,frame_id):
         pred_heatmap, pred_regression = predictions[0], predictions[1]
         batch = pred_heatmap.shape[0]
 
@@ -70,7 +71,7 @@ class PostProcessor(nn.Module):
 
 
         # Modified decode depth input args for alternative depth computation
-        pred_depths = self.smoke_coder.decode_depth(pred_depths_offset,proj_points_img,pred_dimensions,target_varibales["K"],default=False)
+        pred_depths = self.smoke_coder.decode_depth(pred_depths_offset,proj_points_img,pred_dimensions,target_varibales["K"],scores=scores,default=default,method=method,frame_id=frame_id)
 
         pred_locations = self.smoke_coder.decode_location(
             pred_proj_points,
@@ -115,7 +116,9 @@ class PostProcessor(nn.Module):
             clses, pred_alphas, box2d, pred_dimensions, pred_locations, pred_rotys, scores
         ], dim=1)
 
-        keep_idx = result[:, -1] > self.det_threshold
+        #print("result[:,11]: ",result[:,11])
+        keep_idx = result[:, -1] > self.det_threshold #and result[:,11]
+        #keep_idx=
 
         # print("keep_idx: \n",keep_idx)
 
@@ -130,6 +133,7 @@ class PostProcessor(nn.Module):
         final_object_centers=[proj_points_img[i].flatten() for i in valid_indices]
         final_object_image_offsets=[pred_proj_offsets[i] for i in valid_indices]
         result = result[keep_idx]
+        #print()
 
         # img_path="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\Dataset2Kitti\\PrescanRawData_Scenario15\\DataLogger1\\images_2\\"+str(0).zfill(6)+".png"
         # img=cv2.imread(img_path)

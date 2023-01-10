@@ -163,13 +163,13 @@ def preprocess(img_path,cfg,file_id,dataset):
     return img_tensor[0],(target,),K
 
 
-def preprocess_then_predict(model,cfg,file_id,img_path,gpu_device,cpu_device,dataset):
+def preprocess_then_predict(model,cfg,file_id,img_path,gpu_device,cpu_device,dataset,default=True,method="dataset_depth_refs",frame_id="All"):
     img,target,K=preprocess(img_path,cfg,file_id,dataset)
     model.eval()
     with torch.no_grad():
         img=img.to(gpu_device)
         #print('Input Img for Network: ',img)
-        output=model(img,targets=target)
+        output=model.forward(img,targets=target,default=default,method=method,frame_id=frame_id)
         output = output.to(cpu_device)
     
     smoke_predictions_list=output.tolist()

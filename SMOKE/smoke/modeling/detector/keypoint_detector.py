@@ -22,7 +22,7 @@ class KeypointDetector(nn.Module):
         self.backbone = build_backbone(cfg)
         self.heads = build_heads(cfg, self.backbone.out_channels)
 
-    def forward(self, images, targets=None):
+    def forward(self, images, targets=None,default=True,method="dataset_depth_ref",frame_id="All"):
         """
         Args:
             images:
@@ -51,7 +51,7 @@ class KeypointDetector(nn.Module):
         # # hm_key=targets[0].get_field("hm")
         # # print("HM Key Test: ",hm_key)
         
-        result, detector_losses = self.heads(features, targets) # Here is the issue, targets has no field hm for infer while for original code it works
+        result, detector_losses = self.heads(features, targets,default,method,frame_id) # Here is the issue, targets has no field hm for infer while for original code it works
 
         #print("Result: ",result)
 

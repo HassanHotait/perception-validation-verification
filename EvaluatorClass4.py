@@ -718,12 +718,13 @@ class metrics_evaluator:
         else:
             return None,None,None,None,None,None
 
-    def run_kitti_AP_evaluation_executable(self,root_dir,evaluation_executable_path,predictions_foldername,label_dir):
+    def run_kitti_AP_evaluation_executable(self,evaluation_executable_path,predictions_foldername,label_dir,kitti_eval_path):
 
         #evaluation_executable_path='.\SMOKE\smoke\data\datasets\evaluation\kitti\kitti_eval_40\eval8.exe'
         boxs_groundtruth_path=label_dir#os.path.join(root_dir,'SMOKE/datasets/kitti/training/label_2')
-        command = "{} {} {} {}".format(evaluation_executable_path,boxs_groundtruth_path, self.results_path.replace("/","\\"),predictions_foldername)#"C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\results\\Streamtest_AP_eval2022_12_23_15_05_34"
+        command = "{} {} {} {}".format(evaluation_executable_path,boxs_groundtruth_path, kitti_eval_path.replace("/","\\"),predictions_foldername)#"C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\results\\Streamtest_AP_eval2022_12_23_15_05_34"
 
+        print("Command: ",command)
         # Run evaluation command from terminal
         average_precision_command=subprocess.check_output(command, shell=True, universal_newlines=True).strip()
         print(average_precision_command)
@@ -739,9 +740,9 @@ class metrics_evaluator:
         # # Organize results in clear format + Get weighted average for categories with unavailable info
         # df,bar_metrics=construct_dataframe_v2(cars_AP,pedestrians_AP,metrics_evaluator.car_metrics,metrics_evaluator.pedestrian_metrics,metrics_evaluator.difficulty_metrics,metrics_evaluator.n_object_classes,metrics_evaluator.n_object_difficulties)
 
-    def get_AP(self):
-        cars_easy_AP,cars_moderate_AP,cars_hard_AP=get_class_AP(self.results_path,'Car')
-        pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP=get_class_AP(self.results_path,'Pedestrian')
+    def get_AP(self,eval_results_path):
+        cars_easy_AP,cars_moderate_AP,cars_hard_AP=get_class_AP(eval_results_path,'Car')
+        pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP=get_class_AP(eval_results_path,'Pedestrian')
 
         #print('Cars AP: ',)
 
@@ -749,8 +750,8 @@ class metrics_evaluator:
         self.cars_AP=[cars_easy_AP,cars_moderate_AP,cars_hard_AP]
         self.pedestrians_AP=[pedestrian_easy_AP,pedestrian_moderate_AP,pedestrian_hard_AP]
 
-    def construct_dataframe(self):
-        self.get_AP()
+    def construct_dataframe(self,eval_results_path):
+        self.get_AP(eval_results_path)
         df,self.bar_metrics=construct_dataframe_v2(self.object_detector,self.cars_AP,self.pedestrians_AP,self.car_metrics,self.pedestrian_metrics,self.difficulty_specific_metrics,self.n_object_classes,self.n_object_difficulties)
 
         dfi.export(df,os.path.join(self.results_path,'{}MetricsTable.png'.format(self.object_detector)))

@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import math
 
 def get_calculated_2d_points(K,pose,dtype=int):
 
@@ -10,10 +11,11 @@ def get_calculated_2d_points(K,pose,dtype=int):
     z_3d=pose[2]
 
     calculated_output=np.dot(K,np.array([[x_3d],[y_3d],[z_3d]]))
-    calculated_x=calculated_output[0]/z_3d
-    # if prediction==True:
-    #     print("Float Y Coordinate in Application: ",calculated_output[1]/z_3d)
-    calculated_y=calculated_output[1]/z_3d
+    if z_3d!=0:
+        calculated_x=calculated_output[0]/z_3d
+        # if prediction==True:
+        #     print("Float Y Coordinate in Application: ",calculated_output[1]/z_3d)
+        calculated_y=calculated_output[1]/z_3d
 
     float_coordinates=(calculated_x,calculated_y)
     int_coordinates=(int(calculated_x),int(calculated_y))
@@ -71,24 +73,24 @@ class depth_evaluator:
         cv2.imshow("Visualize Obj Centers",img)
         cv2.waitKey(0)
 
-    def plot_eror(self):
+    def plot_eror(self,method):
 
         if self.internal_counter==self.n_frames:
-            x=[item[0] for item in self.pred_gt_matched_depth_list]
+            x=[item[1] for item in self.pred_gt_matched_depth_list]
             y=[np.abs(item[1]-item[0]) for item in self.pred_gt_matched_depth_list]
             indices_sorted=np.argsort(x)
             x_sorted=[x[i] for i in indices_sorted]
             y_sorted=[y[i] for i in indices_sorted]
 
-            #plt.figure().clear()
-            #plt.close()
-            fig, ax = plt.subplots()  # Create a figure containing a single axes.
-            #ax.plot([1, 2, 3, 4], [1, 4, 2, 3]);  # Plot some data on the axes.
-            ax.scatter(x_sorted,y_sorted)
-            plt.ylabel("Error [m]")
-            plt.xlabel("GroundTruth [m]")
-            plt.xlim([0,60])
-            plt.ylim([0,15])
+            # #plt.figure().clear()
+            # #plt.close()
+            # fig, ax = plt.subplots()  # Create a figure containing a single axes.
+            # #ax.plot([1, 2, 3, 4], [1, 4, 2, 3]);  # Plot some data on the axes.
+            # ax.scatter(x_sorted,y_sorted)
+            # plt.ylabel("Error [m]")
+            # plt.xlabel("GroundTruth [m]")
+            # plt.xlim([0,60])
+            # plt.ylim([0,15])
             
             #x.sort()
 
@@ -124,35 +126,74 @@ class depth_evaluator:
 
 
             #fig,ax = plt.subplots(nrows=1,ncols=1)
-            ax.plot(list(range(0,70,10)),y_smoothed)
-            #plt.plot(list(range(0,70,10)),y_smoothed)
-            plt.ylabel("Error [m]")
-            plt.xlabel("GroundTruth [m]")
-            plt.xlim([0,60])
-            plt.ylim([0,max(y_smoothed)+1])
-            plt.show()
-            fig.savefig(os.path.join(self.results_path,"Depth Evaluation via Linear Regression.png"))
+            # ax.plot(list(range(0,70,10)),y_smoothed)
+            # #plt.plot(list(range(0,70,10)),y_smoothed)
+            # plt.ylabel("Error [m]")
+            # plt.xlabel("GroundTruth [m]")
+            # plt.xlim([0,60])
+            # plt.ylim([0,max(y_smoothed)+1])
+            # plt.show()
+            #fig.savefig(os.path.join(self.results_path,"Depth Evaluation via Linear Regression.png"))
 
             average_y=[]
+            x_for_average_error=[]
 
             for i in range(7):
+                #print("X Sorted: ",x_sorted)
+                #print("Y Sorted: ",y_sorted)
                 x_range_indices=[x_sorted.index(x) for x in x_sorted if (0*i)<=x<((i+1)*10)]
+                x_for_average_error.append(i)
                 y_for_range=[y_sorted[i] for i in x_range_indices]
-                average_y.append(np.mean(y_for_range))
+                #if len(y_for_range)!=0:
+                average_for_range=np.mean(y_for_range)
+                #if average_for_range=="nan":
+                if i==0:
+                    print("Method: ",method)
+                    print("X Sorted: ",x_sorted)
+                    print("mean for range: ",average_for_range)
+                # print("x for range: ",[x_sorted[i] for i in x_range_indices])
+                # print("y for range: ",y_for_range)
+                average_y.append(average_for_range)
+                # else:
+                #     average_y.append(0)
+
 
             average_plot_labels=["{}-{}".format(i*10,(i+1)*10) for i in range(0,7)]
-            fig,ax = plt.subplots(nrows=1,ncols=1)
-            ax.plot(list(range(1,8)),average_y)
-            #plt.plot(list(range(1,8)),average_y)
-            plt.xticks(ticks=list(range(1,8)),labels=average_plot_labels)
-            plt.ylabel("Average Error [m]")
-            plt.xlabel("GroundTruth Range [m]")
-            plt.xlim([0,8])
-            plt.ylim([0,20])
-            plt.show()
-            fig.savefig(os.path.join(self.results_path,"Depth Evaluation via Range Average.png"))
+            # fig,ax = plt.subplots(nrows=1,ncols=1)
+            # ax.plot(list(range(1,8)),average_y)
+            # #plt.plot(list(range(1,8)),average_y)
+            # plt.xticks(ticks=list(range(1,8)),labels=average_plot_labels)
+            # plt.ylabel("Average Error [m]")
+            # plt.xlabel("GroundTruth Range [m]")
+            # plt.xlim([0,8])
+            # plt.ylim([0,20])
+            #plt.show()
+            #fig.savefig(os.path.join(self.results_path,"Depth Evaluation via Range Average.png"))
+
+            x_filtered_indices=[x_for_average_error.index(x) for x in x_for_average_error if math.isnan(x)==False]
+            x_filtered=[x_for_average_error[i] for i in x_filtered_indices]
+            y_filtered=[average_y[i] for i in x_filtered_indices]
+            # # Count nan
+            count_nan=0
+            for y in y_filtered:
+                if math.isnan(y)==True:
+                    count_nan+=1
+
+            #count_nan=y_filtered.count(math.nan)
+            if count_nan!=0:
+                x_filtered=x_filtered[count_nan:]
+                x_filtered=[x+1 for x in x_filtered]
+                y_filtered=[average_y[i] for i in x_filtered_indices]
+                y_filtered=y_filtered[count_nan:]
+            else:
+                y_filtered=[average_y[i] for i in x_filtered_indices]
+
+
+            return x_filtered,y_filtered
         else:
-            pass
+            return None,None
+
+        
         
 
         

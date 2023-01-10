@@ -800,7 +800,7 @@ vector<int32_t> getEvalIndices(const string& result_dir) {
     return indices;
 }
 
-bool eval(string gt_dir, string result_dir, string predictions_dir_name,Mail* mail){
+bool eval(string gt_dir, string result_dir, string predictions_dir,Mail* mail){
 
   // set some global parameters
   initGlobals();
@@ -827,7 +827,7 @@ bool eval(string gt_dir, string result_dir, string predictions_dir_name,Mail* ma
 
   // for all images read groundtruth and detections
   mail->msg("Loading detections...");
-  std::vector<int32_t> indices = getEvalIndices(result_dir + "/"+predictions_dir_name+"/");
+  std::vector<int32_t> indices = getEvalIndices(predictions_dir+"/");
   printf("number of files for evaluation: %d\n", (int)indices.size());
 
   for (int32_t i=0; i<indices.size(); i++) {
@@ -839,7 +839,7 @@ bool eval(string gt_dir, string result_dir, string predictions_dir_name,Mail* ma
     // read ground truth and result poses
     bool gt_success,det_success;
     vector<tGroundtruth> gt   = loadGroundtruth(gt_dir + "/" + file_name,gt_success);
-    vector<tDetection>   det  = loadDetections(result_dir + "/"+predictions_dir_name+"/" + file_name,
+    vector<tDetection>   det  = loadDetections(predictions_dir+"/" + file_name,
             compute_aos, eval_image, eval_ground, eval_3d, det_success);
     groundtruth.push_back(gt);
     detections.push_back(det);
@@ -936,14 +936,14 @@ int32_t main (int32_t argc,char *argv[]) {
 
   // we need 2 or 4 arguments!
   if (argc!=4) {
-    cout << "Usage: ./eval_detection_3d_offline gt_dir result_dir predictions_foldername" << endl;
+    cout << "Usage: ./eval_detection_3d_offline gt_dir result_dir predictions_dir" << endl;
     return 1;
   }
 
   // read arguments
   string gt_dir = argv[1];
   string result_dir = argv[2];
-  string predictions_dir_name = argv[3];
+  string predictions_dir = argv[3];
   
 
   // init notification mail
@@ -952,7 +952,7 @@ int32_t main (int32_t argc,char *argv[]) {
   mail->msg("Thank you for participating in our evaluation!");
 
   // run evaluation
-  if (eval(gt_dir, result_dir, predictions_dir_name,mail)) {
+  if (eval(gt_dir, result_dir, predictions_dir,mail)) {
     mail->msg("Your evaluation results are available at:");
     mail->msg(result_dir.c_str());
   } else {

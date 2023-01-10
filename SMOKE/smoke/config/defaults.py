@@ -130,8 +130,9 @@ _C.MODEL.SMOKE_HEAD.DIMENSION_REFERENCE = ((3.88, 1.63, 1.53),
 # Frame 1 Scenario 15 Logger 1 (33.4,2.44) Less than 40 m
 # Frame 1 Scenario 15 Logger 1 (69.11,20.35) Less than 200 m
 # Frame 1 Scenario 15 Logger 1 (44.25,11.3) Less than  60 m
-# Frame 1 Scenario 15 Logger 1 (33.4,2.44) Less than  45 mq
-_C.MODEL.SMOKE_HEAD.DEPTH_REFERENCE = (28.01,16.32)
+# Frame 1 Scenario 15 Logger 1 (33.4,2.44) Less than  45 m
+# Scenario 15 Logger 1 (37.97,15.30)
+_C.MODEL.SMOKE_HEAD.DEPTH_REFERENCE = (28.01, 16.32) # Kitti depth parameters
 _C.MODEL.SMOKE_HEAD.USE_NMS = False
 
 # ---------------------------------------------------------------------------- #

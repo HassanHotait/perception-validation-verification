@@ -1866,16 +1866,31 @@ def plot_groundtruth(img,groundtruth):
     
     return groundtruth_img
 
-def plot_prediction(img,predictions):
+def plot_prediction(img,predictions,color):
     thickness=2
     prediction_img=img
     for i in range(len(predictions)):
 
-        color=(0,0,255)
+        #color=(0,0,255)
         TL=(int(float(predictions[i][2])),int(float(predictions[i][3])))
         BR=(int(float(predictions[i][4])),int(float(predictions[i][5])))
 
         prediction_img=cv2.rectangle(prediction_img,TL,BR,color,thickness)
+
+    
+    return prediction_img
+
+def new_plot_prediction(img,pred_objs,color):
+    thickness=2
+    prediction_img=img
+    # for pred_obj in pred_objs:
+
+    #color=(0,0,255)
+    for pred_obj in pred_objs:
+        TL=(int(pred_obj.xmin),int(pred_obj.ymin))
+        BR=(int(pred_obj.xmax),int(pred_obj.ymax))
+
+    prediction_img=cv2.rectangle(prediction_img,TL,BR,color,thickness)
 
     
     return prediction_img
@@ -2093,7 +2108,7 @@ def read_prediction(predictions_folder_path,fileid):
 
 
 def write_prediction(predictions_folder_path,fileid,predictions_list):
-    with open(os.path.join(predictions_folder_path,str(fileid).zfill(6)+'.txt'),'w') as f:
+    with open(os.path.join(predictions_folder_path,str(fileid).zfill(6)+'.txt'),'w',newline="") as f:
         writer=csv.writer(f,delimiter=' ')
 
         
@@ -2101,6 +2116,20 @@ def write_prediction(predictions_folder_path,fileid,predictions_list):
             print('Prediction: ',prediction)
             print('Items in Prediction: ',len(prediction))
             writer.writerow(convert_prediction_text_format(prediction))
+
+    return True
+
+def new_write_prediction(predictions_folder_path,fileid,pred_objs):
+    with open(os.path.join(predictions_folder_path,str(fileid).zfill(6)+'.txt'),'w',newline="") as f:
+        writer=csv.writer(f)
+
+        
+        for j,pred_obj in enumerate(pred_objs):
+            # print('Prediction: ',prediction)
+            # print('Items in Prediction: ',len(prediction))
+            
+            pred_obj.get_preds_string()
+            writer.writerow([pred_obj.preds_list_string])
 
     return True
 
@@ -2710,19 +2739,29 @@ def plot_SMOKE_vs_YOLO(smoke_df,yolo_df,results_path):
     plt.show()
 
 
-def get_dataset_depth_stats(labels_path,n_frames,depth_condition):
+def get_dataset_depth_stats(labels_path,depth_condition,extension,frame_id="All"):
 
-    n_labels=n_frames
+    if frame_id=="All":
+        n_labels=len(os.listdir(labels_path))
+        file_ids=list(range(n_labels))
+
+    else:
+        file_ids=[frame_id]
+
+
+    #n_labels=n_frames
 
     groundtruth=[]
-    for i in range(n_labels):
-        groundtruth.append(new_read_groundtruth(labels_path,i,extension='.csv'))
+    for fileid in file_ids:
+        groundtruth.append(new_read_groundtruth(labels_path,fileid,extension=extension,dataset="Prescan"))
 
     
     objects_depth=[]
     cars_l=[]
     cars_w=[]
     cars_h=[]
+
+    
 
     for gt_list in groundtruth:
         for gt in gt_list:

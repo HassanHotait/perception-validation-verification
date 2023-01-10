@@ -1,9 +1,67 @@
 import numpy as np
+import cv2
+import os
 
 import torch
 
 PI = 3.14159
 
+from metrics_functions_from_evaluation_script import get_dataset_depth_stats,new_read_groundtruth
+# def match_pred_with_gt(K,groundtruth,predictions):
+#     pred_gt_matched_depth_list=[]
+#     K=K
+#     gt_objs_center=[get_calculated_2d_points(K,[obj.tx,obj.ty-(obj.h/2),obj.tz],dtype=int) for obj in groundtruth]
+#     pred_objs_center=[get_calculated_2d_points(K,[obj.tx,obj.ty-(obj.h/2),obj.tz],dtype=int) for obj in predictions]
+
+#     for i,pred_obj_center in enumerate(pred_objs_center):
+#         print("pred obj center: ",pred_obj_center)
+#         print("gt objs center list")
+#         gt_match_index=match_pred_2_gt_by_obj_center(pred_obj_center,gt_objs_center)
+#         #pred_gt_matched_depth_list.append((predictions[i].tz,groundtruth[gt_match_index].tz))
+
+#     #internal_counter+=1
+#     return gt_match_index
+
+def get_groundtruth_obj_center(K,groundtruth):
+    K=K.cpu()
+    gt_objs_center=[get_calculated_2d_points(K,[obj.tx,obj.ty-(obj.h/2),obj.tz],dtype=float) for obj in groundtruth]
+
+    return gt_objs_center
+
+def get_calculated_2d_points(K,pose,dtype=int):
+
+    x_3d=pose[0]
+    y_3d=pose[1]
+    z_3d=pose[2]
+
+    calculated_output=np.dot(K,np.array([[x_3d],[y_3d],[z_3d]]))
+    if z_3d!=0:
+        calculated_x=calculated_output[0]/z_3d
+        # if prediction==True:
+        #     print("Float Y Coordinate in Application: ",calculated_output[1]/z_3d)
+        calculated_y=calculated_output[1]/z_3d
+
+    float_coordinates=(calculated_x,calculated_y)
+    int_coordinates=(int(calculated_x),int(calculated_y))
+
+    if dtype==int:
+        return int_coordinates
+    else:
+        return float_coordinates
+
+
+def match_pred_2_gt_by_obj_center(pred_obj_center,gt_objs_center):
+
+    error_list=[]
+    for gt_obj_center in gt_objs_center:
+        x_error=(pred_obj_center[0]-gt_obj_center[0])**2
+        y_error=(pred_obj_center[1]-gt_obj_center[1])**2
+        error=x_error+y_error
+        error_list.append(error)
+
+    gt_object_match_index=error_list.index(min(error_list))
+
+    return gt_object_match_index
 
 def encode_label(K, ry, dims, locs):
     l, h, w = dims[0], dims[1], dims[2]
@@ -127,18 +185,18 @@ class SMOKECoder():
 
         return box_3d
 
-    def decode_depth(self, depths_offset,proj_points,pred_dimensions,K,default=True):
+    def decode_depth(self, depths_offset,proj_points,pred_dimensions,K,scores,default=True,method="dataset_depth_refs",frame_id="All"):
         '''
         Transform depth offset to depth
         '''
 
         #print("Object Dimensions: \n",pred_dimensions)
         objects_height=pred_dimensions[:,1]
-        print("Objects Height: \n",objects_height)
+        #print("Objects Height: \n",objects_height)
         height_relative_to_camera=1.32-(objects_height/2)
 
         
-        print("K in decode depth: \n",K)
+        #print("K in decode depth: \n",K)
         K=K[0].to(device="cuda")
         fy=K[1][1]
         cy=K[1][2]
@@ -153,25 +211,84 @@ class SMOKECoder():
         d=K_inv[1][2]
 
         #print("a b c d : ",(a,b,c,d))
-        print("(Xc,Yc): \n",proj_points)
-        print("Heights Relative to Camera: \n",height_relative_to_camera)
+        # print("(Xc,Yc): \n",proj_points)
+        # print("Heights Relative to Camera: \n",height_relative_to_camera)
         pixel_y_coordinates=proj_points[:,1]
-        print("Y_coordinates: \n",pixel_y_coordinates.flatten())
-        print("")
+        #print("Y_coordinates: \n",pixel_y_coordinates.flatten())
+        # print("")
         #Z=(height_relative_to_camera)/((c*pixel_y_coordinates.flatten())+d)
 
         
-        Z=(height_relative_to_camera*fy)/(pixel_y_coordinates.flatten().type(torch.int64)-cy)
+        Z=(height_relative_to_camera*fy)/(pixel_y_coordinates.flatten()-cy)
 
-        print("Z no extra : \n",Z)
+        #print("Z no extra : \n",Z)
+        path="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\Dataset2Kitti\\PrescanRawData_Scenario16\\DataLogger1\\label_2"
+        img_path="C:\\Users\\hashot51\\Desktop\\perception-validation-verification\\Dataset2Kitti\\PrescanRawData_Scenario16\\DataLogger1\\images_2"
 
         if default==True:
             depth = depths_offset * self.depth_ref[1] + self.depth_ref[0]
         else:
-            depth=Z
+            if method=="dataset_depth_refs":
+                mean,std,_=get_dataset_depth_stats(labels_path=path,frame_id=frame_id,depth_condition=45,extension=".txt")
+                calculated_depth_ref=(mean,std)
+                depth = depths_offset * calculated_depth_ref[1] + calculated_depth_ref[0]
+                
 
-        print("Relative Depth: ",depths_offset)
-        print("Relative Depth Tensor Shape: ",depths_offset.shape)
+            elif method=="frame_depth_refs":
+                mean,std,_=get_dataset_depth_stats(labels_path=path,frame_id=frame_id,depth_condition=45,extension=".txt")
+                calculated_depth_ref=(mean,std)#get_dataset_depth_stats(labels_path=path,frame_id=frame_id,depth_condition=60,extension=".txt")
+                depth = depths_offset * calculated_depth_ref[1] + calculated_depth_ref[0]
+                #(labels_path=path,frame_id="All",depth_condition=60,extension=".txt")
+                
+                pass
+                
+            elif method=="flat_road":
+                
+                depth=Z
+
+            elif method=="ideal_depth":
+                check_threshold=scores>0.25
+                #print("Check Threshold: ",check_threshold)
+                valid_indices=[i for i in range(scores.shape[0]) if check_threshold[0][i]==True]
+                print(check_threshold)
+                frame_gt=new_read_groundtruth(gt_folder=path,fileid=frame_id,extension=".txt",dataset="Prescan")
+                gt_objs_center=get_groundtruth_obj_center(K,frame_gt)
+                depth=torch.empty(50)
+                #groundtruth=new_read_groundtruth(boxs_groundtruth_path,fileid,extension=labels_extension,dataset=dataset)
+
+                for i in range(50):
+                    
+
+                    if i in valid_indices:
+                        #print("Proj Point in decode depths: ",proj_points)
+                        pred_obj_center=(proj_points[i][0].item(),proj_points[i][1].item())
+                        print("Pred Obj Center: ",pred_obj_center)
+                        gt_index_match=match_pred_2_gt_by_obj_center(pred_obj_center,gt_objs_center)
+                        print("Groundtruth Object Center: ",gt_objs_center[gt_index_match])
+                        depth[i]=frame_gt[gt_index_match].tz
+                        # img_filepath=os.path.join(img_path,str(frame_id).zfill(6)+".png")
+                        
+                        # print("Image Filepath")
+                        # img=cv2.imread(img_filepath)
+                        # img=cv2.circle(img,(int(gt_objs_center[gt_index_match][0]),int(gt_objs_center[gt_index_match][1])) , 0, (0,255,0), 2)
+                        # pred_obj_center=(int(proj_points[i][0].item()),int(proj_points[i][1].item()))
+                        # img=cv2.circle(img,pred_obj_center , 0, (0,0,255), 2)
+                        # cv2.imshow("Validate Matched Pair",img)
+                        # cv2.waitKey(0)
+
+                    else:
+                        depth[i]=4
+
+                    depth=depth.to(device="cuda")
+            else:
+                raise "Method For Post Processing Depth is unknown"
+
+            # if np.isnan(depth):
+            #     depth=1
+
+
+        # print("Relative Depth: ",depths_offset)
+        # print("Relative Depth Tensor Shape: ",depths_offset.shape)
 
         return depth
 
@@ -211,9 +328,9 @@ class SMOKECoder():
         obj_id = batch_id.repeat(1, N // N_batch).flatten()
 
         trans_mats_inv = trans_mats.inverse()#[obj_id] I commented obj_id
-        print("trans_mats_inv [obj_id]: ",trans_mats_inv)
+        #print("trans_mats_inv [obj_id]: ",trans_mats_inv)
         Ks_inv = Ks.inverse()#[obj_id] I commented obj_id
-        print("Ks_inv [obj_id]: ",Ks_inv)
+        #print("Ks_inv [obj_id]: ",Ks_inv)
 
         points = points.view(-1, 2)
         assert points.shape[0] == N
@@ -227,12 +344,12 @@ class SMOKECoder():
         proj_points_extend = proj_points_extend.unsqueeze(-1)
         # transform project points back on image
         proj_points_img = torch.matmul(trans_mats_inv, proj_points_extend)
-        print("proj_points_img step 1: \n",proj_points_img)
-        print("")
+        #print("proj_points_img step 1: \n",proj_points_img)
+        #print("")
         # with depth
         proj_points_img = proj_points_img * depths.view(N, -1, 1)
         # transform image coordinates back to object locations
-        print("proj_points_img step 2: \n",proj_points_img)
+        #print("proj_points_img step 2: \n",proj_points_img)
         locations = torch.matmul(Ks_inv, proj_points_img)
 
         # print("locations: \n",locations)

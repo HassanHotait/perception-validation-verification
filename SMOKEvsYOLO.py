@@ -131,13 +131,13 @@ for fileid in range(n):
     # Read Frame and Visualize Groundtruth 2D
     ordered_filepath=os.path.join(test_images_path,str(fileid).zfill(6)+'.png')
     frame=cv2.imread(ordered_filepath)
-    groundtruth=read_groundtruth(boxs_groundtruth_path,fileid)
+    groundtruth=read_groundtruth(boxs_groundtruth_path,fileid,extension=".txt")
     groundtruth_image=plot_groundtruth(frame,groundtruth)
     cv2.imwrite(os.path.join(groundtruth_image_stream_path,'frame'+str(fileid).zfill(6)+'.png'),groundtruth_image)
 
     if predict_then_evaluate==True or only_predict==True:
         #  SMOKE Predict,Visualize & Save predictions in logs
-        smoke_predictions_list,P2,K=preprocess_then_predict(model,cfg,fileid,ordered_filepath,gpu_device,cpu_device,)
+        smoke_predictions_list,K=preprocess_then_predict(model,cfg,fileid,ordered_filepath,gpu_device,cpu_device,dataset="Kitti")
         write_prediction(smoke_data_path,fileid,smoke_predictions_list)
         output_img=plot_prediction(frame.copy(),smoke_predictions_list)
         #print('P2: ',P2)
