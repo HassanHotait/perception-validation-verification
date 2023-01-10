@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Internship Professional Products Documentation’s documentation! &mdash; Internship Professional Products Documentation 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> Internship Professional Products Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to Internship Professional Products Documentation’s documentation!</a></li>
+<li><a class="reference internal" href="#module-DepthEvaluatorClass">DepthEvaluatorClass module</a><ul>
+<li><a class="reference internal" href="#DepthEvaluatorClass.depth_evaluator"><code class="docutils literal notranslate"><span class="pre">depth_evaluator</span></code></a><ul>
+<li><a class="reference internal" href="#DepthEvaluatorClass.depth_evaluator.match_pred_with_gt_by_object_center"><code class="docutils literal notranslate"><span class="pre">depth_evaluator.match_pred_with_gt_by_object_center()</span></code></a></li>
+<li><a class="reference internal" href="#DepthEvaluatorClass.depth_evaluator.plot_eror"><code class="docutils literal notranslate"><span class="pre">depth_evaluator.plot_eror()</span></code></a></li>
+<li><a class="reference internal" href="#DepthEvaluatorClass.depth_evaluator.viz_object_centers"><code class="docutils literal notranslate"><span class="pre">depth_evaluator.viz_object_centers()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#DepthEvaluatorClass.get_calculated_2d_points"><code class="docutils literal notranslate"><span class="pre">get_calculated_2d_points()</span></code></a></li>
+<li><a class="reference internal" href="#DepthEvaluatorClass.match_pred_2_gt_by_obj_center"><code class="docutils literal notranslate"><span class="pre">match_pred_2_gt_by_obj_center()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-EvaluatorClass4">EvaluatorClass4 module</a><ul>
+<li><a class="reference internal" href="#EvaluatorClass4.ClassHolder"><code class="docutils literal notranslate"><span class="pre">ClassHolder</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.DifficultyHolder"><code class="docutils literal notranslate"><span class="pre">DifficultyHolder</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.MetricsHolder"><code class="docutils literal notranslate"><span class="pre">MetricsHolder</span></code></a><ul>
+<li><a class="reference internal" href="#EvaluatorClass4.MetricsHolder.add_to_metrics"><code class="docutils literal notranslate"><span class="pre">MetricsHolder.add_to_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.MetricsHolder.get_data_row"><code class="docutils literal notranslate"><span class="pre">MetricsHolder.get_data_row()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.MetricsHolder.store_stats"><code class="docutils literal notranslate"><span class="pre">MetricsHolder.store_stats()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#EvaluatorClass4.get_gt_classes_boxes"><code class="docutils literal notranslate"><span class="pre">get_gt_classes_boxes()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.get_gt_difficulty"><code class="docutils literal notranslate"><span class="pre">get_gt_difficulty()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.get_gt_truncation_occlusion"><code class="docutils literal notranslate"><span class="pre">get_gt_truncation_occlusion()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator</span></code></a><ul>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.check_fp_candidate"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.check_fp_candidate()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.clean_data"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.clean_data()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.construct_dataframe"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.construct_dataframe()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.eval_metrics"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.eval_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.get_AP"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.get_AP()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.get_fp_difficulty_by_height"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.get_fp_difficulty_by_height()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.get_frame_metrics"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.get_frame_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.get_ignored_gt_indices"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.get_ignored_gt_indices()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.get_label_specific_metrics"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.get_label_specific_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.get_metrics_v2"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.get_metrics_v2()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.new_clean_data"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.new_clean_data()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.run_kitti_AP_evaluation_executable"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.run_kitti_AP_evaluation_executable()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.show_results"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.show_results()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.metrics_evaluator.tabularize"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.tabularize()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#EvaluatorClass4.new_plot_groundtruth"><code class="docutils literal notranslate"><span class="pre">new_plot_groundtruth()</span></code></a></li>
+<li><a class="reference internal" href="#EvaluatorClass4.plot_groundtruth"><code class="docutils literal notranslate"><span class="pre">plot_groundtruth()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-metrics_functions_from_evaluation_script">metrics_functions_from_evaluation_script module</a><ul>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.GtInfo"><code class="docutils literal notranslate"><span class="pre">GtInfo</span></code></a><ul>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.GtInfo.get_labels_list"><code class="docutils literal notranslate"><span class="pre">GtInfo.get_labels_list()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.Point"><code class="docutils literal notranslate"><span class="pre">Point</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.box_does_not_intersect_with_all_boxes_in_list"><code class="docutils literal notranslate"><span class="pre">box_does_not_intersect_with_all_boxes_in_list()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.boxes_in_list_do_not_intersect"><code class="docutils literal notranslate"><span class="pre">boxes_in_list_do_not_intersect()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.construct_dataframe"><code class="docutils literal notranslate"><span class="pre">construct_dataframe()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.construct_dataframe_v2"><code class="docutils literal notranslate"><span class="pre">construct_dataframe_v2()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.convert_prediction_json_format"><code class="docutils literal notranslate"><span class="pre">convert_prediction_json_format()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.convert_prediction_text_format"><code class="docutils literal notranslate"><span class="pre">convert_prediction_text_format()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.enhance_excelfile"><code class="docutils literal notranslate"><span class="pre">enhance_excelfile()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_IoU"><code class="docutils literal notranslate"><span class="pre">get_IoU()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_box_difficulty_index"><code class="docutils literal notranslate"><span class="pre">get_box_difficulty_index()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_box_difficulty_index_2"><code class="docutils literal notranslate"><span class="pre">get_box_difficulty_index_2()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_class_AP"><code class="docutils literal notranslate"><span class="pre">get_class_AP()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_dataset_depth_stats"><code class="docutils literal notranslate"><span class="pre">get_dataset_depth_stats()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_evaluation_metrics"><code class="docutils literal notranslate"><span class="pre">get_evaluation_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_gt_classes"><code class="docutils literal notranslate"><span class="pre">get_gt_classes()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_gt_classes_boxes"><code class="docutils literal notranslate"><span class="pre">get_gt_classes_boxes()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_gt_truncation_occlusion"><code class="docutils literal notranslate"><span class="pre">get_gt_truncation_occlusion()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_key"><code class="docutils literal notranslate"><span class="pre">get_key()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_kitti_AP_evaluation"><code class="docutils literal notranslate"><span class="pre">get_kitti_AP_evaluation()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_metrics_label_specific"><code class="docutils literal notranslate"><span class="pre">get_metrics_label_specific()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_metrics_label_specific_2"><code class="docutils literal notranslate"><span class="pre">get_metrics_label_specific_2()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_plot_groundtruth"><code class="docutils literal notranslate"><span class="pre">get_plot_groundtruth()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_plot_predictions"><code class="docutils literal notranslate"><span class="pre">get_plot_predictions()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_pred_classes_boxes"><code class="docutils literal notranslate"><span class="pre">get_pred_classes_boxes()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.get_predicted_classes"><code class="docutils literal notranslate"><span class="pre">get_predicted_classes()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.metrics_evaluator"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator</span></code></a><ul>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.metrics_evaluator.evaluate_metrics"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.evaluate_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.metrics_evaluator.get_boxs_classes_occlusion_truncation"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.get_boxs_classes_occlusion_truncation()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.metrics_evaluator.get_metrics"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.get_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.metrics_evaluator.tabularize"><code class="docutils literal notranslate"><span class="pre">metrics_evaluator.tabularize()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.modified_yolo_2_smoke_output_format"><code class="docutils literal notranslate"><span class="pre">modified_yolo_2_smoke_output_format()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.new_plot_prediction"><code class="docutils literal notranslate"><span class="pre">new_plot_prediction()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.new_read_groundtruth"><code class="docutils literal notranslate"><span class="pre">new_read_groundtruth()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.new_write_prediction"><code class="docutils literal notranslate"><span class="pre">new_write_prediction()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.plot_SMOKE_vs_YOLO"><code class="docutils literal notranslate"><span class="pre">plot_SMOKE_vs_YOLO()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.plot_groundtruth"><code class="docutils literal notranslate"><span class="pre">plot_groundtruth()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.plot_prediction"><code class="docutils literal notranslate"><span class="pre">plot_prediction()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.read_groundtruth"><code class="docutils literal notranslate"><span class="pre">read_groundtruth()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.read_prediction"><code class="docutils literal notranslate"><span class="pre">read_prediction()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.rectanges_overlap"><code class="docutils literal notranslate"><span class="pre">rectanges_overlap()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.smoke_get_n_classes"><code class="docutils literal notranslate"><span class="pre">smoke_get_n_classes()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.tabularize"><code class="docutils literal notranslate"><span class="pre">tabularize()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.tabularize_metrics"><code class="docutils literal notranslate"><span class="pre">tabularize_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.video_writer"><code class="docutils literal notranslate"><span class="pre">video_writer()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.write_json"><code class="docutils literal notranslate"><span class="pre">write_json()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.write_prediction"><code class="docutils literal notranslate"><span class="pre">write_prediction()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.yolo_2_json_output_format"><code class="docutils literal notranslate"><span class="pre">yolo_2_json_output_format()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.yolo_2_smoke_output_format"><code class="docutils literal notranslate"><span class="pre">yolo_2_smoke_output_format()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.yolo_get_n_classes"><code class="docutils literal notranslate"><span class="pre">yolo_get_n_classes()</span></code></a></li>
+<li><a class="reference internal" href="#metrics_functions_from_evaluation_script.yolobbox2bbox"><code class="docutils literal notranslate"><span class="pre">yolobbox2bbox()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-YOLO_toolbox">YOLO_toolbox module</a><ul>
+<li><a class="reference internal" href="#YOLO_toolbox.postprocess_YOLO"><code class="docutils literal notranslate"><span class="pre">postprocess_YOLO()</span></code></a></li>
+<li><a class="reference internal" href="#YOLO_toolbox.preprocess_predict_YOLO"><code class="docutils literal notranslate"><span class="pre">preprocess_predict_YOLO()</span></code></a></li>
+<li><a class="reference internal" href="#YOLO_toolbox.setup_YOLO"><code class="docutils literal notranslate"><span class="pre">setup_YOLO()</span></code></a></li>
+<li><a class="reference internal" href="#YOLO_toolbox.setup_tracker"><code class="docutils literal notranslate"><span class="pre">setup_tracker()</span></code></a></li>
+<li><a class="reference internal" href="#YOLO_toolbox.yolo_visualize"><code class="docutils literal notranslate"><span class="pre">yolo_visualize()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Internship Professional Products Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Welcome to Internship Professional Products Documentation’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-internship-professional-products-documentation-s-documentation">
+<h1>Welcome to Internship Professional Products Documentation’s documentation!<a class="headerlink" href="#welcome-to-internship-professional-products-documentation-s-documentation" title="Permalink to this heading"></a></h1>
+</section>
+<section id="module-DepthEvaluatorClass">
+<span id="depthevaluatorclass-module"></span><h1>DepthEvaluatorClass module<a class="headerlink" href="#module-DepthEvaluatorClass" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="DepthEvaluatorClass.depth_evaluator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">DepthEvaluatorClass.</span></span><span class="sig-name descname"><span class="pre">depth_evaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_frames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DepthEvaluatorClass.html#depth_evaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DepthEvaluatorClass.depth_evaluator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="DepthEvaluatorClass.depth_evaluator.match_pred_with_gt_by_object_center">
+<span class="sig-name descname"><span class="pre">match_pred_with_gt_by_object_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DepthEvaluatorClass.html#depth_evaluator.match_pred_with_gt_by_object_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DepthEvaluatorClass.depth_evaluator.match_pred_with_gt_by_object_center" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DepthEvaluatorClass.depth_evaluator.plot_eror">
+<span class="sig-name descname"><span class="pre">plot_eror</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DepthEvaluatorClass.html#depth_evaluator.plot_eror"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DepthEvaluatorClass.depth_evaluator.plot_eror" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DepthEvaluatorClass.depth_evaluator.viz_object_centers">
+<span class="sig-name descname"><span class="pre">viz_object_centers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DepthEvaluatorClass.html#depth_evaluator.viz_object_centers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DepthEvaluatorClass.depth_evaluator.viz_object_centers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="DepthEvaluatorClass.get_calculated_2d_points">
+<span class="sig-prename descclassname"><span class="pre">DepthEvaluatorClass.</span></span><span class="sig-name descname"><span class="pre">get_calculated_2d_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pose</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'int'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DepthEvaluatorClass.html#get_calculated_2d_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DepthEvaluatorClass.get_calculated_2d_points" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="DepthEvaluatorClass.match_pred_2_gt_by_obj_center">
+<span class="sig-prename descclassname"><span class="pre">DepthEvaluatorClass.</span></span><span class="sig-name descname"><span class="pre">match_pred_2_gt_by_obj_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_obj_center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_objs_center</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DepthEvaluatorClass.html#match_pred_2_gt_by_obj_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DepthEvaluatorClass.match_pred_2_gt_by_obj_center" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-EvaluatorClass4">
+<span id="evaluatorclass4-module"></span><h1>EvaluatorClass4 module<a class="headerlink" href="#module-EvaluatorClass4" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="EvaluatorClass4.ClassHolder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">EvaluatorClass4.</span></span><span class="sig-name descname"><span class="pre">ClassHolder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#ClassHolder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.ClassHolder" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="EvaluatorClass4.DifficultyHolder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">EvaluatorClass4.</span></span><span class="sig-name descname"><span class="pre">DifficultyHolder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">difficulty</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#DifficultyHolder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.DifficultyHolder" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="EvaluatorClass4.MetricsHolder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">EvaluatorClass4.</span></span><span class="sig-name descname"><span class="pre">MetricsHolder</span></span><a class="reference internal" href="_modules/EvaluatorClass4.html#MetricsHolder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.MetricsHolder" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.MetricsHolder.add_to_metrics">
+<span class="sig-name descname"><span class="pre">add_to_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">difficulty</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#MetricsHolder.add_to_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.MetricsHolder.add_to_metrics" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.MetricsHolder.get_data_row">
+<span class="sig-name descname"><span class="pre">get_data_row</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#MetricsHolder.get_data_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.MetricsHolder.get_data_row" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.MetricsHolder.store_stats">
+<span class="sig-name descname"><span class="pre">store_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">difficulty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtered_gt_for_debugging_purposes_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignored_label_specific_gt_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignored_difficulty_specific_pred_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_difficulty_specific_pred_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_label_difficulty_indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#MetricsHolder.store_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.MetricsHolder.store_stats" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EvaluatorClass4.get_gt_classes_boxes">
+<span class="sig-prename descclassname"><span class="pre">EvaluatorClass4.</span></span><span class="sig-name descname"><span class="pre">get_gt_classes_boxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#get_gt_classes_boxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.get_gt_classes_boxes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EvaluatorClass4.get_gt_difficulty">
+<span class="sig-prename descclassname"><span class="pre">EvaluatorClass4.</span></span><span class="sig-name descname"><span class="pre">get_gt_difficulty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gt_box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_truncation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_occlusion</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#get_gt_difficulty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.get_gt_difficulty" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EvaluatorClass4.get_gt_truncation_occlusion">
+<span class="sig-prename descclassname"><span class="pre">EvaluatorClass4.</span></span><span class="sig-name descname"><span class="pre">get_gt_truncation_occlusion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#get_gt_truncation_occlusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.get_gt_truncation_occlusion" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">EvaluatorClass4.</span></span><span class="sig-name descname"><span class="pre">metrics_evaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_detector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_frames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logs_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.check_fp_candidate">
+<span class="sig-name descname"><span class="pre">check_fp_candidate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fp_candidate_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.check_fp_candidate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.check_fp_candidate" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.clean_data">
+<span class="sig-name descname"><span class="pre">clean_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">difficulty</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.clean_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.clean_data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.construct_dataframe">
+<span class="sig-name descname"><span class="pre">construct_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_results_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.construct_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.construct_dataframe" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.eval_metrics">
+<span class="sig-name descname"><span class="pre">eval_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.eval_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.eval_metrics" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.get_AP">
+<span class="sig-name descname"><span class="pre">get_AP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_results_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.get_AP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.get_AP" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.get_fp_difficulty_by_height">
+<span class="sig-name descname"><span class="pre">get_fp_difficulty_by_height</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.get_fp_difficulty_by_height"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.get_fp_difficulty_by_height" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.get_frame_metrics">
+<span class="sig-name descname"><span class="pre">get_frame_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.get_frame_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.get_frame_metrics" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.get_ignored_gt_indices">
+<span class="sig-name descname"><span class="pre">get_ignored_gt_indices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.get_ignored_gt_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.get_ignored_gt_indices" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.get_label_specific_metrics">
+<span class="sig-name descname"><span class="pre">get_label_specific_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">difficulty</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.get_label_specific_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.get_label_specific_metrics" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.get_metrics_v2">
+<span class="sig-name descname"><span class="pre">get_metrics_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.get_metrics_v2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.get_metrics_v2" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.new_clean_data">
+<span class="sig-name descname"><span class="pre">new_clean_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">difficulty</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.new_clean_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.new_clean_data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.run_kitti_AP_evaluation_executable">
+<span class="sig-name descname"><span class="pre">run_kitti_AP_evaluation_executable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evaluation_executable_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions_foldername</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kitti_eval_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.run_kitti_AP_evaluation_executable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.run_kitti_AP_evaluation_executable" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.show_results">
+<span class="sig-name descname"><span class="pre">show_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.show_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.show_results" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EvaluatorClass4.metrics_evaluator.tabularize">
+<span class="sig-name descname"><span class="pre">tabularize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#metrics_evaluator.tabularize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.metrics_evaluator.tabularize" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EvaluatorClass4.new_plot_groundtruth">
+<span class="sig-prename descclassname"><span class="pre">EvaluatorClass4.</span></span><span class="sig-name descname"><span class="pre">new_plot_groundtruth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#new_plot_groundtruth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.new_plot_groundtruth" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EvaluatorClass4.plot_groundtruth">
+<span class="sig-prename descclassname"><span class="pre">EvaluatorClass4.</span></span><span class="sig-name descname"><span class="pre">plot_groundtruth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EvaluatorClass4.html#plot_groundtruth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EvaluatorClass4.plot_groundtruth" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-metrics_functions_from_evaluation_script">
+<span id="metrics-functions-from-evaluation-script-module"></span><h1>metrics_functions_from_evaluation_script module<a class="headerlink" href="#module-metrics_functions_from_evaluation_script" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.GtInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">GtInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#GtInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.GtInfo" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.GtInfo.get_labels_list">
+<span class="sig-name descname"><span class="pre">get_labels_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#GtInfo.get_labels_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.GtInfo.get_labels_list" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.Point">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">Point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#Point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.Point" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.box_does_not_intersect_with_all_boxes_in_list">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">box_does_not_intersect_with_all_boxes_in_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boxes_in_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#box_does_not_intersect_with_all_boxes_in_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.box_does_not_intersect_with_all_boxes_in_list" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.boxes_in_list_do_not_intersect">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">boxes_in_list_do_not_intersect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#boxes_in_list_do_not_intersect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.boxes_in_list_do_not_intersect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.construct_dataframe">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">construct_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cars_AP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pedestrians_AP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pedestrian_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">difficulty_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_objects_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_objects_difficulties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#construct_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.construct_dataframe" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.construct_dataframe_v2">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">construct_dataframe_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_detector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cars_AP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pedestrians_AP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pedestrian_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">difficulty_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_objects_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_objects_difficulties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#construct_dataframe_v2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.construct_dataframe_v2" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.convert_prediction_json_format">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">convert_prediction_json_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prediction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#convert_prediction_json_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.convert_prediction_json_format" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.convert_prediction_text_format">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">convert_prediction_text_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prediction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#convert_prediction_text_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.convert_prediction_text_format" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.enhance_excelfile">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">enhance_excelfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enhanced_filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#enhance_excelfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.enhance_excelfile" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_IoU">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_IoU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_IoU"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_IoU" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_box_difficulty_index">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_box_difficulty_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gt_boxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">difficulty</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_box_difficulty_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_box_difficulty_index" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_box_difficulty_index_2">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_box_difficulty_index_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gt_boxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_truncation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_occlusion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">difficulty</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_box_difficulty_index_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_box_difficulty_index_2" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_class_AP">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_class_AP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_class_AP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_class_AP" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_dataset_depth_stats">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_dataset_depth_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'All'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_dataset_depth_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_dataset_depth_stats" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_evaluation_metrics">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_evaluation_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_evaluation_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_evaluation_metrics" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_gt_classes">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_gt_classes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_gt_detections</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_gt_classes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_gt_classes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_gt_classes_boxes">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_gt_classes_boxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_gt_classes_boxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_gt_classes_boxes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_gt_truncation_occlusion">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_gt_truncation_occlusion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_gt_truncation_occlusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_gt_truncation_occlusion" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_key">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_key" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_kitti_AP_evaluation">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_kitti_AP_evaluation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluation_executable_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics_evaluator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_kitti_AP_evaluation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_kitti_AP_evaluation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_metrics_label_specific">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_metrics_label_specific</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">difficulty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicted_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_boxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_boxs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_metrics_label_specific"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_metrics_label_specific" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_metrics_label_specific_2">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_metrics_label_specific_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">difficulty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicted_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_boxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_boxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_truncation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_occlusion</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_metrics_label_specific_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_metrics_label_specific_2" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_plot_groundtruth">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_plot_groundtruth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_classes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_plot_groundtruth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_plot_groundtruth" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_plot_predictions">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_plot_predictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gt_boxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicted_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_predictions_n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_plot_predictions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_plot_predictions" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_pred_classes_boxes">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_pred_classes_boxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smoke_predictions_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_pred_classes_boxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_pred_classes_boxes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.get_predicted_classes">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">get_predicted_classes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_predictions_n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#get_predicted_classes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.get_predicted_classes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.metrics_evaluator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">metrics_evaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_frames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#metrics_evaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.metrics_evaluator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.metrics_evaluator.evaluate_metrics">
+<span class="sig-name descname"><span class="pre">evaluate_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoke_predictions_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#metrics_evaluator.evaluate_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.metrics_evaluator.evaluate_metrics" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.metrics_evaluator.get_boxs_classes_occlusion_truncation">
+<span class="sig-name descname"><span class="pre">get_boxs_classes_occlusion_truncation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoke_predictions_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#metrics_evaluator.get_boxs_classes_occlusion_truncation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.metrics_evaluator.get_boxs_classes_occlusion_truncation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.metrics_evaluator.get_metrics">
+<span class="sig-name descname"><span class="pre">get_metrics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#metrics_evaluator.get_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.metrics_evaluator.get_metrics" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.metrics_evaluator.tabularize">
+<span class="sig-name descname"><span class="pre">tabularize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#metrics_evaluator.tabularize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.metrics_evaluator.tabularize" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.modified_yolo_2_smoke_output_format">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">modified_yolo_2_smoke_output_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#modified_yolo_2_smoke_output_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.modified_yolo_2_smoke_output_format" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.new_plot_prediction">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">new_plot_prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_objs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#new_plot_prediction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.new_plot_prediction" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.new_read_groundtruth">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">new_read_groundtruth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gt_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#new_read_groundtruth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.new_read_groundtruth" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.new_write_prediction">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">new_write_prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions_folder_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#new_write_prediction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.new_write_prediction" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.plot_SMOKE_vs_YOLO">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">plot_SMOKE_vs_YOLO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smoke_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yolo_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#plot_SMOKE_vs_YOLO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.plot_SMOKE_vs_YOLO" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.plot_groundtruth">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">plot_groundtruth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#plot_groundtruth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.plot_groundtruth" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.plot_prediction">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">plot_prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#plot_prediction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.plot_prediction" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.read_groundtruth">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">read_groundtruth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gt_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#read_groundtruth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.read_groundtruth" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.read_prediction">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">read_prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions_folder_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#read_prediction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.read_prediction" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.rectanges_overlap">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">rectanges_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#rectanges_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.rectanges_overlap" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.smoke_get_n_classes">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">smoke_get_n_classes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#smoke_get_n_classes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.smoke_get_n_classes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.tabularize">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">tabularize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">TP_A1_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FP_A1_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FN_A1_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#tabularize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.tabularize" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.tabularize_metrics">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">tabularize_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_total_class_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtered_gt_class_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_difficulty_class_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignored_gt_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_total_class_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_filtered_class_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_difficulty_class_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignored_pred_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_frames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#tabularize_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.tabularize_metrics" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.video_writer">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">video_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_folder_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#video_writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.video_writer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.write_json">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">write_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions_folder_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#write_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.write_json" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.write_prediction">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">write_prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions_folder_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#write_prediction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.write_prediction" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.yolo_2_json_output_format">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">yolo_2_json_output_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#yolo_2_json_output_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.yolo_2_json_output_format" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.yolo_2_smoke_output_format">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">yolo_2_smoke_output_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#yolo_2_smoke_output_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.yolo_2_smoke_output_format" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.yolo_get_n_classes">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">yolo_get_n_classes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#yolo_get_n_classes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.yolo_get_n_classes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metrics_functions_from_evaluation_script.yolobbox2bbox">
+<span class="sig-prename descclassname"><span class="pre">metrics_functions_from_evaluation_script.</span></span><span class="sig-name descname"><span class="pre">yolobbox2bbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics_functions_from_evaluation_script.html#yolobbox2bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics_functions_from_evaluation_script.yolobbox2bbox" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-YOLO_toolbox">
+<span id="yolo-toolbox-module"></span><h1>YOLO_toolbox module<a class="headerlink" href="#module-YOLO_toolbox" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="YOLO_toolbox.postprocess_YOLO">
+<span class="sig-prename descclassname"><span class="pre">YOLO_toolbox.</span></span><span class="sig-name descname"><span class="pre">postprocess_YOLO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/YOLO_toolbox.html#postprocess_YOLO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#YOLO_toolbox.postprocess_YOLO" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="YOLO_toolbox.preprocess_predict_YOLO">
+<span class="sig-prename descclassname"><span class="pre">YOLO_toolbox.</span></span><span class="sig-name descname"><span class="pre">preprocess_predict_YOLO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">yolo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/YOLO_toolbox.html#preprocess_predict_YOLO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#YOLO_toolbox.preprocess_predict_YOLO" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="YOLO_toolbox.setup_YOLO">
+<span class="sig-prename descclassname"><span class="pre">YOLO_toolbox.</span></span><span class="sig-name descname"><span class="pre">setup_YOLO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_class_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/YOLO_toolbox.html#setup_YOLO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#YOLO_toolbox.setup_YOLO" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="YOLO_toolbox.setup_tracker">
+<span class="sig-prename descclassname"><span class="pre">YOLO_toolbox.</span></span><span class="sig-name descname"><span class="pre">setup_tracker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_cosine_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nn_budget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nms_max_overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/YOLO_toolbox.html#setup_tracker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#YOLO_toolbox.setup_tracker" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="YOLO_toolbox.yolo_visualize">
+<span class="sig-prename descclassname"><span class="pre">YOLO_toolbox.</span></span><span class="sig-name descname"><span class="pre">yolo_visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv2_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/YOLO_toolbox.html#yolo_visualize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#YOLO_toolbox.yolo_visualize" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Hassan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
